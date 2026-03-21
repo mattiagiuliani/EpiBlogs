@@ -45,14 +45,6 @@ authorRouter.delete('/api/v1/authors/:authorId', async (request, response, next)
       response.send({ message: 'author deleted' });
 });
 
-authorRouter.get('/api/v1/authors/:authorId/posts', async (request, response, next) => {
-   try {
-      const posts = await Post.find({ authorId: request.params.authorId });
-      response.send(posts);
-   } catch (error) {
-      console.log(error);
-      next(400);
-   }
-});
+
 
 export default authorRouter;
