@@ -14,7 +14,7 @@ server.use(express.json());
 server.use(authorRouter);
 server.use(postRouter);
 
-mongoose.connect("mongodb://127.0.0.1:27017/mydb")
+mongoose.connect(process.env.MONGODB_CONNECTION_URI?.trim() || "mongodb://127.0.0.1:27017/mydb")
   .then(() => console.log("Database connected!"))
   .catch((err) => console.log(err));
 

@@ -35,7 +35,8 @@ const authorSchema = new Schema ({
         min: '1930-01-01', 
         max: Date.now
     },
-    avatar: String
+    avatar: String,
+    profile: String
 });
 
 const Author = model('Author', authorSchema); 
