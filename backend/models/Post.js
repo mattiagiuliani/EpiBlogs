@@ -1,6 +1,24 @@
 import{model, Schema} from 'mongoose';
 import Author from './Author.js';
 
+const emailRegex = /[\w+.]*@\w+\.\w+/;
+
+const CommentSchema = new Schema(
+    {
+        _id: {
+            type: Schema.Types.ObjectId,
+            auto: true
+        },
+        comment: {
+            type: String,
+            required: true,
+            trim: true
+        }
+    },
+    {
+        timestamps: true
+    }
+);
 
 const PostSchema = new Schema ({
     _id:  {
@@ -9,24 +27,30 @@ const PostSchema = new Schema ({
         },
     category: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     title: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     cover: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     readTime: {
         value: {
             type: Number,
-            required: true
+            required: true,
+            min: 1
         },
         unit: {
             type: String,
-            required: true
+            required: true,
+            trim: true,
+            enum: ['min']
         }
     },
     author: {
@@ -34,10 +58,29 @@ const PostSchema = new Schema ({
         ref: Author,
         required: true
     },
+    authorEmail: {
+        type: String,
+        required: true,
+        trim: true,
+        lowercase: true,
+        match: [emailRegex, 'Not valid email']
+    },
     content: {
         type: String,
-        required: true
+        required: true,
+        trim: true,
+        validate: {
+            validator: (value) => typeof value === 'string' && value.trim().length > 0,
+            message: 'Content is required'
+        }
+    },
+    comments: {
+        type: [CommentSchema],
+        default: []
     }
+},
+{
+    timestamps: true
 });
 
 const Post = model('Post', PostSchema);

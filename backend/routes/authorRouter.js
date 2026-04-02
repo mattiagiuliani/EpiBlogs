@@ -6,6 +6,42 @@ import mailer from '../middlewares/mailer.js';
 
 const authorRouter = Router(); 
 
+const sendValidationError = (error, response) => {
+   if (error.name !== 'ValidationError') {
+      return false;
+   }
+
+   const errors = Object.values(error.errors).map((validationError) => ({
+      field: validationError.path,
+      message: validationError.message
+   }));
+
+   response.status(400).send({
+      message: 'Validation failed',
+      errors
+   });
+   return true;
+};
+
+const sendDuplicateKeyError = (error, response) => {
+   if (error.code !== 11000) {
+      return false;
+   }
+
+   const duplicatedField = Object.keys(error.keyPattern ?? {})[0] ?? 'field';
+
+   response.status(400).send({
+      message: 'Duplicate value',
+      errors: [
+         {
+            field: duplicatedField,
+            message: `${duplicatedField} already exists`
+         }
+      ]
+   });
+   return true;
+};
+
 authorRouter.get('/api/v1/authors', async function(request, response) {
    const authors = await Author.find({}); 
    response.send(authors);
@@ -35,7 +71,13 @@ authorRouter.post('/api/v1/authors', async (request, response, next) => {
       response.send(newAuthor);
    } catch (error) {
       console.log(error);
-      response.status(400).send({ message: error.message });
+      if (sendValidationError(error, response)) {
+         return;
+      }
+      if (sendDuplicateKeyError(error, response)) {
+         return;
+      }
+      response.status(500).send({ message: error.message });
    }
 });
 
@@ -59,7 +101,7 @@ authorRouter.patch('/api/v1/authors/:authorId/avatar', uploadCloudinary.single('
       else response.send(authorModified);
    } catch (error) {
       console.log(error);
-      response.status(400).send({ message: error.message });
+      response.status(500).send({ message: error.message });
    }
 });
 
@@ -71,7 +113,7 @@ authorRouter.put('/api/v1/authors/:authorId', async (request, response, next) =>
       const authorModified = await Author.findByIdAndUpdate(
          request.params.authorId,
          request.body,
-         { new: true }
+         { new: true, runValidators: true }
       );
       if (!authorModified) {
          return response.status(404).send({ message: 'Author not found' });
@@ -79,7 +121,13 @@ authorRouter.put('/api/v1/authors/:authorId', async (request, response, next) =>
       else response.send(authorModified);
    } catch (error) {
       console.log(error);
-      response.status(400).send({ message: error.message });
+      if (sendValidationError(error, response)) {
+         return;
+      }
+      if (sendDuplicateKeyError(error, response)) {
+         return;
+      }
+      response.status(500).send({ message: error.message });
    }
 });
 
