@@ -22,29 +22,6 @@ Full stack editorial dashboard built with a modular Node.js/Express backend and 
 
 ## Screenshots
 
-Portfolio-ready screenshot paths:
-
-- `docs/screenshots/01-login.png`
-- `docs/screenshots/02-register.png`
-- `docs/screenshots/03-dashboard.png`
-- `docs/screenshots/04-posts.png`
-- `docs/screenshots/05-authors.png`
-- `docs/screenshots/06-post-details.png`
-
-Recommended showcase order:
-
-1. Login
-2. Register
-3. Dashboard overview
-4. Posts section
-5. Authors section
-6. Detail or interaction screen
-
-Suggested GitHub markdown:
-
-```md
-## Screenshots
-
 ### Login
 ![Login](docs/screenshots/01-login.png)
 
@@ -54,12 +31,8 @@ Suggested GitHub markdown:
 ### Dashboard
 ![Dashboard](docs/screenshots/03-dashboard.png)
 
-### Posts
-![Posts](docs/screenshots/04-posts.png)
-
 ### Authors
 ![Authors](docs/screenshots/05-authors.png)
-```
 
 ## Tech Links
 
@@ -106,7 +79,7 @@ EpiBlogs/
 
 Postman collection:
 
-- [backend/postman/EpiBlogs.postman_collection.json](/C:/Users/Utente/OneDrive/Dokumente/GitHub/m6-backend/EpiBlogs/backend/postman/EpiBlogs.postman_collection.json)
+- [backend/postman/EpiBlogs.postman_collection.json](backend/postman/EpiBlogs.postman_collection.json)
 
 ## Italiano
 
@@ -123,7 +96,7 @@ EpiBlogs e una dashboard editoriale full stack sviluppata per gestire:
 - upload immagini con Cloudinary
 - invio email con Nodemailer / SendGrid
 
-Il progetto e stato rifattorizzato con una struttura piu modulare sia nel backend sia nei test, mantenendo stabile il comportamento applicativo.
+Il progetto e stato rifattorizzato con una struttura modulare sia nel backend sia nei test, mantenendo stabile il comportamento applicativo.
 
 ### Stack Tecnologico
 
@@ -193,14 +166,6 @@ npm --prefix frontend run lint
 npm --prefix frontend run build
 ```
 
-Stato review finale:
-
-- test automatici: OK
-- lint frontend: OK
-- build frontend: OK
-- collection Postman: OK
-- struttura Git: ripulita da `node_modules` tracciati
-
 ### Endpoints Principali
 
 - `POST /login`
@@ -269,7 +234,7 @@ npm --prefix backend install
 npm --prefix frontend install
 ```
 
-#### Environment variables
+#### Environment Variables
 
 Configure `backend/.env` with at least:
 
@@ -286,13 +251,13 @@ Configure `backend/.env` with at least:
 - `CLOUDINARY_API_KEY`
 - `CLOUDINARY_API_SECRET`
 
-#### Start backend
+#### Start Backend
 
 ```bash
 npm run dev
 ```
 
-#### Start frontend
+#### Start Frontend
 
 ```bash
 npm --prefix frontend run dev
@@ -307,14 +272,6 @@ npm run test:frontend
 npm --prefix frontend run lint
 npm --prefix frontend run build
 ```
-
-Final review status:
-
-- automated tests: OK
-- frontend lint: OK
-- frontend build: OK
-- Postman collection: OK
-- Git structure: cleaned from tracked `node_modules`
 
 ### Main Endpoints
 
