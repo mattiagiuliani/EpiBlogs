@@ -1,7 +1,6 @@
-import{model, Schema} from 'mongoose';
-import Author from './Author.js';
+import { model, Schema } from 'mongoose';
 
-const emailRegex = /[\w+.]*@\w+\.\w+/;
+const emailRegex = /^[\w+.]+@\w+\.\w+$/;
 
 const CommentSchema = new Schema(
     {
@@ -55,7 +54,7 @@ const PostSchema = new Schema ({
     },
     author: {
         type: Schema.Types.ObjectId,
-        ref: Author,
+        ref: 'Author',
         required: true
     },
     authorEmail: {

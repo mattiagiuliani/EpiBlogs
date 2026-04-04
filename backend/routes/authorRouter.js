@@ -1,145 +1,22 @@
-import { Router } from 'express'; 
-import { isValidObjectId } from 'mongoose';
-import Author from '../models/Author.js'; 
+import { Router } from 'express';
 import uploadCloudinary from '../middlewares/uploadCloudinary.js';
-import mailer from '../middlewares/mailer.js';
+import {
+    createAuthor,
+    deleteAuthor,
+    getAuthorById,
+    listAuthors,
+    updateAuthor,
+    updateAuthorAvatar
+} from './authors/handlers.js';
 
-const authorRouter = Router(); 
+const authorRouter = Router();
 
-const sendValidationError = (error, response) => {
-   if (error.name !== 'ValidationError') {
-      return false;
-   }
-
-   const errors = Object.values(error.errors).map((validationError) => ({
-      field: validationError.path,
-      message: validationError.message
-   }));
-
-   response.status(400).send({
-      message: 'Validation failed',
-      errors
-   });
-   return true;
-};
-
-const sendDuplicateKeyError = (error, response) => {
-   if (error.code !== 11000) {
-      return false;
-   }
-
-   const duplicatedField = Object.keys(error.keyPattern ?? {})[0] ?? 'field';
-
-   response.status(400).send({
-      message: 'Duplicate value',
-      errors: [
-         {
-            field: duplicatedField,
-            message: `${duplicatedField} already exists`
-         }
-      ]
-   });
-   return true;
-};
-
-authorRouter.get('/api/v1/authors', async function(request, response) {
-   const authors = await Author.find({}); 
-   response.send(authors);
-});
-
-authorRouter.get('/api/v1/authors/:authorId', async (request, response, next) => {
-    if (!isValidObjectId(request.params.authorId)) {
-        return response.status(400).send({ message: 'Invalid authorId' });
-    }
-    const theAuthor = await Author.findById(request.params.authorId);
-    if (!theAuthor) response.status(404).send({ message: 'Not found'});
-    else response.send(theAuthor);
-    });
-
-
-authorRouter.post('/api/v1/authors', async (request, response, next) => {
-   try {
-      const newAuthor = await Author.create(request.body);
-      const authorName = newAuthor.firstName ?? 'user';
-      mailer.sendMail({
-         from: process.env.MAIL_FROM?.trim() || process.env.MAIL_USER?.trim(),
-         to: [newAuthor.email],
-         subject: 'Welcome to our platform',
-         text: `Thank you for joining us, ${authorName}!`,
-         html: `<h1>Thank you for joining us, ${authorName}!</h1>`
-      }).catch((error) => console.log('Email send failed:', error));
-      response.send(newAuthor);
-   } catch (error) {
-      console.log(error);
-      if (sendValidationError(error, response)) {
-         return;
-      }
-      if (sendDuplicateKeyError(error, response)) {
-         return;
-      }
-      response.status(500).send({ message: error.message });
-   }
-});
-
-authorRouter.patch('/api/v1/authors/:authorId/avatar', uploadCloudinary.single('avatar')
-, async (request, response, next) => {
-   try {
-      if (!isValidObjectId(request.params.authorId)) {
-         return response.status(400).send({ message: 'Invalid authorId' });
-      }
-      if (!request.file) {
-         return response.status(400).send({ message: 'Avatar file is required' });
-      }
-      const authorModified = await Author.findByIdAndUpdate(
-         request.params.authorId,
-         { avatar: request.file.path },
-         { new: true }
-      );
-      if (!authorModified) {
-         return response.status(404).send({ message: 'Author not found' });
-      }
-      else response.send(authorModified);
-   } catch (error) {
-      console.log(error);
-      response.status(500).send({ message: error.message });
-   }
-});
-
-authorRouter.put('/api/v1/authors/:authorId', async (request, response, next) => {
-   try {
-      if (!isValidObjectId(request.params.authorId)) {
-         return response.status(400).send({ message: 'Invalid authorId' });
-      }
-      const authorModified = await Author.findByIdAndUpdate(
-         request.params.authorId,
-         request.body,
-         { new: true, runValidators: true }
-      );
-      if (!authorModified) {
-         return response.status(404).send({ message: 'Author not found' });
-      }
-      else response.send(authorModified);
-   } catch (error) {
-      console.log(error);
-      if (sendValidationError(error, response)) {
-         return;
-      }
-      if (sendDuplicateKeyError(error, response)) {
-         return;
-      }
-      response.status(500).send({ message: error.message });
-   }
-});
-
-authorRouter.delete('/api/v1/authors/:authorId', async (request, response, next) => {
-      if (!isValidObjectId(request.params.authorId)) {
-         return response.status(400).send({ message: 'Invalid authorId' });
-      }
-      const authorDeleted = await Author.findByIdAndDelete(request.params.authorId);
-      if (!authorDeleted) {
-         return response.status(404).send({ message: 'Author not found' });
-      }
-      response.send({ message: 'author deleted' });
-});
+authorRouter.get('/api/v1/authors', listAuthors);
+authorRouter.get('/api/v1/authors/:authorId', getAuthorById);
+authorRouter.post('/authors', createAuthor);
+authorRouter.post('/api/v1/authors', createAuthor);
+authorRouter.patch('/api/v1/authors/:authorId/avatar', uploadCloudinary.single('avatar'), updateAuthorAvatar);
+authorRouter.put('/api/v1/authors/:authorId', updateAuthor);
+authorRouter.delete('/api/v1/authors/:authorId', deleteAuthor);
 
 export default authorRouter;

@@ -1,18 +1,20 @@
-import{model, Schema} from 'mongoose';
+import { model, Schema } from 'mongoose';
 
-const authorSchema = new Schema ({
+const emailRegex = /^[\w+.]+@\w+\.\w+$/;
+
+const authorSchema = new Schema({
     _id: {
         type: Schema.Types.ObjectId,
         auto: true
     },
     email: {
-         type: String,
+        type: String,
         required: true, 
         unique: true, 
         lowercase: true,
         trim: true, 
         match: [
-            /[\w+.]*@\w+\.\w+/,   
+            emailRegex,
               
            'Not valid email' 
         ]
@@ -20,23 +22,51 @@ const authorSchema = new Schema ({
     password: {
         type: String,
         required: true,
-        minlength: 6
+        minlength: 6,
+        select: false
     },
     tokenGoogle: {
-        type: String
+        type: String,
+        select: false
     },
     firstName: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
-    lastName: String,
+    lastName: {
+        type: String,
+        trim: true
+    },
     birthDate:  {
         type: Date,
         min: '1930-01-01', 
         max: Date.now
     },
-    avatar: String,
-    profile: String
+    avatar: {
+        type: String,
+        trim: true
+    },
+    profile: {
+        type: String,
+        trim: true
+    }
+}, {
+    timestamps: true,
+    toJSON: {
+        transform: (_document, returnedObject) => {
+            delete returnedObject.password;
+            delete returnedObject.tokenGoogle;
+            return returnedObject;
+        }
+    },
+    toObject: {
+        transform: (_document, returnedObject) => {
+            delete returnedObject.password;
+            delete returnedObject.tokenGoogle;
+            return returnedObject;
+        }
+    }
 });
 
 const Author = model('Author', authorSchema); 

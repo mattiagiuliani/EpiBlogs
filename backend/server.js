@@ -1,23 +1,13 @@
 import 'dotenv/config';
-import cors from 'cors';
-import express from 'express';
 import mongoose from 'mongoose';
-import postRouter from './routes/postRouter.js';
-import authorRouter from './routes/authorRouter.js';
+import app from './app.js';
 
-const PORT = process.env.PORT 
-
-const server = express(); 
-server.use(cors()); 
-server.use(express.json()); 
-
-server.use(authorRouter);
-server.use(postRouter);
+const PORT = Number(process.env.PORT) || 3000;
 
 mongoose.connect(process.env.MONGODB_CONNECTION_URI?.trim() || "mongodb://127.0.0.1:27017/mydb")
   .then(() => console.log("Database connected!"))
   .catch((err) => console.log(err));
 
-server.listen(PORT, () => {
+app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 }); 
