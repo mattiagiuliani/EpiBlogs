@@ -1,15 +1,44 @@
 import { createPost } from "./assets/createPostFetch.js";
-import { useState } from "react";
-import { Alert, Button, Card, Form } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Alert, Button, Card, Form, Spinner } from "react-bootstrap";
+import { apiPaths, fetchJson } from "./assets/api.js";
 
-const CreatePost = ({ onCreated }) => {
+const CreatePost = ({ onCreated, currentUser }) => {
+  const [authors, setAuthors] = useState([]);
+  const [authorsLoading, setAuthorsLoading] = useState(true);
+  const [authorsError, setAuthorsError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [selectedAuthorId, setSelectedAuthorId] = useState("");
+
+  useEffect(() => {
+    const loadAuthors = async () => {
+      setAuthorsLoading(true);
+      setAuthorsError("");
+
+      try {
+        const data = await fetchJson(apiPaths.authors, {}, "Error fetching authors");
+        setAuthors(data);
+        const defaultAuthor = data.find((author) => author._id === currentUser?._id) ?? data[0];
+        setSelectedAuthorId(defaultAuthor?._id ?? "");
+      } catch (err) {
+        setAuthors([]);
+        setAuthorsError(err.message);
+        setSelectedAuthorId("");
+      } finally {
+        setAuthorsLoading(false);
+      }
+    };
+
+    loadAuthors();
+  }, [currentUser?._id]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSuccessMessage("");
     setErrorMessage("");
+    setIsSubmitting(true);
 
     const formData = new FormData(e.target);
     const postData = {
@@ -20,30 +49,37 @@ const CreatePost = ({ onCreated }) => {
         value: Number(formData.get("readTimeValue")),
         unit: formData.get("readTimeUnit"),
       },
-      author: formData.get("author"),
+      author: selectedAuthorId || formData.get("author"),
       content: formData.get("content"),
     };
 
     try {
       const data = await createPost(postData);
       e.target.reset();
+      setSelectedAuthorId(currentUser?._id ?? authors[0]?._id ?? "");
       onCreated?.(data);
       setSuccessMessage("Post created successfully.");
     } catch (err) {
       setErrorMessage(err.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <Card className="border-0 shadow-sm">
-      <Card.Body className="p-4">
+    <Card className="border-0 shadow-lg app-panel create-post-card">
+      <Card.Body className="p-4 p-xl-5">
         <div className="mb-4">
-          <h2 className="h4 mb-1">Create Post</h2>
-          <p className="text-secondary mb-0">Compile every field</p>
+          <span className="eyebrow">Publishing</span>
+          <h2 className="h3 mb-2 mt-2">Create a polished post</h2>
+          <p className="text-secondary mb-0">
+            Fill in the essentials and publish directly to the dashboard.
+          </p>
         </div>
 
         {successMessage ? <Alert variant="success">{successMessage}</Alert> : null}
         {errorMessage ? <Alert variant="danger">{errorMessage}</Alert> : null}
+        {authorsError ? <Alert variant="warning">{authorsError}</Alert> : null}
 
         <Form onSubmit={handleSubmit}>
           <Form.Group className="mb-3">
@@ -71,17 +107,42 @@ const CreatePost = ({ onCreated }) => {
                 placeholder="Value"
                 required
               />
-              <Form.Control
-                name="readTimeUnit"
-                placeholder="minutes"
-                required
-              />
+              <Form.Select name="readTimeUnit" defaultValue="min" required>
+                <option value="min">min</option>
+              </Form.Select>
             </div>
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label>Author ID</Form.Label>
-            <Form.Control name="author" placeholder="Mongo ObjectId" required />
+            <Form.Label>Author</Form.Label>
+            <Form.Select
+              name="author"
+              value={selectedAuthorId}
+              onChange={(event) => setSelectedAuthorId(event.target.value)}
+              disabled={authorsLoading || authors.length === 0}
+              required
+            >
+              <option value="">
+                {authorsLoading ? "Loading authors..." : "Select an author"}
+              </option>
+              {authors.map((author) => (
+                <option key={author._id} value={author._id}>
+                  {author.firstName} {author.lastName ? author.lastName : ""} - {author.email}
+                </option>
+              ))}
+            </Form.Select>
+            <Form.Text className="text-secondary">
+              {authorsLoading ? (
+                <span className="d-inline-flex align-items-center gap-2">
+                  <Spinner animation="border" size="sm" />
+                  Loading available authors
+                </span>
+              ) : authors.length > 0 ? (
+                "Authors are loaded from the backend, so you can pick a valid profile directly."
+              ) : (
+                "Create at least one author in the backend before publishing a post."
+              )}
+            </Form.Text>
           </Form.Group>
 
           <Form.Group className="mb-4">
@@ -95,8 +156,8 @@ const CreatePost = ({ onCreated }) => {
             />
           </Form.Group>
 
-          <Button type="submit" variant="dark" className="w-100">
-            Create Post
+          <Button type="submit" variant="dark" className="w-100 app-button" disabled={isSubmitting || authorsLoading || authors.length === 0}>
+            {isSubmitting ? "Publishing..." : "Create Post"}
           </Button>
         </Form>
       </Card.Body>
