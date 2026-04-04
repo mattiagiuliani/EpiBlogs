@@ -3,9 +3,18 @@
   "private": true,
   "scripts": {
     "dev": "npm --prefix backend run dev",
-    "start": "npm --prefix backend run start"
+    "start": "npm --prefix backend run start",
+    "test": "vitest run test --pool threads",
+    "test:watch": "vitest test --pool threads",
+    "test:frontend": "vitest run test/frontend --pool threads",
+    "test:backend": "vitest run test/backend --pool threads"
   },
-  "dependencies": {
-    "nodemailer": "^8.0.4"
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "jsdom": "^29.0.1",
+    "supertest": "^7.2.2",
+    "vitest": "^4.1.2"
   }
 }

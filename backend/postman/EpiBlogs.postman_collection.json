@@ -21,9 +21,64 @@
     {
       "key": "commentId",
       "value": ""
+    },
+    {
+      "key": "accessToken",
+      "value": ""
     }
   ],
   "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"mario.rossi@example.com\",\n  \"password\": \"secret123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Me",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          }
+        }
+      ]
+    },
     {
       "name": "Authors",
       "item": [
@@ -31,7 +86,12 @@
           "name": "Get Authors",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/authors",
               "host": [
@@ -49,7 +109,12 @@
           "name": "Get Author By Id",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/authors/{{authorId}}",
               "host": [
@@ -97,6 +162,10 @@
             "method": "PUT",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
@@ -123,7 +192,12 @@
           "name": "Delete Author",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/authors/{{authorId}}",
               "host": [
@@ -147,7 +221,12 @@
           "name": "Get Posts",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts",
               "host": [
@@ -165,7 +244,12 @@
           "name": "Get Post By Id",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts/{{postId}}",
               "host": [
@@ -185,6 +269,10 @@
           "request": {
             "method": "POST",
             "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
               {
                 "key": "Content-Type",
                 "value": "application/json"
@@ -213,6 +301,10 @@
             "method": "PUT",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
@@ -239,7 +331,12 @@
           "name": "Delete Post",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts/{{postId}}",
               "host": [
@@ -258,7 +355,12 @@
           "name": "Get Posts By Author",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/authors/{{authorId}}/posts",
               "host": [
@@ -283,7 +385,12 @@
           "name": "Get Comments",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts/{{postId}}/comments",
               "host": [
@@ -303,7 +410,12 @@
           "name": "Get Comment By Id",
           "request": {
             "method": "GET",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts/{{postId}}/comments/{{commentId}}",
               "host": [
@@ -326,6 +438,10 @@
             "method": "POST",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
@@ -335,7 +451,7 @@
               "raw": "{\n  \"comment\": \"Questo e un commento di test\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/posts/{{postId}}",
+              "raw": "{{baseUrl}}/api/v1/posts/{{postId}}/comments",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -343,7 +459,8 @@
                 "api",
                 "v1",
                 "posts",
-                "{{postId}}"
+                "{{postId}}",
+                "comments"
               ]
             }
           }
@@ -354,6 +471,10 @@
             "method": "PUT",
             "header": [
               {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              },
+              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
@@ -363,7 +484,7 @@
               "raw": "{\n  \"comment\": \"Commento aggiornato\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/api/v1/posts/{{postId}}/comment/{{commentId}}",
+              "raw": "{{baseUrl}}/api/v1/posts/{{postId}}/comments/{{commentId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -372,7 +493,7 @@
                 "v1",
                 "posts",
                 "{{postId}}",
-                "comment",
+                "comments",
                 "{{commentId}}"
               ]
             }
@@ -382,9 +503,14 @@
           "name": "Delete Comment",
           "request": {
             "method": "DELETE",
-            "header": [],
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/posts/{{postId}}/comment/{{commentId}}",
+              "raw": "{{baseUrl}}/api/v1/posts/{{postId}}/comments/{{commentId}}",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -393,7 +519,7 @@
                 "v1",
                 "posts",
                 "{{postId}}",
-                "comment",
+                "comments",
                 "{{commentId}}"
               ]
             }
