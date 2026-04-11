@@ -1,4 +1,5 @@
 import Post from '../../models/Post.js';
+import logger from '../../utils/logger.js';
 import { isOwnedByAuthenticatedAuthor, sendForbiddenOwnershipError } from '../../utils/ownership.js';
 import {
     validateCommentBody,
@@ -6,8 +7,13 @@ import {
     validatePostId
 } from './validators.js';
 
-const getPostById = async (postId) => Post.findById(postId);
-const getCommentById = (post, commentId) => post.comments.id(commentId);
+// Fetches only the matching comment subdocument using the positional projection.
+const findPostWithComment = async (postId, commentId) => {
+    return Post.findOne(
+        { _id: postId, 'comments._id': commentId },
+        { 'comments.$': 1 }
+    );
+};
 
 export const listComments = async (request, response) => {
     try {
@@ -17,7 +23,7 @@ export const listComments = async (request, response) => {
             return;
         }
 
-        const post = await getPostById(postId);
+        const post = await Post.findById(postId).select('comments').lean();
 
         if (!post) {
             return response.status(404).send({ message: 'Post not found' });
@@ -25,7 +31,7 @@ export const listComments = async (request, response) => {
 
         response.send(post.comments);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };
@@ -39,13 +45,13 @@ export const getSingleComment = async (request, response) => {
             return;
         }
 
-        const post = await getPostById(postId);
+        const post = await findPostWithComment(postId, commentId);
 
         if (!post) {
             return response.status(404).send({ message: 'Post not found' });
         }
 
-        const comment = getCommentById(post, commentId);
+        const comment = post.comments[0];
 
         if (!comment) {
             return response.status(404).send({ message: 'Comment not found' });
@@ -53,7 +59,7 @@ export const getSingleComment = async (request, response) => {
 
         response.send(comment);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };
@@ -66,7 +72,7 @@ export const createComment = async (request, response) => {
             return;
         }
 
-        const post = await getPostById(postId);
+        const post = await Post.findById(postId);
 
         if (!post) {
             return response.status(404).send({ message: 'Post not found' });
@@ -80,7 +86,7 @@ export const createComment = async (request, response) => {
 
         response.status(201).send(post.comments[post.comments.length - 1]);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };
@@ -98,28 +104,33 @@ export const updateComment = async (request, response) => {
             return;
         }
 
-        const post = await getPostById(postId);
+        // Fetch only the matching comment to check ownership before writing.
+        const postWithComment = await findPostWithComment(postId, commentId);
 
-        if (!post) {
-            return response.status(404).send({ message: 'Post not found' });
-        }
-
-        const comment = getCommentById(post, commentId);
-
-        if (!comment) {
+        if (!postWithComment) {
             return response.status(404).send({ message: 'Comment not found' });
         }
+
+        const comment = postWithComment.comments[0];
 
         if (!isOwnedByAuthenticatedAuthor(request, comment.author)) {
             return sendForbiddenOwnershipError(response, 'You can update only your own comments');
         }
 
-        comment.comment = request.body.comment.trim();
-        await post.save();
+        // Targeted update — only the matched comment's text is rewritten.
+        const updatedPost = await Post.findOneAndUpdate(
+            { _id: postId, 'comments._id': commentId },
+            { $set: { 'comments.$.comment': request.body.comment.trim() } },
+            { new: true, runValidators: true }
+        );
 
-        response.send(comment);
+        if (!updatedPost) {
+            return response.status(404).send({ message: 'Post not found' });
+        }
+
+        response.send(updatedPost.comments.id(commentId));
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };
@@ -133,28 +144,28 @@ export const deleteComment = async (request, response) => {
             return;
         }
 
-        const post = await getPostById(postId);
+        // Fetch only the matching comment to check ownership before writing.
+        const postWithComment = await findPostWithComment(postId, commentId);
 
-        if (!post) {
-            return response.status(404).send({ message: 'Post not found' });
-        }
-
-        const comment = getCommentById(post, commentId);
-
-        if (!comment) {
+        if (!postWithComment) {
             return response.status(404).send({ message: 'Comment not found' });
         }
+
+        const comment = postWithComment.comments[0];
 
         if (!isOwnedByAuthenticatedAuthor(request, comment.author)) {
             return sendForbiddenOwnershipError(response, 'You can delete only your own comments');
         }
 
-        comment.deleteOne();
-        await post.save();
+        // Targeted removal — only pulls the specific comment subdocument.
+        await Post.findByIdAndUpdate(
+            postId,
+            { $pull: { comments: { _id: commentId } } }
+        );
 
         response.send({ message: 'Comment deleted' });
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };

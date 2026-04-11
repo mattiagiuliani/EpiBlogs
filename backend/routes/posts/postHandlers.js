@@ -1,4 +1,5 @@
 import Post from '../../models/Post.js';
+import logger from '../../utils/logger.js';
 import { isOwnedByAuthenticatedAuthor, sendForbiddenOwnershipError } from '../../utils/ownership.js';
 import { pickPostInput } from '../../utils/postData.js';
 import { sendValidationError } from '../../utils/routeErrors.js';
@@ -7,17 +8,25 @@ import {
     findAuthorByIdOrRespond,
     findOwnedPostOrRespond,
     findPostByIdOrRespond,
-    hydratePostAuthorUpdate,
     sendPostPublishedEmail
 } from './postHelpers.js';
 import { validateAuthorId, validatePostId } from './validators.js';
 
 export const listPosts = async (request, response) => {
     try {
-        const posts = await Post.find(buildPostFilter(request.query)).lean();
-        response.send(posts);
+        const limit = Math.min(Math.max(Number(request.query.limit) || 20, 1), 100);
+        const page = Math.max(Number(request.query.page) || 1, 1);
+        const skip = (page - 1) * limit;
+        const filter = buildPostFilter(request.query);
+
+        const [data, total] = await Promise.all([
+            Post.find(filter).skip(skip).limit(limit).lean(),
+            Post.countDocuments(filter)
+        ]);
+
+        response.send({ data, total, page, limit, totalPages: Math.ceil(total / limit) });
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };
@@ -40,7 +49,7 @@ export const getPostById = async (request, response) => {
 
         response.send(post);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };
@@ -76,7 +85,7 @@ export const createPost = async (request, response) => {
         sendPostPublishedEmail(author, newPost);
         response.status(201).send(newPost);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         if (sendValidationError(error, response)) {
             return;
         }
@@ -117,7 +126,7 @@ export const updatePostCover = async (request, response) => {
 
         response.send(postModified);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         if (sendValidationError(error, response)) {
             return;
         }
@@ -143,22 +152,13 @@ export const updatePost = async (request, response) => {
         }
 
         const updateData = pickPostInput(request.body);
-
-        if (updateData.author) {
-            if (!validateAuthorId(updateData.author, response)) {
-                return;
-            }
-        }
-
-        const hydratedUpdateData = await hydratePostAuthorUpdate(updateData, response);
-
-        if (!hydratedUpdateData) {
-            return;
-        }
+        // Post ownership cannot be transferred: strip author so a user cannot
+        // reassign their post to another author profile.
+        delete updateData.author;
 
         const postModified = await Post.findByIdAndUpdate(
             request.params.postId,
-            hydratedUpdateData,
+            updateData,
             { new: true, runValidators: true }
         );
 
@@ -168,7 +168,7 @@ export const updatePost = async (request, response) => {
 
         response.send(postModified);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };
@@ -198,7 +198,7 @@ export const deletePost = async (request, response) => {
 
         response.send({ message: 'post deleted' });
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };
@@ -218,7 +218,7 @@ export const listPostsByAuthor = async (request, response) => {
         const posts = await Post.find({ author: request.params.authorId }).lean();
         response.send(posts);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };

@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
 import {
-  clearStoredToken,
   exchangeGoogleAuthCode,
   getGoogleLoginUrl,
   getMe,
-  getStoredToken,
   login,
+  logoutApi,
   register,
-  setStoredToken,
   UNAUTHORIZED_EVENT,
 } from "../assets/api.js";
 import {
@@ -34,7 +32,6 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
 
   useEffect(() => {
     const handleUnauthorized = () => {
-      clearStoredToken();
       setCurrentUser(null);
       setAuthError("Your session has expired. Please log in again.");
       setAuthSuccess("");
@@ -57,7 +54,6 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
       const { code, error } = getGoogleCallbackParams(window.location.search);
 
       if (!code || error) {
-        clearStoredToken();
         setCurrentUser(null);
         setAuthError(getGoogleAuthErrorMessage());
         navigateTo("/login", true);
@@ -66,13 +62,12 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
       }
 
       try {
+        // The backend sets the HttpOnly auth cookie in the exchange response.
         const authPayload = await exchangeGoogleAuthCode(code);
-        setStoredToken(authPayload.token);
         const user = authPayload.author ?? await getMe();
         setCurrentUser(user);
         navigateTo("/", true);
       } catch {
-        clearStoredToken();
         setCurrentUser(null);
         setAuthError(getGoogleAuthErrorMessage());
         navigateTo("/login", true);
@@ -92,19 +87,8 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
         return;
       }
 
-      const token = getStoredToken();
-
-      if (!token) {
-        setCurrentUser(null);
-        setIsBootstrapping(false);
-
-        if (!isPublicPath(currentPath)) {
-          navigateTo("/login", true);
-        }
-        return;
-      }
-
       try {
+        // The auth cookie is sent automatically — just validate the session.
         const user = await getMe();
         setCurrentUser(user);
 
@@ -112,9 +96,11 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
           navigateTo("/", true);
         }
       } catch {
-        clearStoredToken();
         setCurrentUser(null);
-        navigateTo("/login", true);
+
+        if (!isPublicPath(currentPath)) {
+          navigateTo("/login", true);
+        }
       } finally {
         setIsBootstrapping(false);
       }
@@ -159,15 +145,13 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
     setAuthSuccess("");
 
     try {
+      // The backend sets the HttpOnly auth cookie; we only need the author data.
       const response = await login(formValues);
-      setStoredToken(response.token);
-
       const user = response.author ?? await getMe();
       setCurrentUser(user);
       navigateTo("/", true);
       return true;
     } catch (error) {
-      clearStoredToken();
       setCurrentUser(null);
       setAuthError(error.message);
       return false;
@@ -176,12 +160,19 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
     }
   };
 
-  const handleLogout = () => {
-    clearStoredToken();
-    setCurrentUser(null);
+  const handleLogout = async () => {
     setAuthError("");
     setAuthSuccess("");
-    navigateTo("/login", true);
+
+    try {
+      // Ask the backend to clear the HttpOnly auth cookie.
+      await logoutApi();
+    } catch {
+      // Best-effort — proceed with local state reset regardless.
+    } finally {
+      setCurrentUser(null);
+      navigateTo("/login", true);
+    }
   };
 
   const handleGoogleLogin = () => {

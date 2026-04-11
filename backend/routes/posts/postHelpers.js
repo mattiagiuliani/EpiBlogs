@@ -1,16 +1,19 @@
 import Author from '../../models/Author.js';
 import Post from '../../models/Post.js';
 import mailer from '../../middlewares/mailer.js';
+import logger from '../../utils/logger.js';
 import { isOwnedByAuthenticatedAuthor, sendForbiddenOwnershipError } from '../../utils/ownership.js';
 
 const postNotFoundMessage = 'Post not found';
 const authorNotFoundMessage = 'Author not found';
 
+const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
 export const buildPostFilter = (query = {}) => {
     const search = query.search ?? query.title ?? '';
 
     return search
-        ? { title: { $regex: search, $options: 'i' } }
+        ? { title: { $regex: escapeRegex(search), $options: 'i' } }
         : {};
 };
 
@@ -21,7 +24,7 @@ export const sendPostPublishedEmail = (author, post) => {
         subject: 'Your post has been published',
         text: `Hi ${author.firstName}, your new blog post "${post.title}" has been published.`,
         html: `<h1>Hi ${author.firstName}, your new blog post "${post.title}" has been published.</h1>`
-    }).catch((error) => console.log('Email send failed:', error));
+    }).catch((error) => logger.error({ err: error }, 'Email send failed'));
 };
 
 export const findAuthorByIdOrRespond = async (authorId, response) => {

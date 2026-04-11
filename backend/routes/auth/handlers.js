@@ -1,5 +1,7 @@
 import Author from '../../models/Author.js';
+import logger from '../../utils/logger.js';
 import { consumeAuthCode, createAuthCode } from '../../utils/authExchange.js';
+import { clearAuthCookie, setAuthCookie } from '../../utils/authCookie.js';
 import { pickAuthorInput } from '../../utils/authorData.js';
 import {
     buildFrontendAuthCallbackUrl,
@@ -41,7 +43,7 @@ export const registerAuthor = async (request, response) => {
 
         response.status(201).send(newAuthor);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         if (sendValidationError(error, response)) {
             return;
         }
@@ -69,7 +71,7 @@ export const loginAuthor = async (request, response) => {
 
         sendAuthenticationPayload(response, author);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };
@@ -112,7 +114,7 @@ export const handleGoogleAuthenticationCallback = (request, response, next) => {
         clearOAuthStateCookie(response);
 
         if (error || !author) {
-            console.log(error);
+            logger.error({ err: error });
             return response.redirect(buildFrontendAuthCallbackUrl({ error: 'google_login_failed' }));
         }
 
@@ -125,21 +127,32 @@ export const handleGoogleAuthenticationCallback = (request, response, next) => {
 
             return response.redirect(buildFrontendAuthCallbackUrl({ code }));
         } catch (exchangeError) {
-            console.log(exchangeError);
+            console.error(exchangeError);
             return response.redirect(buildFrontendAuthCallbackUrl({ error: 'google_login_failed' }));
         }
     })(request, response, next);
 };
 
 export const exchangeGoogleAuthCode = async (request, response) => {
-    const code = typeof request.body?.code === 'string'
-        ? request.body.code.trim()
-        : '';
-    const authPayload = await consumeAuthCode(code);
+    try {
+        const code = typeof request.body?.code === 'string'
+            ? request.body.code.trim()
+            : '';
+        const authPayload = await consumeAuthCode(code);
 
-    if (!authPayload) {
-        return sendInvalidGoogleAuthCode(response);
+        if (!authPayload) {
+            return sendInvalidGoogleAuthCode(response);
+        }
+
+        setAuthCookie(response, authPayload.token);
+        return response.send(authPayload);
+    } catch (error) {
+        logger.error({ err: error });
+        response.status(500).send({ message: 'Internal server error' });
     }
+};
 
-    return response.send(authPayload);
+export const logoutAuthor = (_request, response) => {
+    clearAuthCookie(response);
+    response.send({ message: 'Logged out successfully' });
 };

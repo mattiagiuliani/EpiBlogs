@@ -1,12 +1,9 @@
 import RateLimitEntry from '../models/RateLimitEntry.js';
 
+// Use request.ip, which Express resolves correctly based on the trust proxy setting.
+// Reading x-forwarded-for directly would allow clients to spoof their IP and bypass
+// rate limiting by cycling through fake addresses.
 const resolveClientKey = (request) => {
-    const forwardedFor = request.headers['x-forwarded-for'];
-
-    if (typeof forwardedFor === 'string' && forwardedFor.trim()) {
-        return forwardedFor.split(',')[0].trim();
-    }
-
     return request.ip || request.socket?.remoteAddress || 'unknown';
 };
 
@@ -48,7 +45,6 @@ export const createRateLimit = ({
                 return response.status(429).send({ message });
             }
         } catch {
-            // Keep auth flows available if the limiter store is temporarily unavailable.
             return next();
         }
 

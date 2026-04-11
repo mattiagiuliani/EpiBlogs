@@ -141,22 +141,34 @@ describe('frontend domain components', () => {
 
     it('loads and renders posts, then searches again via the search form', async () => {
         apiMocks.fetchJson
-            .mockResolvedValueOnce([{
-                _id: 'post-1',
-                authorEmail: 'author@example.com',
-                category: 'Tech',
-                content: '<p>Hello world</p>',
-                readTime: { unit: 'min', value: 5 },
-                title: 'First Post'
-            }])
-            .mockResolvedValueOnce([{
-                _id: 'post-2',
-                authorEmail: 'author@example.com',
-                category: 'News',
-                content: 'Second body',
-                readTime: { unit: 'min', value: 3 },
-                title: 'Second Post'
-            }]);
+            .mockResolvedValueOnce({
+                data: [{
+                    _id: 'post-1',
+                    authorEmail: 'author@example.com',
+                    category: 'Tech',
+                    content: '<p>Hello world</p>',
+                    readTime: { unit: 'min', value: 5 },
+                    title: 'First Post'
+                }],
+                total: 1,
+                page: 1,
+                limit: 20,
+                totalPages: 1
+            })
+            .mockResolvedValueOnce({
+                data: [{
+                    _id: 'post-2',
+                    authorEmail: 'author@example.com',
+                    category: 'News',
+                    content: 'Second body',
+                    readTime: { unit: 'min', value: 3 },
+                    title: 'Second Post'
+                }],
+                total: 1,
+                page: 1,
+                limit: 20,
+                totalPages: 1
+            });
 
         const view = await renderComponent(
             React.createElement(PostList, { refreshToken: 0 })
@@ -166,7 +178,11 @@ describe('frontend domain components', () => {
             await Promise.resolve();
         });
 
-        expect(apiMocks.fetchJson).toHaveBeenCalledWith('/api/v1/posts?search=', {}, 'Error fetching posts');
+        expect(apiMocks.fetchJson).toHaveBeenCalledWith(
+            '/api/v1/posts?search=&page=1&limit=20',
+            {},
+            'Error fetching posts'
+        );
         expect(view.container.textContent).toContain('First Post');
         expect(view.container.textContent).toContain('Hello world');
 
@@ -177,7 +193,11 @@ describe('frontend domain components', () => {
             await Promise.resolve();
         });
 
-        expect(apiMocks.fetchJson).toHaveBeenLastCalledWith('/api/v1/posts?search=second', {}, 'Error fetching posts');
+        expect(apiMocks.fetchJson).toHaveBeenLastCalledWith(
+            '/api/v1/posts?search=second&page=1&limit=20',
+            {},
+            'Error fetching posts'
+        );
         expect(view.container.textContent).toContain('Second Post');
 
         await view.cleanup();
@@ -200,19 +220,23 @@ describe('frontend domain components', () => {
 
     it('loads and renders authors, then refreshes them', async () => {
         apiMocks.fetchJson
-            .mockResolvedValueOnce([{
-                _id: 'author-1',
-                email: 'author@example.com',
-                firstName: 'Mario',
-                lastName: 'Rossi',
-                profile: 'Editor'
-            }])
-            .mockResolvedValueOnce([{
-                _id: 'author-2',
-                email: 'luigi@example.com',
-                firstName: 'Luigi',
-                lastName: 'Verdi'
-            }]);
+            .mockResolvedValueOnce({
+                data: [{
+                    _id: 'author-1',
+                    email: 'author@example.com',
+                    firstName: 'Mario',
+                    lastName: 'Rossi',
+                    profile: 'Editor'
+                }]
+            })
+            .mockResolvedValueOnce({
+                data: [{
+                    _id: 'author-2',
+                    email: 'luigi@example.com',
+                    firstName: 'Luigi',
+                    lastName: 'Verdi'
+                }]
+            });
 
         const view = await renderComponent(React.createElement(AuthorList));
 

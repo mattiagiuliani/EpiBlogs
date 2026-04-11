@@ -2,19 +2,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
     UNAUTHORIZED_EVENT,
-    clearStoredToken,
     exchangeGoogleAuthCode,
     fetchJson,
     getGoogleLoginUrl,
-    getStoredToken,
     login,
+    logoutApi,
     register,
-    setStoredToken
 } from '../../frontend/src/assets/api.js';
 
 describe('frontend api helpers', () => {
     beforeEach(() => {
-        localStorage.clear();
         vi.restoreAllMocks();
     });
 
@@ -22,17 +19,7 @@ describe('frontend api helpers', () => {
         vi.unstubAllGlobals();
     });
 
-    it('stores and retrieves the access token from localStorage', () => {
-        setStoredToken('abc123');
-
-        expect(getStoredToken()).toBe('abc123');
-
-        clearStoredToken();
-        expect(getStoredToken()).toBeNull();
-    });
-
-    it('adds the bearer token to authenticated requests', async () => {
-        setStoredToken('jwt-token');
+    it('sends credentials with every request', async () => {
         const fetchMock = vi.fn().mockResolvedValue({
             ok: true,
             json: async () => [{ id: 1 }]
@@ -41,29 +28,26 @@ describe('frontend api helpers', () => {
 
         await fetchJson('/api/v1/posts');
 
-        expect(fetchMock).toHaveBeenCalledWith(
-            'http://localhost:3000/api/v1/posts',
-            expect.objectContaining({
-                headers: expect.any(Headers)
-            })
-        );
         const [, options] = fetchMock.mock.calls[0];
-        expect(options.headers.get('Authorization')).toBe('Bearer jwt-token');
+        expect(options.credentials).toBe('include');
     });
 
-    it('does not attach auth headers to login and register requests', async () => {
-        setStoredToken('jwt-token');
+    it('does not attach an Authorization header to requests', async () => {
         const fetchMock = vi.fn().mockResolvedValue({
             ok: true,
-            json: async () => ({ token: 'new-token' })
+            json: async () => ({})
         });
         vi.stubGlobal('fetch', fetchMock);
 
         await login({ email: 'author@example.com', password: 'secret123' });
         await register({ firstName: 'Mario', email: 'author@example.com', password: 'secret123' });
+        await fetchJson('/api/v1/posts');
 
         for (const [, options] of fetchMock.mock.calls) {
-            expect(options.headers.get('Authorization')).toBeNull();
+            const authHeader = options.headers instanceof Headers
+                ? options.headers.get('Authorization')
+                : (options.headers ?? {})['Authorization'] ?? null;
+            expect(authHeader).toBeNull();
         }
     });
 
@@ -71,8 +55,7 @@ describe('frontend api helpers', () => {
         expect(getGoogleLoginUrl()).toBe('http://localhost:3000/auth/google');
     });
 
-    it('exchanges a one-time Google auth code without auth headers', async () => {
-        setStoredToken('jwt-token');
+    it('exchanges a one-time Google auth code via POST with credentials', async () => {
         const fetchMock = vi.fn().mockResolvedValue({
             ok: true,
             json: async () => ({ token: 'new-token' })
@@ -81,20 +64,29 @@ describe('frontend api helpers', () => {
 
         await exchangeGoogleAuthCode('one-time-code');
 
-        const [, options] = fetchMock.mock.calls[0];
-        expect(fetchMock).toHaveBeenCalledWith(
-            'http://localhost:3000/auth/google/exchange-code',
-            expect.objectContaining({
-                method: 'POST'
-            })
-        );
-        expect(options.headers.get('Authorization')).toBeNull();
+        const [url, options] = fetchMock.mock.calls[0];
+        expect(url).toBe('http://localhost:3000/auth/google/exchange-code');
+        expect(options.method).toBe('POST');
+        expect(options.credentials).toBe('include');
     });
 
-    it('dispatches an unauthorized event on authenticated 401 responses', async () => {
+    it('calls POST /logout when logging out', async () => {
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ message: 'Logged out successfully' })
+        });
+        vi.stubGlobal('fetch', fetchMock);
+
+        await logoutApi();
+
+        const [url, options] = fetchMock.mock.calls[0];
+        expect(url).toBe('http://localhost:3000/logout');
+        expect(options.method).toBe('POST');
+    });
+
+    it('dispatches an unauthorized event on 401 responses', async () => {
         const listener = vi.fn();
         window.addEventListener(UNAUTHORIZED_EVENT, listener);
-        setStoredToken('expired-token');
 
         vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
             ok: false,
@@ -104,5 +96,7 @@ describe('frontend api helpers', () => {
 
         await expect(fetchJson('/me')).rejects.toThrow('Token not valid');
         expect(listener).toHaveBeenCalledTimes(1);
+
+        window.removeEventListener(UNAUTHORIZED_EVENT, listener);
     });
 });

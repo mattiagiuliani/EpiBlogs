@@ -5,13 +5,12 @@ import { createRoot } from '../../frontend/node_modules/react-dom/client.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const apiMocks = vi.hoisted(() => ({
-    clearStoredToken: vi.fn(),
+    exchangeGoogleAuthCode: vi.fn(),
     getGoogleLoginUrl: vi.fn().mockReturnValue('http://localhost:3000/auth/google'),
     getMe: vi.fn(),
-    getStoredToken: vi.fn(),
     login: vi.fn(),
+    logoutApi: vi.fn(),
     register: vi.fn(),
-    setStoredToken: vi.fn(),
     UNAUTHORIZED_EVENT: 'epiblogs:unauthorized'
 }));
 
@@ -56,9 +55,13 @@ describe('App', () => {
     });
 
     it('redirects unauthenticated users to the login page', async () => {
-        apiMocks.getStoredToken.mockReturnValue(null);
+        apiMocks.getMe.mockRejectedValue(new Error('Unauthorized'));
 
         const view = await renderApp();
+
+        await act(async () => {
+            await Promise.resolve();
+        });
 
         expect(view.container.textContent).toContain('Login page');
         expect(window.location.pathname).toBe('/login');
@@ -66,8 +69,7 @@ describe('App', () => {
         await view.cleanup();
     });
 
-    it('loads the authenticated dashboard when a token is present', async () => {
-        apiMocks.getStoredToken.mockReturnValue('jwt-token');
+    it('loads the authenticated dashboard when a session cookie is active', async () => {
         apiMocks.getMe.mockResolvedValue({
             firstName: 'Mario',
             lastName: 'Rossi',

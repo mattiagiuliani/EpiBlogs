@@ -1,4 +1,5 @@
 import { randomBytes, timingSafeEqual } from 'node:crypto';
+import { parseCookies } from './cookieUtils.js';
 
 const OAUTH_STATE_COOKIE_NAME = 'epiblogs.oauth_state';
 const OAUTH_STATE_TTL_MS = 10 * 60 * 1000;
@@ -30,19 +31,14 @@ const getCookiePathFromCallbackUrl = () => {
 };
 
 const shouldUseSecureCookies = () => {
-    const secureCookieSetting = trimEnv(process.env.OAUTH_COOKIE_SECURE);
+    // AUTH_COOKIE_SECURE is the canonical env var (documented in .env.example).
+    // OAUTH_COOKIE_SECURE is kept as a fallback for backward compatibility.
+    const setting = trimEnv(process.env.AUTH_COOKIE_SECURE) || trimEnv(process.env.OAUTH_COOKIE_SECURE);
 
-    if (secureCookieSetting === 'true') {
-        return true;
-    }
+    if (setting === 'true') return true;
+    if (setting === 'false') return false;
 
-    if (secureCookieSetting === 'false') {
-        return false;
-    }
-
-    if (process.env.NODE_ENV === 'production') {
-        return true;
-    }
+    if (process.env.NODE_ENV === 'production') return true;
 
     try {
         return new URL(trimEnv(process.env.GOOGLE_CALLBACK_URL)).protocol === 'https:';
@@ -66,31 +62,6 @@ export const getOAuthCookieOptions = () => {
         sameSite: normalizedSameSite,
         secure: shouldUseSecureCookies()
     };
-};
-
-const parseCookies = (cookieHeader) => {
-    if (typeof cookieHeader !== 'string' || !cookieHeader.trim()) {
-        return {};
-    }
-
-    return cookieHeader.split(';').reduce((cookies, part) => {
-        const [rawName, ...rawValueParts] = part.split('=');
-        const name = rawName?.trim();
-
-        if (!name) {
-            return cookies;
-        }
-
-        const rawValue = rawValueParts.join('=').trim();
-
-        try {
-            cookies[name] = decodeURIComponent(rawValue);
-        } catch {
-            cookies[name] = rawValue;
-        }
-
-        return cookies;
-    }, {});
 };
 
 export const createOAuthState = () => randomBytes(32).toString('base64url');

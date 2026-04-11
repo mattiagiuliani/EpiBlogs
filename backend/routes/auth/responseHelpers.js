@@ -1,7 +1,10 @@
+import { setAuthCookie } from '../../utils/authCookie.js';
 import { generateAccessToken } from '../../utils/jwt.js';
 
 export const sendAuthenticationPayload = (response, author) => {
     const token = generateAccessToken(author);
+
+    setAuthCookie(response, token);
 
     response.send({
         token,

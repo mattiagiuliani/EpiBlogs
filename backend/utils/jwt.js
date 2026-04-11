@@ -1,7 +1,9 @@
 import jwt from 'jsonwebtoken';
 
 const getJwtSecret = () => {
-    const secret = process.env.JWT_SECRET_KEY?.trim();
+    // JWT_SECRET_KEY is the canonical name (documented in .env.example).
+    // JWT_SECRET is supported as an alias for environments that use that convention.
+    const secret = process.env.JWT_SECRET_KEY?.trim() || process.env.JWT_SECRET?.trim();
 
     if (!secret) {
         throw new Error('JWT_SECRET_KEY is not configured');

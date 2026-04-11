@@ -78,13 +78,15 @@ describe('rate limit middleware', () => {
         expect(response.send).toHaveBeenCalledWith({ message: 'Too many requests' });
     });
 
-    it('uses forwarded-for as the client key when available', async () => {
+    it('uses request.ip as the client key (trust proxy resolves the real address)', async () => {
         const middleware = createLoginRateLimit();
+        // Express populates request.ip after applying the trust proxy setting.
+        // When trust proxy is configured it resolves to the client address from
+        // x-forwarded-for; otherwise it is the direct socket address. Either way
+        // the rate limiter uses request.ip so the header cannot be spoofed.
         const request = {
-            headers: {
-                'x-forwarded-for': '203.0.113.10, 10.0.0.1'
-            },
-            ip: '127.0.0.1'
+            headers: {},
+            ip: '203.0.113.10'
         };
         const response = createResponse();
         const next = vi.fn();

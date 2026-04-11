@@ -9,7 +9,7 @@
 [![Vitest](https://img.shields.io/badge/Test-Vitest-6E9F18?logo=vitest&logoColor=white)](https://vitest.dev/)
 [![Postman](https://img.shields.io/badge/API-Postman-FF6C37?logo=postman&logoColor=white)](https://www.postman.com/)
 
-Full stack editorial dashboard built with a modular Node.js/Express backend and a React frontend. The project includes JWT authentication, Google OAuth login, protected API routes, author and post management, automated tests, and a Postman collection aligned with the current API.
+Full stack editorial dashboard built with a modular Node.js/Express backend and a React frontend. The project includes HttpOnly cookie authentication, Google OAuth login, protected API routes, author and post management, automated tests, and a Postman collection aligned with the current API.
 
 ## Quick Links
 
@@ -83,12 +83,12 @@ Postman collection:
 
 La collection e aggiornata con:
 
-- register/login JWT
+- register/login con cookie HttpOnly
 - `GET /me`
 - bootstrap Google OAuth e `POST /auth/google/exchange-code`
 - CRUD authors, posts, comments
 - upload avatar e cover
-- salvataggio automatico di `accessToken`, `authorId`, `postId` e `commentId` nelle collection variables
+- salvataggio automatico di `authorId`, `postId` e `commentId` nelle collection variables
 
 ## Italiano
 
@@ -96,7 +96,7 @@ La collection e aggiornata con:
 
 EpiBlogs e una dashboard editoriale full stack sviluppata per gestire:
 
-- autenticazione JWT
+- autenticazione tramite cookie HttpOnly (JWT)
 - login con Google OAuth 2.0
 - registrazione e login utenti
 - recupero utente autenticato con `/me`
@@ -108,27 +108,31 @@ EpiBlogs e una dashboard editoriale full stack sviluppata per gestire:
 
 Il progetto e stato rifattorizzato con una struttura modulare sia nel backend sia nei test, mantenendo stabile il comportamento applicativo.
 
+### Design
+
+L'interfaccia utente adotta un tema **Dark Sci-Fi 2026**: sfondo void-black, card glassmorphism con backdrop blur, accenti neon blue/cyan/violet e tipografia Inter + JetBrains Mono. Il sistema di stile e interamente custom CSS (variabili, grid, flexbox) senza dipendenze da librerie UI esterne.
+
 ### Stack Tecnologico
 
-- Frontend: React, Vite, React Bootstrap
+- Frontend: React, Vite, CSS custom (Dark Sci-Fi design system)
 - Backend: Node.js, Express, MongoDB, Mongoose
-- Auth e sicurezza: JWT, bcrypt, Passport, Google OAuth 2.0
+- Auth e sicurezza: JWT via cookie HttpOnly, bcrypt, Passport, Google OAuth 2.0
 - Integrazioni: Cloudinary, Nodemailer
 - Testing: Vitest, Supertest, jsdom
 - Tooling: ESLint, Postman
 
 ### Funzionalita Principali
 
-- Tutti gli endpoint protetti richiedono `Authorization: Bearer <token>`.
-- `POST /login` restituisce il token di accesso.
-- `POST /authors` e `POST /register` permettono la creazione di un account locale.
+- Tutti gli endpoint protetti richiedono un cookie HttpOnly valido (impostato automaticamente dal backend al login).
+- `POST /login` imposta il cookie di sessione.
+- `POST /authors` permette la creazione di un account locale.
 - `GET /auth/google` avvia il login Google e la callback backend restituisce al frontend un codice monouso per recuperare il JWT applicativo.
-- `POST /auth/google/exchange-code` scambia quel codice con il payload finale `{ token, author }`.
-- `GET /me` restituisce l'utente collegato al token.
-- Il frontend salva il token in `localStorage` e ripristina la sessione al refresh.
-- Il login classico e il login Google convergono sullo stesso standard JWT usato da tutto il backend.
+- `POST /auth/google/exchange-code` scambia quel codice con il payload finale `{ author }` e imposta il cookie.
+- `GET /me` restituisce l'utente collegato al cookie di sessione.
+- La sessione viene ripristinata automaticamente al refresh tramite `GET /me`.
+- Il login classico e il login Google convergono sullo stesso standard cookie HttpOnly usato da tutto il backend.
 - Il JWT non passa nella query string OAuth: il frontend scambia un codice monouso a breve scadenza con il backend.
-- Se il token non e piu valido, il frontend forza il logout automaticamente.
+- Se il cookie non e piu valido, il frontend forza il logout automaticamente.
 - Gli update e delete di authors, posts e comments seguono ownership: un utente autenticato puo modificare solo le proprie risorse.
 - Il login classico e l'exchange Google sono protetti da rate limiting.
 - La collection Postman e allineata al progetto attuale.
@@ -152,6 +156,7 @@ Configura `backend/.env` con almeno:
 - `MONGODB_CONNECTION_URI`
 - `JWT_SECRET_KEY`
 - `FRONTEND_URL`
+- `BACKEND_HOST`
 - `GOOGLE_CLIENT_ID`
 - `GOOGLE_CLIENT_SECRET`
 - `GOOGLE_CALLBACK_URL`
@@ -167,11 +172,10 @@ Configura `backend/.env` con almeno:
 
 Variabili opzionali utili in deploy:
 
-- `CORS_ALLOWED_ORIGINS`
 - `CORS_ALLOW_CREDENTIALS`
 - `TRUST_PROXY`
-- `OAUTH_COOKIE_DOMAIN`
-- `OAUTH_COOKIE_SAME_SITE`
+- `AUTH_COOKIE_SECURE`
+- `AUTH_COOKIE_SAME_SITE`
 
 Se il frontend non gira su `http://localhost:5173` oppure il backend non gira su `http://localhost:3000`, configura anche `frontend/.env` con:
 
@@ -212,7 +216,7 @@ npm --prefix frontend run build
 
 ### Note Postman
 
-- Esegui prima `Register Author` oppure `Login`: la collection salva automaticamente `accessToken` e `authorId`.
+- Esegui prima `Register Author` oppure `Login`: la collection salva automaticamente `authorId`.
 - `Create Post` salva `postId`, `Create Comment` salva `commentId`.
 - `Start Google OAuth` apre il flusso lato browser; per testare `Exchange Google Auth Code` in Postman devi copiare manualmente il `code` ricevuto dal redirect frontend.
 - Le request di update/delete ownership-based devono usare lo stesso utente che ha creato la risorsa.
@@ -220,6 +224,7 @@ npm --prefix frontend run build
 ### Endpoints Principali
 
 - `POST /login`
+- `POST /logout`
 - `POST /authors`
 - `GET /auth/google`
 - `GET /auth/google/callback`
@@ -237,8 +242,9 @@ Questo repository mostra competenze su:
 
 - progettazione REST API protette
 - modularizzazione backend Express
+- autenticazione sicura con cookie HttpOnly
 - integrazione reale frontend/backend
-- session management lato client
+- session management lato server
 - testing multi-layer
 - pulizia strutturale del repository
 
@@ -250,7 +256,7 @@ Questo repository mostra competenze su:
 
 EpiBlogs is a full stack editorial dashboard built to manage:
 
-- JWT authentication
+- HttpOnly cookie authentication (JWT)
 - Google OAuth 2.0 login
 - user registration and login
 - authenticated user retrieval through `/me`
@@ -262,27 +268,31 @@ EpiBlogs is a full stack editorial dashboard built to manage:
 
 The project was refactored into a cleaner, more modular structure across backend and testing layers while keeping the existing behavior stable.
 
+### Design
+
+The UI uses a **Dark Sci-Fi 2026** theme: void-black background, glassmorphism cards with backdrop blur, neon blue/cyan/violet accents, and Inter + JetBrains Mono typography. The entire style system is custom CSS (variables, grid, flexbox) with no external UI library dependency.
+
 ### Tech Stack
 
-- Frontend: React, Vite, React Bootstrap
+- Frontend: React, Vite, custom CSS (Dark Sci-Fi design system)
 - Backend: Node.js, Express, MongoDB, Mongoose
-- Auth and security: JWT, bcrypt, Passport, Google OAuth 2.0
+- Auth and security: JWT via HttpOnly cookie, bcrypt, Passport, Google OAuth 2.0
 - Integrations: Cloudinary, Nodemailer
 - Testing: Vitest, Supertest, jsdom
 - Tooling: ESLint, Postman
 
 ### Core Features
 
-- All protected endpoints require `Authorization: Bearer <token>`.
-- `POST /login` returns the access token.
-- `POST /authors` and `POST /register` create a local account.
-- `GET /auth/google` starts the Google OAuth flow and the backend callback returns a one-time code that the frontend exchanges for the app JWT.
-- `POST /auth/google/exchange-code` exchanges that code for the final `{ token, author }` payload.
-- `GET /me` returns the authenticated user linked to the token.
-- The frontend stores the token in `localStorage` and restores the session on refresh.
-- Standard email/password login and Google login now share the same JWT-based session flow.
-- The JWT is no longer exposed in the OAuth redirect URL because the frontend exchanges a short-lived one-time code with the backend.
-- Invalid tokens trigger an automatic logout on the client.
+- All protected endpoints require a valid HttpOnly cookie (set automatically by the backend on login).
+- `POST /login` sets the session cookie.
+- `POST /authors` creates a local account.
+- `GET /auth/google` starts the Google OAuth flow and the backend callback returns a one-time code that the frontend exchanges for the app session.
+- `POST /auth/google/exchange-code` exchanges that code for the final `{ author }` payload and sets the cookie.
+- `GET /me` returns the authenticated user linked to the session cookie.
+- The session is automatically restored on page refresh through `GET /me`.
+- Standard email/password login and Google login share the same HttpOnly cookie session flow.
+- The JWT is never exposed in the OAuth redirect URL because the frontend exchanges a short-lived one-time code with the backend.
+- An invalid or expired cookie triggers an automatic logout on the client.
 - Author, post, and comment updates/deletes are ownership-based, so authenticated users can mutate only their own resources.
 - Classic login and Google exchange are protected by rate limiting.
 - The Postman collection is aligned with the current API.
@@ -306,6 +316,7 @@ Configure `backend/.env` with at least:
 - `MONGODB_CONNECTION_URI`
 - `JWT_SECRET_KEY`
 - `FRONTEND_URL`
+- `BACKEND_HOST`
 - `GOOGLE_CLIENT_ID`
 - `GOOGLE_CLIENT_SECRET`
 - `GOOGLE_CALLBACK_URL`
@@ -321,11 +332,10 @@ Configure `backend/.env` with at least:
 
 Helpful optional deploy variables:
 
-- `CORS_ALLOWED_ORIGINS`
 - `CORS_ALLOW_CREDENTIALS`
 - `TRUST_PROXY`
-- `OAUTH_COOKIE_DOMAIN`
-- `OAUTH_COOKIE_SAME_SITE`
+- `AUTH_COOKIE_SECURE`
+- `AUTH_COOKIE_SAME_SITE`
 
 If the frontend is not running on `http://localhost:5173` or the backend is not running on `http://localhost:3000`, also configure `frontend/.env` with:
 
@@ -366,7 +376,7 @@ npm --prefix frontend run build
 
 ### Postman Notes
 
-- Run `Register Author` or `Login` first: the collection automatically stores `accessToken` and `authorId`.
+- Run `Register Author` or `Login` first: the collection automatically stores `authorId`.
 - `Create Post` stores `postId`, and `Create Comment` stores `commentId`.
 - `Start Google OAuth` begins the browser-based flow; to test `Exchange Google Auth Code` in Postman you need to manually copy the `code` returned to the frontend callback URL.
 - Ownership-protected update/delete requests must be executed with the same authenticated user that created the resource.
@@ -374,6 +384,7 @@ npm --prefix frontend run build
 ### Main Endpoints
 
 - `POST /login`
+- `POST /logout`
 - `POST /authors`
 - `GET /auth/google`
 - `GET /auth/google/callback`
@@ -391,7 +402,8 @@ This repository highlights practical skills in:
 
 - protected REST API design
 - Express backend modularization
+- secure authentication with HttpOnly cookies
 - real frontend/backend integration
-- client-side session management
+- server-side session management
 - multi-layer automated testing
 - repository cleanup and maintainability work

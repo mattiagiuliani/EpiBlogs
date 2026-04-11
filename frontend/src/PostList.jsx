@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Alert, Badge, Button, Card, Col, Row, Spinner } from "react-bootstrap";
 import SearchPost from "./SearchPost.jsx";
 import { apiPaths, fetchJson } from "./assets/api.js";
+
+const DEFAULT_LIMIT = 20;
 
 const getPreviewText = (content) => {
   if (typeof content !== "string") {
@@ -21,19 +22,28 @@ const PostList = ({ refreshToken }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchPosts = async (search = "") => {
+  const fetchPosts = async (search = "", targetPage = 1) => {
     setLoading(true);
     setError("");
     setSearchQuery(search);
+    setPage(targetPage);
 
     try {
-      const data = await fetchJson(
-        `${apiPaths.posts}?search=${encodeURIComponent(search)}`,
+      const params = new URLSearchParams({
+        search: encodeURIComponent(search),
+        page: targetPage,
+        limit: DEFAULT_LIMIT,
+      });
+      const result = await fetchJson(
+        `${apiPaths.posts}?${params}`,
         {},
         "Error fetching posts"
       );
-      setPosts(data);
+      setPosts(result.data ?? []);
+      setTotalPages(result.totalPages ?? 1);
     } catch (err) {
       setPosts([]);
       setError(err.message);
@@ -43,7 +53,8 @@ const PostList = ({ refreshToken }) => {
   };
 
   useEffect(() => {
-    fetchPosts();
+    fetchPosts("", 1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshToken]);
 
   return (
@@ -51,57 +62,88 @@ const PostList = ({ refreshToken }) => {
       <div className="section-header">
         <div>
           <span className="eyebrow">Library</span>
-          <h2 className="h3 mb-1 mt-2">Posts</h2>
-          <p className="text-secondary mb-0">Search and browse published content.</p>
+          <h2 className="section-title mt-2 mb-1">Posts</h2>
+          <p className="section-copy mb-0">Search and browse published content.</p>
         </div>
-        <Button variant="outline-dark" onClick={() => fetchPosts(searchQuery)} disabled={loading}>
+        <button
+          className="btn btn-outline"
+          onClick={() => fetchPosts(searchQuery, page)}
+          disabled={loading}
+          type="button"
+        >
           Refresh
-        </Button>
+        </button>
       </div>
 
-      <SearchPost onSearch={fetchPosts} />
+      <SearchPost onSearch={(q) => fetchPosts(q, 1)} />
 
       {loading ? (
-        <div className="d-flex align-items-center gap-2 text-secondary section-state">
-          <Spinner animation="border" size="sm" />
+        <div className="section-state">
+          <div className="spinner-sm" role="status" aria-label="Loading posts" />
           <span>Loading posts...</span>
         </div>
       ) : error ? (
-        <Alert variant="danger">{error}</Alert>
+        <div className="alert alert-danger" role="alert">{error}</div>
       ) : posts.length === 0 ? (
-        <Alert variant="light" className="border empty-state">
-          No posts found
-        </Alert>
+        <div className="alert alert-info empty-state" role="status">No posts found</div>
       ) : (
-        <Row className="g-3">
-          {posts.map((post) => (
-            <Col md={6} key={post._id}>
-              <Card className="h-100 border-0 shadow-sm post-card">
+        <>
+          <div className="posts-grid">
+            {posts.map((post) => (
+              <div className="post-card" key={post._id}>
                 {post.cover ? (
                   <div
                     className="post-cover"
-                    style={{ backgroundImage: `linear-gradient(180deg, rgba(12, 21, 38, 0.15), rgba(12, 21, 38, 0.85)), url(${post.cover})` }}
+                    style={{
+                      backgroundImage: `linear-gradient(180deg, rgba(3, 10, 26, 0.15), rgba(3, 10, 26, 0.85)), url(${post.cover})`,
+                    }}
                   />
                 ) : null}
-                <Card.Body>
-                  <div className="d-flex justify-content-between align-items-start mb-2">
-                    <Card.Title className="mb-0">{post.title}</Card.Title>
-                    {post.category ? <Badge bg="dark">{post.category}</Badge> : null}
+                <div className="post-body">
+                  <div className="post-title-row">
+                    <h3 className="post-title">{post.title}</h3>
+                    {post.category ? (
+                      <span className="badge">{post.category}</span>
+                    ) : null}
                   </div>
-                  <Card.Text className="text-secondary">
-                    {getPreviewText(post.content)}
-                  </Card.Text>
+                  <p className="post-preview">{getPreviewText(post.content)}</p>
                   <div className="post-meta">
                     {post.readTime?.value ? (
-                      <span>{post.readTime.value} {post.readTime.unit}</span>
+                      <span>
+                        {post.readTime.value} {post.readTime.unit}
+                      </span>
                     ) : null}
                     {post.authorEmail ? <span>{post.authorEmail}</span> : null}
                   </div>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {totalPages > 1 ? (
+            <div className="pagination">
+              <button
+                className="btn btn-outline btn-sm"
+                disabled={page <= 1 || loading}
+                onClick={() => fetchPosts(searchQuery, page - 1)}
+                type="button"
+              >
+                Previous
+              </button>
+              <span className="pagination-info">
+                Page {page} of {totalPages}
+              </span>
+              <button
+                className="btn btn-outline btn-sm"
+                disabled={page >= totalPages || loading}
+                onClick={() => fetchPosts(searchQuery, page + 1)}
+                type="button"
+              >
+                Next
+              </button>
+            </div>
+          ) : null}
+        </>
       )}
     </section>
   );

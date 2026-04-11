@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button, Form } from "react-bootstrap";
 
 const SearchPost = ({ onSearch }) => {
   const [query, setQuery] = useState("");
@@ -10,29 +9,30 @@ const SearchPost = ({ onSearch }) => {
   };
 
   return (
-    <Form onSubmit={handleSubmit} className="mb-4">
+    <form onSubmit={handleSubmit} className="mb-4">
       <div className="search-bar">
-        <Form.Control
+        <input
+          className="form-control"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search posts by title..."
           aria-label="Search posts by title"
         />
-        <Button type="submit" variant="outline-dark">
+        <button type="submit" className="btn btn-outline">
           Search
-        </Button>
-        <Button
+        </button>
+        <button
           type="button"
-          variant="light"
+          className="btn btn-ghost"
           onClick={() => {
             setQuery("");
             onSearch("");
           }}
         >
           Clear
-        </Button>
+        </button>
       </div>
-    </Form>
+    </form>
   );
 };
 

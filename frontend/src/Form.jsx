@@ -1,6 +1,5 @@
 import { createPost } from "./assets/createPostFetch.js";
 import { useState } from "react";
-import { Alert, Button, Card, Form } from "react-bootstrap";
 
 const CreatePost = ({ onCreated, currentUser }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -39,80 +38,131 @@ const CreatePost = ({ onCreated, currentUser }) => {
   };
 
   return (
-    <Card className="border-0 shadow-lg app-panel create-post-card">
-      <Card.Body className="p-4 p-xl-5">
-        <div className="mb-4">
-          <span className="eyebrow">Publishing</span>
-          <h2 className="h3 mb-2 mt-2">Create a polished post</h2>
-          <p className="text-secondary mb-0">
-            Fill in the essentials and publish directly to the dashboard.
-          </p>
+    <div className="glass-card app-panel create-post-card">
+      <div className="mb-4">
+        <span className="eyebrow">Publishing</span>
+        <h2 className="section-title mt-2 mb-1">Create a post</h2>
+        <p className="section-copy mb-0">
+          Fill in the essentials and publish directly to the dashboard.
+        </p>
+      </div>
+
+      {successMessage ? (
+        <div className="alert alert-success" role="status">
+          {successMessage}
+        </div>
+      ) : null}
+      {errorMessage ? (
+        <div className="alert alert-danger" role="alert">
+          {errorMessage}
+        </div>
+      ) : null}
+
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label className="form-label" htmlFor="post-category">
+            Category
+          </label>
+          <input
+            id="post-category"
+            className="form-control"
+            name="category"
+            placeholder="Tech, News, Lifestyle..."
+            required
+          />
         </div>
 
-        {successMessage ? <Alert variant="success">{successMessage}</Alert> : null}
-        {errorMessage ? <Alert variant="danger">{errorMessage}</Alert> : null}
+        <div className="form-group">
+          <label className="form-label" htmlFor="post-title">
+            Title
+          </label>
+          <input
+            id="post-title"
+            className="form-control"
+            name="title"
+            placeholder="Write a strong title"
+            required
+          />
+        </div>
 
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3">
-            <Form.Label>Category</Form.Label>
-            <Form.Control name="category" placeholder="Tech, News, Lifestyle..." required />
-          </Form.Group>
+        <div className="form-group">
+          <label className="form-label" htmlFor="post-cover">
+            Cover URL
+          </label>
+          <input
+            id="post-cover"
+            className="form-control"
+            name="cover"
+            placeholder="https://example.com/image.jpg"
+            required
+          />
+        </div>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Title</Form.Label>
-            <Form.Control name="title" placeholder="Write a strong title" required />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Cover URL</Form.Label>
-            <Form.Control name="cover" placeholder="https://example.com/image.jpg" required />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Read Time</Form.Label>
-            <div className="d-flex gap-2">
-              <Form.Control
-                name="readTimeValue"
-                type="number"
-                min="1"
-                placeholder="Value"
-                required
-              />
-              <Form.Select name="readTimeUnit" defaultValue="min" required>
-                <option value="min">min</option>
-              </Form.Select>
-            </div>
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label>Author</Form.Label>
-            <Form.Control
-              value={`${currentUser?.firstName ?? ""} ${currentUser?.lastName ?? ""}`.trim() || currentUser?.email || "Authenticated author"}
-              disabled
-              readOnly
-            />
-            <Form.Text className="text-secondary">
-              New posts are now created only under your authenticated author profile.
-            </Form.Text>
-          </Form.Group>
-
-          <Form.Group className="mb-4">
-            <Form.Label>Content</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={5}
-              name="content"
-              placeholder="Write the post content"
+        <div className="form-group">
+          <label className="form-label">Read Time</label>
+          <div className="form-row">
+            <input
+              className="form-control"
+              name="readTimeValue"
+              type="number"
+              min="1"
+              placeholder="Value"
               required
             />
-          </Form.Group>
+            <select
+              className="form-select"
+              name="readTimeUnit"
+              defaultValue="min"
+              required
+            >
+              <option value="min">min</option>
+            </select>
+          </div>
+        </div>
 
-          <Button type="submit" variant="dark" className="w-100 app-button" disabled={isSubmitting || !currentUser?._id}>
-            {isSubmitting ? "Publishing..." : "Create Post"}
-          </Button>
-        </Form>
-      </Card.Body>
-    </Card>
+        <div className="form-group">
+          <label className="form-label" htmlFor="post-author">
+            Author
+          </label>
+          <input
+            id="post-author"
+            className="form-control"
+            value={
+              `${currentUser?.firstName ?? ""} ${currentUser?.lastName ?? ""}`.trim() ||
+              currentUser?.email ||
+              "Authenticated author"
+            }
+            disabled
+            readOnly
+          />
+          <span className="form-text">
+            Posts are created under your authenticated author profile.
+          </span>
+        </div>
+
+        <div className="form-group mb-4">
+          <label className="form-label" htmlFor="post-content">
+            Content
+          </label>
+          <textarea
+            id="post-content"
+            className="form-control"
+            rows={5}
+            name="content"
+            placeholder="Write the post content"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="btn btn-primary btn-block"
+          disabled={isSubmitting || !currentUser?._id}
+        >
+          {isSubmitting ? "Publishing..." : "Create Post"}
+        </button>
+      </form>
+    </div>
   );
 };
 

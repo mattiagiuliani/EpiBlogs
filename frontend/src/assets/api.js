@@ -1,30 +1,18 @@
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-const FRONTEND_BASE_URL = import.meta.env.VITE_FRONTEND_BASE_URL || window.location.origin;
-export const TOKEN_STORAGE_KEY = "epiblogs.accessToken";
+const FRONTEND_BASE_URL = import.meta.env.VITE_FRONTEND_BASE_URL || (typeof window !== "undefined" ? window.location.origin : "http://localhost:5173");
 export const UNAUTHORIZED_EVENT = "epiblogs:unauthorized";
 
 const buildUrl = (path) => `${API_BASE_URL}${path}`;
 export const buildFrontendUrl = (path) => `${FRONTEND_BASE_URL}${path}`;
 
-export const getStoredToken = () => localStorage.getItem(TOKEN_STORAGE_KEY);
+const buildHeaders = (headers = {}, includeContentType = false) => {
+  const normalized = new Headers(headers);
 
-export const setStoredToken = (token) => {
-  localStorage.setItem(TOKEN_STORAGE_KEY, token);
-};
-
-export const clearStoredToken = () => {
-  localStorage.removeItem(TOKEN_STORAGE_KEY);
-};
-
-const buildHeaders = (headers = {}, includeAuth = true) => {
-  const normalizedHeaders = new Headers(headers);
-  const token = includeAuth ? getStoredToken() : null;
-
-  if (token) {
-    normalizedHeaders.set("Authorization", `Bearer ${token}`);
+  if (includeContentType && !normalized.has("Content-Type")) {
+    normalized.set("Content-Type", "application/json");
   }
 
-  return normalizedHeaders;
+  return normalized;
 };
 
 const getApiErrorMessage = async (res, fallbackMessage) => {
@@ -48,11 +36,13 @@ const getApiErrorMessage = async (res, fallbackMessage) => {
 export const fetchJson = async (path, options = {}, fallbackMessage = "Request failed") => {
   const res = await fetch(buildUrl(path), {
     ...options,
-    headers: buildHeaders(options.headers, options.includeAuth !== false),
+    // Ensures the auth cookie is sent on every request and written on responses.
+    credentials: "include",
+    headers: buildHeaders(options.headers),
   });
 
   if (!res.ok) {
-    if (res.status === 401 && options.includeAuth !== false) {
+    if (res.status === 401) {
       window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
     }
 
@@ -67,10 +57,7 @@ export const login = async (credentials) => {
     "/login",
     {
       method: "POST",
-      includeAuth: false,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(credentials),
     },
     "Login failed"
@@ -82,10 +69,7 @@ export const register = async (payload) => {
     "/authors",
     {
       method: "POST",
-      includeAuth: false,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     },
     "Registration failed"
@@ -96,6 +80,14 @@ export const getMe = async () => {
   return fetchJson("/me", {}, "Unable to load the authenticated user");
 };
 
+export const logoutApi = async () => {
+  return fetchJson(
+    "/logout",
+    { method: "POST" },
+    "Logout failed"
+  );
+};
+
 export const getGoogleLoginUrl = () => buildUrl("/auth/google");
 
 export const exchangeGoogleAuthCode = async (code) => {
@@ -103,10 +95,7 @@ export const exchangeGoogleAuthCode = async (code) => {
     "/auth/google/exchange-code",
     {
       method: "POST",
-      includeAuth: false,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ code }),
     },
     "Unable to complete Google login"
@@ -116,6 +105,7 @@ export const exchangeGoogleAuthCode = async (code) => {
 export const apiPaths = {
   register: "/authors",
   login: "/login",
+  logout: "/logout",
   me: "/me",
   googleLogin: "/auth/google",
   googleExchange: "/auth/google/exchange-code",

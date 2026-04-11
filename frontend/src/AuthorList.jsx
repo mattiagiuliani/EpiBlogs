@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Alert, Button, Card, Col, Row, Spinner } from "react-bootstrap";
 import { apiPaths, fetchJson } from "./assets/api.js";
 
 const AuthorList = () => {
@@ -12,8 +11,8 @@ const AuthorList = () => {
     setError("");
 
     try {
-      const data = await fetchJson(apiPaths.authors, {}, "Error fetching authors");
-      setAuthors(data);
+      const result = await fetchJson(apiPaths.authors, {}, "Error fetching authors");
+      setAuthors(result.data ?? []);
     } catch (err) {
       setAuthors([]);
       setError(err.message);
@@ -31,63 +30,63 @@ const AuthorList = () => {
       <div className="section-header">
         <div>
           <span className="eyebrow">People</span>
-          <h2 className="h3 mb-1 mt-2">Authors</h2>
-          <p className="text-secondary mb-0">Browse and manage registered authors.</p>
+          <h2 className="section-title mt-2 mb-1">Authors</h2>
+          <p className="section-copy mb-0">Browse and manage registered authors.</p>
         </div>
-        <Button variant="outline-dark" onClick={fetchAuthors} disabled={loading}>
+        <button
+          className="btn btn-outline"
+          onClick={fetchAuthors}
+          disabled={loading}
+          type="button"
+        >
           Refresh
-        </Button>
+        </button>
       </div>
 
       {loading ? (
-        <div className="d-flex align-items-center gap-2 text-secondary section-state">
-          <Spinner animation="border" size="sm" />
+        <div className="section-state">
+          <div className="spinner-sm" role="status" aria-label="Loading authors" />
           <span>Loading authors...</span>
         </div>
       ) : error ? (
-        <Alert variant="danger">{error}</Alert>
+        <div className="alert alert-danger" role="alert">{error}</div>
       ) : authors.length === 0 ? (
-        <Alert variant="light" className="border empty-state">
-          No authors found
-        </Alert>
+        <div className="alert alert-info empty-state" role="status">No authors found</div>
       ) : (
-        <Row className="g-3">
+        <div className="authors-grid">
           {authors.map((author) => (
-            <Col md={6} key={author._id}>
-              <Card className="h-100 border-0 shadow-sm author-card">
-                <Card.Body>
-                  <div className="author-header">
-                    <div className="author-avatar">
-                      {author.avatar ? (
-                        <img src={author.avatar} alt={`${author.firstName} ${author.lastName || ""}`.trim()} />
-                      ) : (
-                        <span>
-                          {`${author.firstName?.[0] || ""}${author.lastName?.[0] || ""}`.trim() || "AU"}
-                        </span>
-                      )}
-                    </div>
-                    <div>
-                      <Card.Title className="mb-1">
-                        {author.firstName} {author.lastName}
-                      </Card.Title>
-                      {author.profile ? (
-                        <p className="small text-secondary mb-0">{author.profile}</p>
-                      ) : null}
-                    </div>
-                  </div>
-                  <Card.Text className="text-secondary mb-1">
-                    {author.email}
-                  </Card.Text>
-                  {author.birthDate ? (
-                    <small className="text-muted d-block">
-                      Born: {new Date(author.birthDate).toLocaleDateString()}
-                    </small>
+            <div className="author-card" key={author._id}>
+              <div className="author-header">
+                <div className="author-avatar">
+                  {author.avatar ? (
+                    <img
+                      src={author.avatar}
+                      alt={`${author.firstName} ${author.lastName || ""}`.trim()}
+                    />
+                  ) : (
+                    <span>
+                      {`${author.firstName?.[0] || ""}${author.lastName?.[0] || ""}`.trim() || "AU"}
+                    </span>
+                  )}
+                </div>
+                <div>
+                  <h3 className="author-name">
+                    {author.firstName} {author.lastName}
+                  </h3>
+                  {author.profile ? (
+                    <p className="author-profile">{author.profile}</p>
                   ) : null}
-                </Card.Body>
-              </Card>
-            </Col>
+                </div>
+              </div>
+              <p className="author-email">{author.email}</p>
+              {author.birthDate ? (
+                <small className="author-birthdate">
+                  Born: {new Date(author.birthDate).toLocaleDateString()}
+                </small>
+              ) : null}
+            </div>
           ))}
-        </Row>
+        </div>
       )}
     </section>
   );

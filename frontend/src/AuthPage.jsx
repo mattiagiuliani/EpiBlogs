@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Alert, Button, Card, Form } from "react-bootstrap";
 
 const initialValuesByMode = {
   login: {
@@ -46,119 +45,158 @@ const AuthPage = ({
 
   return (
     <div className="auth-shell">
-      <Card className="border-0 shadow-lg auth-card">
-        <Card.Body className="p-4 p-xl-5">
-          <div className="mb-4">
-            <span className="eyebrow">{isLogin ? "Access" : "Join"}</span>
-            <h1 className="auth-title">{isLogin ? "Sign in to EpiBlogs" : "Create your account"}</h1>
-            <p className="auth-copy mb-0">
-              {isLogin
-                ? "Use your access token flow to enter the editorial dashboard."
-                : "Register a new author profile, then sign in and start working from the dashboard."}
-            </p>
+      <div className="glass-card auth-card">
+        <div className="auth-header">
+          <span className="eyebrow">{isLogin ? "Access" : "Join"}</span>
+          <h1 className="auth-title">
+            {isLogin ? "Sign in to EpiBlogs" : "Create your account"}
+          </h1>
+          <p className="auth-copy">
+            {isLogin
+              ? "Use your access credentials to enter the editorial dashboard."
+              : "Register a new author profile, then sign in and start working from the dashboard."}
+          </p>
+        </div>
+
+        {errorMessage ? (
+          <div className="alert alert-danger" role="alert">
+            {errorMessage}
           </div>
+        ) : null}
+        {successMessage ? (
+          <div className="alert alert-success" role="alert">
+            {successMessage}
+          </div>
+        ) : null}
 
-          {errorMessage ? <Alert variant="danger">{errorMessage}</Alert> : null}
-          {successMessage ? <Alert variant="success">{successMessage}</Alert> : null}
-
-          <Form onSubmit={handleSubmit}>
-            {!isLogin ? (
-              <>
-                <Form.Group className="mb-3">
-                  <Form.Label>First name</Form.Label>
-                  <Form.Control
-                    name="firstName"
-                    value={formValues.firstName}
-                    onChange={handleChange}
-                    placeholder="Mario"
-                    required
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label>Last name</Form.Label>
-                  <Form.Control
-                    name="lastName"
-                    value={formValues.lastName}
-                    onChange={handleChange}
-                    placeholder="Rossi"
-                  />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label>Profile</Form.Label>
-                  <Form.Control
-                    name="profile"
-                    value={formValues.profile}
-                    onChange={handleChange}
-                    placeholder="Editor, writer, contributor..."
-                  />
-                </Form.Group>
-              </>
-            ) : null}
-
-            <Form.Group className="mb-3">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                name="email"
-                type="email"
-                value={formValues.email}
-                onChange={handleChange}
-                placeholder="name@example.com"
-                required
-              />
-            </Form.Group>
-
-            <Form.Group className="mb-4">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                name="password"
-                type="password"
-                value={formValues.password}
-                onChange={handleChange}
-                placeholder="At least 6 characters"
-                minLength={6}
-                required
-              />
-            </Form.Group>
-
-            <Button type="submit" variant="dark" className="w-100 app-button" disabled={isSubmitting}>
-              {isSubmitting
-                ? (isLogin ? "Signing in..." : "Creating account...")
-                : (isLogin ? "Login" : "Register")}
-            </Button>
-          </Form>
-
-          {isLogin ? (
+        <form onSubmit={handleSubmit} noValidate>
+          {!isLogin ? (
             <>
-              <div className="auth-divider">
-                <span>or continue with</span>
+              <div className="form-group">
+                <label className="form-label" htmlFor="firstName">
+                  First name
+                </label>
+                <input
+                  id="firstName"
+                  className="form-control"
+                  name="firstName"
+                  value={formValues.firstName}
+                  onChange={handleChange}
+                  placeholder="Mario"
+                  required
+                  autoComplete="given-name"
+                />
               </div>
-              <Button
-                type="button"
-                variant="light"
-                className="w-100 google-auth-button"
-                onClick={onGoogleLogin}
-                disabled={isSubmitting}
-              >
-                <span className="google-auth-icon" aria-hidden="true">G</span>
-                <span>Login with Google</span>
-              </Button>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="lastName">
+                  Last name
+                </label>
+                <input
+                  id="lastName"
+                  className="form-control"
+                  name="lastName"
+                  value={formValues.lastName}
+                  onChange={handleChange}
+                  placeholder="Rossi"
+                  autoComplete="family-name"
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label" htmlFor="profile">
+                  Profile
+                </label>
+                <input
+                  id="profile"
+                  className="form-control"
+                  name="profile"
+                  value={formValues.profile}
+                  onChange={handleChange}
+                  placeholder="Editor, writer, contributor..."
+                />
+              </div>
             </>
           ) : null}
 
-          <div className="auth-switch">
-            <span>{isLogin ? "Need an account?" : "Already registered?"}</span>
-            <Button
-              variant="link"
-              className="p-0 auth-link-button"
-              onClick={() => onNavigate(isLogin ? "/register" : "/login")}
-            >
-              {isLogin ? "Create one" : "Go to login"}
-            </Button>
+          <div className="form-group">
+            <label className="form-label" htmlFor="email">
+              Email
+            </label>
+            <input
+              id="email"
+              className="form-control"
+              name="email"
+              type="email"
+              value={formValues.email}
+              onChange={handleChange}
+              placeholder="name@example.com"
+              required
+              autoComplete="email"
+            />
           </div>
-        </Card.Body>
-      </Card>
+
+          <div className="form-group mb-4">
+            <label className="form-label" htmlFor="password">
+              Password
+            </label>
+            <input
+              id="password"
+              className="form-control"
+              name="password"
+              type="password"
+              value={formValues.password}
+              onChange={handleChange}
+              placeholder="At least 6 characters"
+              minLength={6}
+              required
+              autoComplete={isLogin ? "current-password" : "new-password"}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-primary btn-block"
+            disabled={isSubmitting}
+          >
+            {isSubmitting
+              ? isLogin
+                ? "Signing in..."
+                : "Creating account..."
+              : isLogin
+              ? "Login"
+              : "Register"}
+          </button>
+        </form>
+
+        {isLogin ? (
+          <>
+            <div className="auth-divider">
+              <span>or continue with</span>
+            </div>
+            <button
+              type="button"
+              className="btn btn-ghost btn-block google-auth-button"
+              onClick={onGoogleLogin}
+              disabled={isSubmitting}
+            >
+              <span className="google-auth-icon" aria-hidden="true">G</span>
+              <span>Login with Google</span>
+            </button>
+          </>
+        ) : null}
+
+        <div className="auth-switch">
+          <span>{isLogin ? "Need an account?" : "Already registered?"}</span>
+          <button
+            type="button"
+            className="btn btn-link"
+            onClick={() => onNavigate(isLogin ? "/register" : "/login")}
+          >
+            {isLogin ? "Create one" : "Go to login"}
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

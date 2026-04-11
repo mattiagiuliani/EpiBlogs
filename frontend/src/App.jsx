@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Alert, Button, Col, Container, Row, Spinner } from "react-bootstrap";
 import AuthPage from "./AuthPage.jsx";
 import CreatePost from "./Form.jsx";
 import List from "./List.jsx";
@@ -36,8 +35,8 @@ function App() {
   if (isBootstrapping) {
     return (
       <div className="app-shell centered-shell">
-        <div className="loading-panel">
-          <Spinner animation="border" />
+        <div className="glass-card loading-panel">
+          <div className="spinner" role="status" aria-label="Loading" />
           <span>Loading your session...</span>
         </div>
       </div>
@@ -73,55 +72,60 @@ function App() {
             successMessage={authSuccess}
           />
         )}
-        <div className="app-glow app-glow-left" />
-        <div className="app-glow app-glow-right" />
+        <div className="app-glow app-glow-left" aria-hidden="true" />
+        <div className="app-glow app-glow-right" aria-hidden="true" />
       </div>
     );
   }
 
   return (
     <div className="app-shell">
-      <Container className="py-5">
-        <Row className="justify-content-center mb-4">
-          <Col lg={10}>
-            <div className="hero-panel">
-              <div className="dashboard-topbar">
-                <div>
-                  <span className="eyebrow">Editorial Control Room</span>
-                  <h1 className="hero-title">EpiBlogs Dashboard</h1>
-                  <p className="hero-copy mb-0">
-                    Publish new stories, scan the content library, and keep your author roster in sync from one place.
-                  </p>
-                </div>
-                <div className="account-badge">
-                  <div>
-                    <strong>{currentUser.firstName} {currentUser.lastName || ""}</strong>
-                    <div className="small text-secondary">{currentUser.email}</div>
-                  </div>
-                  <Button variant="outline-dark" onClick={handleLogout}>
-                    Logout
-                  </Button>
-                </div>
+      <div className="page-container">
+        {/* Hero header */}
+        <div className="hero-row">
+          <div className="glass-card hero-panel animate-in">
+            <div className="dashboard-topbar">
+              <div>
+                <span className="eyebrow">Editorial Control Room</span>
+                <h1 className="hero-title">EpiBlogs Dashboard</h1>
+                <p className="hero-copy mb-0">
+                  Publish new stories, scan the content library, and keep your author roster in sync from one place.
+                </p>
               </div>
-
-              <Alert variant="light" className="border dashboard-note">
-                Session active through access token stored in localStorage.
-              </Alert>
+              <div className="account-badge">
+                <div>
+                  <strong>{currentUser.firstName}{currentUser.lastName ? ` ${currentUser.lastName}` : ""}</strong>
+                  <small>{currentUser.email}</small>
+                </div>
+                <button
+                  className="btn btn-outline"
+                  onClick={handleLogout}
+                  type="button"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
-          </Col>
-        </Row>
 
-        <Row className="g-4 align-items-start">
-          <Col lg={4}>
+            <div className="alert alert-info dashboard-note" role="status">
+              Session active through secure HttpOnly cookie.
+            </div>
+          </div>
+        </div>
+
+        {/* Main two-column layout */}
+        <div className="main-grid">
+          <div>
             <CreatePost onCreated={handlePostCreated} currentUser={currentUser} />
-          </Col>
-          <Col lg={8}>
+          </div>
+          <div>
             <List refreshToken={refreshToken} />
-          </Col>
-        </Row>
-      </Container>
-      <div className="app-glow app-glow-left" />
-      <div className="app-glow app-glow-right" />
+          </div>
+        </div>
+      </div>
+
+      <div className="app-glow app-glow-left" aria-hidden="true" />
+      <div className="app-glow app-glow-right" aria-hidden="true" />
     </div>
   );
 }

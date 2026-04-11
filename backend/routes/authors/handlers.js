@@ -1,5 +1,6 @@
 import Author from '../../models/Author.js';
 import mailer from '../../middlewares/mailer.js';
+import logger from '../../utils/logger.js';
 import { pickAuthorInput } from '../../utils/authorData.js';
 import { isOwnedByAuthenticatedAuthor, sendForbiddenOwnershipError } from '../../utils/ownership.js';
 import { hashPassword } from '../../utils/passwords.js';
@@ -15,15 +16,23 @@ const sendWelcomeEmail = (author) => {
         subject: 'Welcome to our platform',
         text: `Thank you for joining us, ${authorName}!`,
         html: `<h1>Thank you for joining us, ${authorName}!</h1>`
-    }).catch((error) => console.log('Email send failed:', error));
+    }).catch((error) => logger.error({ err: error }, 'Email send failed'));
 };
 
-export const listAuthors = async (_request, response) => {
+export const listAuthors = async (request, response) => {
     try {
-        const authors = await Author.find({}).lean();
-        response.send(authors);
+        const limit = Math.min(Math.max(Number(request.query.limit) || 20, 1), 100);
+        const page = Math.max(Number(request.query.page) || 1, 1);
+        const skip = (page - 1) * limit;
+
+        const [data, total] = await Promise.all([
+            Author.find({}).skip(skip).limit(limit).lean(),
+            Author.countDocuments({})
+        ]);
+
+        response.send({ data, total, page, limit, totalPages: Math.ceil(total / limit) });
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };
@@ -42,7 +51,7 @@ export const getAuthorById = async (request, response) => {
 
         response.send(author);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };
@@ -62,7 +71,7 @@ export const createAuthor = async (request, response) => {
 
         response.status(201).send(newAuthor);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         if (sendValidationError(error, response)) {
             return;
         }
@@ -99,7 +108,7 @@ export const updateAuthorAvatar = async (request, response) => {
 
         response.send(authorModified);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };
@@ -136,7 +145,7 @@ export const updateAuthor = async (request, response) => {
 
         response.send(authorModified);
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         if (sendValidationError(error, response)) {
             return;
         }
@@ -165,7 +174,7 @@ export const deleteAuthor = async (request, response) => {
 
         response.send({ message: 'author deleted' });
     } catch (error) {
-        console.log(error);
+        logger.error({ err: error });
         response.status(500).send({ message: error.message });
     }
 };

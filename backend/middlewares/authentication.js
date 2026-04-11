@@ -1,4 +1,5 @@
 import Author from '../models/Author.js';
+import { readAuthCookie } from '../utils/authCookie.js';
 import { verifyAccessToken } from '../utils/jwt.js';
 
 const publicRoutes = [
@@ -13,7 +14,11 @@ const publicRoutes = [
     { method: 'GET', path: '/auth/google/callback' },
     { method: 'GET', path: '/api/v1/auth/google/callback' },
     { method: 'POST', path: '/auth/google/exchange-code' },
-    { method: 'POST', path: '/api/v1/auth/google/exchange-code' }
+    { method: 'POST', path: '/api/v1/auth/google/exchange-code' },
+    { method: 'POST', path: '/logout' },
+    { method: 'POST', path: '/auth/logout' },
+    { method: 'POST', path: '/api/v1/auth/logout' },
+    { method: 'GET',  path: '/auth/logout' }
 ];
 
 const normalizePath = (path) => {
@@ -38,6 +43,12 @@ const extractBearerToken = (authorizationHeader) => {
     return token;
 };
 
+// Resolves the JWT from an HttpOnly cookie first, then falls back to the
+// Authorization: Bearer header so Postman / API clients keep working.
+const resolveToken = (request) => {
+    return readAuthCookie(request) ?? extractBearerToken(request.headers.authorization);
+};
+
 const authentication = async (request, response, next) => {
     try {
         const requestPath = normalizePath(request.path);
@@ -49,7 +60,7 @@ const authentication = async (request, response, next) => {
             return next();
         }
 
-        const token = extractBearerToken(request.headers.authorization);
+        const token = resolveToken(request);
 
         if (!token) {
             return response.status(401).send({ message: 'Token missing or invalid' });

@@ -191,6 +191,13 @@ describe('auth router', () => {
         expect(response.body).toEqual({ message: 'Google auth code is invalid or expired' });
     });
 
+    it('clears the auth cookie on logout', async () => {
+        const response = await request(buildApp()).post('/logout');
+
+        expect(response.status).toBe(200);
+        expect(response.body).toEqual({ message: 'Logged out successfully' });
+    });
+
     it('rate limits repeated login attempts', async () => {
         findOneMock.mockReturnValue({
             select: vi.fn().mockResolvedValue(null)

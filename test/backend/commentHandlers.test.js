@@ -1,12 +1,18 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const findByIdMock = vi.fn();
+const findOneMock = vi.fn();
+const findOneAndUpdateMock = vi.fn();
+const findByIdAndUpdateMock = vi.fn();
 const isOwnedByAuthenticatedAuthorMock = vi.fn();
 const sendForbiddenOwnershipErrorMock = vi.fn();
 
 vi.mock('../../backend/models/Post.js', () => ({
     default: {
-        findById: findByIdMock
+        findById: findByIdMock,
+        findOne: findOneMock,
+        findOneAndUpdate: findOneAndUpdateMock,
+        findByIdAndUpdate: findByIdAndUpdateMock
     }
 }));
 
@@ -33,8 +39,7 @@ const buildCommentPost = () => {
         {
             author: '507f1f77bcf86cd799439011',
             _id: '507f1f77bcf86cd799439031',
-            comment: 'First comment',
-            deleteOne: vi.fn()
+            comment: 'First comment'
         }
     ];
 
@@ -55,7 +60,11 @@ describe('comment handlers', () => {
 
     it('lists comments for a post', async () => {
         const post = buildCommentPost();
-        findByIdMock.mockResolvedValue(post);
+        findByIdMock.mockReturnValue({
+            select: vi.fn().mockReturnValue({
+                lean: vi.fn().mockResolvedValue(post)
+            })
+        });
         const response = createResponse();
 
         await listComments({
@@ -67,7 +76,7 @@ describe('comment handlers', () => {
 
     it('gets a single comment', async () => {
         const post = buildCommentPost();
-        findByIdMock.mockResolvedValue(post);
+        findOneMock.mockResolvedValue(post);
         const response = createResponse();
 
         await getSingleComment({
@@ -77,6 +86,10 @@ describe('comment handlers', () => {
             }
         }, response);
 
+        expect(findOneMock).toHaveBeenCalledWith(
+            { _id: '507f1f77bcf86cd799439021', 'comments._id': '507f1f77bcf86cd799439031' },
+            { 'comments.$': 1 }
+        );
         expect(response.send).toHaveBeenCalledWith(post.comments[0]);
     });
 
@@ -100,8 +113,13 @@ describe('comment handlers', () => {
     });
 
     it('updates a comment', async () => {
-        const post = buildCommentPost();
-        findByIdMock.mockResolvedValue(post);
+        const postWithComment = buildCommentPost();
+        findOneMock.mockResolvedValue(postWithComment);
+
+        const updatedPost = buildCommentPost();
+        updatedPost.comments[0].comment = 'Updated comment';
+        findOneAndUpdateMock.mockResolvedValue(updatedPost);
+
         const response = createResponse();
 
         await updateComment({
@@ -113,14 +131,19 @@ describe('comment handlers', () => {
             }
         }, response);
 
-        expect(post.comments[0].comment).toBe('Updated comment');
-        expect(post.save).toHaveBeenCalledOnce();
-        expect(response.send).toHaveBeenCalledWith(post.comments[0]);
+        expect(findOneAndUpdateMock).toHaveBeenCalledWith(
+            { _id: '507f1f77bcf86cd799439021', 'comments._id': '507f1f77bcf86cd799439031' },
+            { $set: { 'comments.$.comment': 'Updated comment' } },
+            { new: true, runValidators: true }
+        );
+        expect(response.send).toHaveBeenCalledWith(
+            updatedPost.comments.id('507f1f77bcf86cd799439031')
+        );
     });
 
     it('rejects updating a comment owned by another user', async () => {
         const post = buildCommentPost();
-        findByIdMock.mockResolvedValue(post);
+        findOneMock.mockResolvedValue(post);
         isOwnedByAuthenticatedAuthorMock.mockReturnValue(false);
         const response = createResponse();
 
@@ -141,7 +164,8 @@ describe('comment handlers', () => {
 
     it('deletes a comment', async () => {
         const post = buildCommentPost();
-        findByIdMock.mockResolvedValue(post);
+        findOneMock.mockResolvedValue(post);
+        findByIdAndUpdateMock.mockResolvedValue(undefined);
         const response = createResponse();
 
         await deleteComment({
@@ -152,14 +176,16 @@ describe('comment handlers', () => {
             }
         }, response);
 
-        expect(post.comments[0].deleteOne).toHaveBeenCalledOnce();
-        expect(post.save).toHaveBeenCalledOnce();
+        expect(findByIdAndUpdateMock).toHaveBeenCalledWith(
+            '507f1f77bcf86cd799439021',
+            { $pull: { comments: { _id: '507f1f77bcf86cd799439031' } } }
+        );
         expect(response.send).toHaveBeenCalledWith({ message: 'Comment deleted' });
     });
 
     it('rejects deleting a comment owned by another user', async () => {
         const post = buildCommentPost();
-        findByIdMock.mockResolvedValue(post);
+        findOneMock.mockResolvedValue(post);
         isOwnedByAuthenticatedAuthorMock.mockReturnValue(false);
         const response = createResponse();
 

@@ -13,7 +13,7 @@ const mailConfig = sendgridApiKey
     }
     : {
         host: process.env.MAIL_HOST?.trim(),
-        port: Number(process.env.MAIL_PORT),
+        port: Number(process.env.MAIL_PORT) || 587,
         auth: {
             user: process.env.MAIL_USER?.trim(),
             pass: process.env.MAIL_PASSWORD?.trim()

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const createMock = vi.fn();
+const countDocumentsMock = vi.fn();
 const findByIdMock = vi.fn();
 const findByIdAndDeleteMock = vi.fn();
 const findByIdAndUpdateMock = vi.fn();
@@ -13,6 +14,7 @@ const sendMailMock = vi.fn();
 vi.mock('../../backend/models/Author.js', () => ({
     default: {
         create: createMock,
+        countDocuments: countDocumentsMock,
         find: findMock,
         findById: findByIdMock,
         findByIdAndDelete: findByIdAndDeleteMock,
@@ -59,13 +61,22 @@ describe('author handlers', () => {
 
     it('lists authors', async () => {
         findMock.mockReturnValue({
+            skip: vi.fn().mockReturnThis(),
+            limit: vi.fn().mockReturnThis(),
             lean: vi.fn().mockResolvedValue([{ email: 'author@example.com' }])
         });
+        countDocumentsMock.mockResolvedValue(1);
         const response = createResponse();
 
-        await listAuthors({}, response);
+        await listAuthors({ query: {} }, response);
 
-        expect(response.send).toHaveBeenCalledWith([{ email: 'author@example.com' }]);
+        expect(response.send).toHaveBeenCalledWith({
+            data: [{ email: 'author@example.com' }],
+            total: 1,
+            page: 1,
+            limit: 20,
+            totalPages: 1
+        });
     });
 
     it('gets an author by id', async () => {

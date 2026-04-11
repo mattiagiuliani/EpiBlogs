@@ -17,7 +17,8 @@ export const getAllowedCorsOrigins = () => {
 
 export const buildCorsOptions = () => {
     const allowedOrigins = getAllowedCorsOrigins();
-    const allowCredentials = trimEnv(process.env.CORS_ALLOW_CREDENTIALS) === 'true';
+    const credentialsSetting = trimEnv(process.env.CORS_ALLOW_CREDENTIALS);
+    const allowCredentials = credentialsSetting === '' ? true : credentialsSetting === 'true';
 
     return {
         allowedHeaders: ['Authorization', 'Content-Type'],
