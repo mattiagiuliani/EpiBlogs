@@ -1,0 +1,122 @@
+[
+  {
+    "_id": "664a1b2c3d4e5f6789abcd01",
+    "email": "alice.chen@epicode.com",
+    "password": "$2b$10$TkqH3.jNb7YmLzOp8FrV9uCxWaQi2sGnDvEkMhPqRsSf1bAuLewYO",
+    "firstName": "Alice",
+    "lastName": "Chen",
+    "birthDate": "1992-07-14T00:00:00.000Z",
+    "avatar": "https://i.pravatar.cc/150?img=47",
+    "profile": "Data Scientist and Machine Learning Engineer with 7 years of experience in Python, TensorFlow, and statistical modeling. Passionate about making AI accessible to everyone.",
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  },
+  {
+    "_id": "664a1b2c3d4e5f6789abcd02",
+    "email": "marco.rossi@epicode.com",
+    "password": "$2b$10$RNpj7.hMc6XlKzNo9GtU8uDwVbPk3rHmEvFjLiQnRqTe2cBtMdxXP",
+    "firstName": "Marco",
+    "lastName": "Rossi",
+    "birthDate": "1988-11-23T00:00:00.000Z",
+    "avatar": "https://i.pravatar.cc/150?img=11",
+    "profile": "Full Stack MERN Developer specializing in scalable REST APIs, React architectures, and cloud deployment. Open source contributor and technical blogger.",
+    "createdAt": "2024-01-12T10:30:00.000Z",
+    "updatedAt": "2024-01-12T10:30:00.000Z"
+  },
+  {
+    "_id": "664a1b2c3d4e5f6789abcd03",
+    "email": "priya.patel@epicode.com",
+    "password": "$2b$10$JBmk5.fLa4WhIzMo7EsR6uBvUcOj1pGkCuDiKhNpQqSd0aArKcwWN",
+    "firstName": "Priya",
+    "lastName": "Patel",
+    "birthDate": "1990-03-09T00:00:00.000Z",
+    "avatar": "https://i.pravatar.cc/150?img=57",
+    "profile": "Cloud and DevOps Engineer certified in AWS and GCP. Expert in Kubernetes, Terraform, and CI/CD automation. Advocate for infrastructure as code and GitOps practices.",
+    "createdAt": "2024-01-15T09:15:00.000Z",
+    "updatedAt": "2024-01-15T09:15:00.000Z"
+  },
+  {
+    "_id": "664a1b2c3d4e5f6789abcd04",
+    "email": "james.okafor@epicode.com",
+    "password": "$2b$10$LCnl6.gMb5YiJzNp8FtS7uCwVdPl2qHnDvEjLiRoRrUf3bBuMexYQ",
+    "firstName": "James",
+    "lastName": "Okafor",
+    "birthDate": "1985-08-17T00:00:00.000Z",
+    "avatar": "https://i.pravatar.cc/150?img=8",
+    "profile": "Cybersecurity Specialist with 10 years of experience in penetration testing, threat modeling, and secure software development. OSCP and CISSP certified.",
+    "createdAt": "2024-01-18T11:00:00.000Z",
+    "updatedAt": "2024-01-18T11:00:00.000Z"
+  },
+  {
+    "_id": "664a1b2c3d4e5f6789abcd05",
+    "email": "elena.muller@epicode.com",
+    "password": "$2b$10$MDom7.hNc6ZjKzOq9GuT8uDxWeQm3rInEvFkMjSpSsVg4cCvNfyZR",
+    "firstName": "Elena",
+    "lastName": "Muller",
+    "birthDate": "1986-02-28T00:00:00.000Z",
+    "avatar": "https://i.pravatar.cc/150?img=43",
+    "profile": "Applied Mathematician and Computer Scientist with expertise in linear algebra, numerical methods, and mathematical foundations of machine learning. PhD from ETH Zurich.",
+    "createdAt": "2024-01-20T14:00:00.000Z",
+    "updatedAt": "2024-01-20T14:00:00.000Z"
+  },
+  {
+    "_id": "664a1b2c3d4e5f6789abcd06",
+    "email": "dmitri.volkov@epicode.com",
+    "password": "$2b$10$NEpn8.iOd7AkLzPr0HvU9uEyXfRn4sJoFwGlNkTqTtWh5dDwOgzAS",
+    "firstName": "Dmitri",
+    "lastName": "Volkov",
+    "birthDate": "1979-12-01T00:00:00.000Z",
+    "avatar": "https://i.pravatar.cc/150?img=15",
+    "profile": "Quantum Physics Researcher and Engineer working at the intersection of quantum mechanics and computing. Former CERN researcher, now focused on near-term quantum algorithms.",
+    "createdAt": "2024-01-22T08:45:00.000Z",
+    "updatedAt": "2024-01-22T08:45:00.000Z"
+  },
+  {
+    "_id": "664a1b2c3d4e5f6789abcd07",
+    "email": "sofia.hernandez@epicode.com",
+    "password": "$2b$10$OFqo9.jPe8BlMzQs1IwV0uFzYgSo5tKpGxHmOlUrUuXi6eExPhaBT",
+    "firstName": "Sofia",
+    "lastName": "Hernandez",
+    "birthDate": "1995-05-22T00:00:00.000Z",
+    "avatar": "https://i.pravatar.cc/150?img=63",
+    "profile": "Frontend Web Developer and UI/UX advocate. Specializes in accessible, performant web interfaces using modern CSS, React, and web standards. Speaker at front-end conferences.",
+    "createdAt": "2024-01-25T12:30:00.000Z",
+    "updatedAt": "2024-01-25T12:30:00.000Z"
+  },
+  {
+    "_id": "664a1b2c3d4e5f6789abcd08",
+    "email": "raj.krishnamurthy@epicode.com",
+    "password": "$2b$10$PGrp0.kQf9CmNzRt2JxW1uGAZhTp6uLqHyInPmVsVvYj7fFyQibCU",
+    "firstName": "Raj",
+    "lastName": "Krishnamurthy",
+    "birthDate": "1991-09-15T00:00:00.000Z",
+    "avatar": "https://i.pravatar.cc/150?img=30",
+    "profile": "AI Research Engineer working on large language models, reinforcement learning, and neural architecture search. Published researcher with 15 peer-reviewed papers in NeurIPS and ICML.",
+    "createdAt": "2024-01-28T09:00:00.000Z",
+    "updatedAt": "2024-01-28T09:00:00.000Z"
+  },
+  {
+    "_id": "664a1b2c3d4e5f6789abcd09",
+    "email": "yuki.tanaka@epicode.com",
+    "password": "$2b$10$QHsq1.lRg0DnOzSu3KyX2uHBAiUq7vMrIzJoPnWtWwZk8gGzRjcDV",
+    "firstName": "Yuki",
+    "lastName": "Tanaka",
+    "birthDate": "1987-04-30T00:00:00.000Z",
+    "avatar": "https://i.pravatar.cc/150?img=33",
+    "profile": "Cloud Architect and AWS Solutions Architect Professional. Designs resilient, cost-optimized multi-region cloud systems for fintech and e-commerce clients across Asia-Pacific.",
+    "createdAt": "2024-01-30T10:15:00.000Z",
+    "updatedAt": "2024-01-30T10:15:00.000Z"
+  },
+  {
+    "_id": "664a1b2c3d4e5f6789abcd0a",
+    "email": "amara.nwosu@epicode.com",
+    "password": "$2b$10$RItr2.mSh1EoQzTv4LzY3uICBjVr8wNsJAKpQoXuXxAl9hHASkeEW",
+    "firstName": "Amara",
+    "lastName": "Nwosu",
+    "birthDate": "1993-01-08T00:00:00.000Z",
+    "avatar": "https://i.pravatar.cc/150?img=55",
+    "profile": "Data Engineer and Computer Science educator. Builds real-time data pipelines with Kafka and Spark. Author of open courseware on algorithms, statistics, and graph theory.",
+    "createdAt": "2024-02-01T08:00:00.000Z",
+    "updatedAt": "2024-02-01T08:00:00.000Z"
+  }
+]
