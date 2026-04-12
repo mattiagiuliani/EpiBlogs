@@ -128,7 +128,7 @@ export const handleGoogleAuthenticationCallback = (request, response, next) => {
 
             return response.redirect(buildFrontendAuthCallbackUrl({ code }));
         } catch (exchangeError) {
-            console.error(exchangeError);
+            logger.error({ err: exchangeError });
             return response.redirect(buildFrontendAuthCallbackUrl({ error: 'google_login_failed' }));
         }
     })(request, response, next);

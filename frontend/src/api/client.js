@@ -1,47 +1,25 @@
-/**
- * Central HTTP client for EpiBlogs.
- *
- * All versioned requests go to:
- *   ${VITE_API_URL}/api/v1/{path}
- *
- * VITE_API_URL must be set explicitly — there is no localhost fallback.
- *   Local dev  → create frontend/.env with VITE_API_URL=http://localhost:3000
- *   Production → set VITE_API_URL=https://epiblogs-mxl1.onrender.com in Vercel
- */
-
 const API_URL = import.meta.env.VITE_API_URL;
 
-// Fail fast on misconfiguration so the root cause is immediately obvious.
 if (!API_URL) {
-    const msg =
-        '[EpiBlogs] VITE_API_URL is not configured.\n' +
-        'Create frontend/.env with:\n' +
-        '  VITE_API_URL=http://localhost:3000                         (local dev)\n' +
-        '  VITE_API_URL=https://epiblogs-mxl1.onrender.com           (set in Vercel dashboard)';
+    throw new Error('[EpiBlogs] Missing VITE_API_URL');
+}
 
-    if (import.meta.env.PROD) {
-        // Production builds must never fall through to undefined — crash early.
-        throw new Error(msg);
+const normalizeBase = (url) => {
+    try {
+        return new URL(url).origin;
+    } catch {
+        throw new Error('[EpiBlogs] Invalid VITE_API_URL format');
     }
+};
 
-    console.error(msg);
-}
-
-// Safety: a production bundle should never point to localhost.
-if (import.meta.env.PROD && API_URL?.includes('localhost')) {
-    console.warn(
-        '[EpiBlogs] VITE_API_URL contains "localhost" in a production build. ' +
-        'Set VITE_API_URL=https://epiblogs-mxl1.onrender.com in the Vercel dashboard.'
-    );
-}
-
-/** Base URL of the backend (e.g. https://epiblogs-mxl1.onrender.com). */
-export const API_BASE_URL = API_URL ?? '';
-
-/** Versioned API prefix — every resource endpoint lives under this. */
+const API_BASE_URL = normalizeBase(API_URL);
 const API_V1 = `${API_BASE_URL}/api/v1`;
 
-// ── Session storage ───────────────────────────────────────────────────────────
+if (import.meta.env.PROD && API_BASE_URL.includes('localhost')) {
+    console.warn(
+        '[EpiBlogs] WARNING: localhost detected in production API config'
+    );
+}
 
 export const UNAUTHORIZED_EVENT = 'epiblogs:unauthorized';
 const AUTH_TOKEN_KEY = 'epiblogs.authToken';
@@ -67,8 +45,6 @@ export const storeAuthToken = (token) => {
 export const clearStoredAuthToken = () =>
     getStorage()?.removeItem(AUTH_TOKEN_KEY);
 
-// ── Internal fetch plumbing ───────────────────────────────────────────────────
-
 const buildHeaders = (existingHeaders = {}, includeContentType = false) => {
     const headers = new Headers(existingHeaders);
     const token = getStoredAuthToken();
@@ -77,7 +53,7 @@ const buildHeaders = (existingHeaders = {}, includeContentType = false) => {
         headers.set('Content-Type', 'application/json');
     }
 
-    if (token && !headers.has('Authorization')) {
+    if (token) {
         headers.set('Authorization', `Bearer ${token}`);
     }
 
@@ -88,28 +64,20 @@ const parseApiError = async (res, fallback) => {
     try {
         const data = await res.json();
 
-        if (Array.isArray(data.errors) && data.errors.length > 0) {
+        if (Array.isArray(data.errors)) {
             return data.errors.map((e) => e.message).join(', ');
         }
 
-        if (typeof data.message === 'string' && data.message.trim()) {
+        if (data?.message) {
             return data.message;
         }
     } catch {
-        // Non-JSON body — fall through to generic message.
+        // ignore non-json errors
     }
 
     return fallback;
 };
 
-/**
- * Low-level fetch wrapper shared by both the versioned client and the legacy
- * fetchJson export. Attaches credentials, auth token, and normalises errors.
- *
- * @param {string}  url      Fully-qualified URL to fetch.
- * @param {object}  options  Standard fetch options (method, body, headers…).
- * @param {string}  fallback Error message when the server returns none.
- */
 export const rawFetch = async (url, options = {}, fallback = 'Request failed') => {
     const hasBody = options.body !== undefined;
     const isFormData = options.body instanceof FormData;
@@ -121,7 +89,7 @@ export const rawFetch = async (url, options = {}, fallback = 'Request failed') =
     });
 
     if (!res.ok) {
-        if (res.status === 401 && typeof window !== 'undefined') {
+        if (res.status === 401) {
             window.dispatchEvent(new Event(UNAUTHORIZED_EVENT));
         }
 
@@ -131,43 +99,29 @@ export const rawFetch = async (url, options = {}, fallback = 'Request failed') =
     return res.json();
 };
 
-// ── Versioned client ──────────────────────────────────────────────────────────
-
-/**
- * Sends a request to ${API_V1}{path}, serialising `body` to JSON automatically.
- */
-const versionedRequest = (method, path, body, fallback) => {
-    const isFormData = body instanceof FormData;
-
+const request = (method, path, body, fallback) => {
     return rawFetch(
         `${API_V1}${path}`,
         {
             method,
-            ...(body !== undefined
-                ? { body: isFormData ? body : JSON.stringify(body) }
-                : {}),
+            ...(body !== undefined && {
+                body: body instanceof FormData ? body : JSON.stringify(body),
+            }),
         },
-        fallback,
+        fallback
     );
 };
 
-/**
- * Typed API client.  All paths are relative to /api/v1, e.g.:
- *   client.get('/posts')           → GET  ${VITE_API_URL}/api/v1/posts
- *   client.post('/auth/login', {}) → POST ${VITE_API_URL}/api/v1/auth/login
- */
 const client = {
-    get:   (path, fallback) => versionedRequest('GET',    path, undefined, fallback),
-    post:  (path, body, fallback) => versionedRequest('POST',   path, body, fallback),
-    put:   (path, body, fallback) => versionedRequest('PUT',    path, body, fallback),
-    patch: (path, body, fallback) => versionedRequest('PATCH',  path, body, fallback),
-    del:   (path, fallback) => versionedRequest('DELETE', path, undefined, fallback),
+    get: (path, fallback) => request('GET', path, undefined, fallback),
+    post: (path, body, fallback) => request('POST', path, body, fallback),
+    put: (path, body, fallback) => request('PUT', path, body, fallback),
+    patch: (path, body, fallback) => request('PATCH', path, body, fallback),
+    del: (path, fallback) => request('DELETE', path, undefined, fallback),
 
-    /**
-     * Returns the absolute URL for starting Google OAuth.
-     * Used with window.location.assign() — must be an absolute URL.
-     */
-    googleLoginUrl: () => `${API_V1}/auth/google`,
+    // IMPORTANT: always absolute URL for OAuth
+    googleLoginUrl: () =>
+        `${API_BASE_URL}/api/v1/auth/google`,
 };
 
 export default client;

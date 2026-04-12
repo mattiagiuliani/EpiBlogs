@@ -5,24 +5,26 @@ import Author from '../models/Author.js';
 const GOOGLE_STRATEGY_NAME = 'google';
 let isGoogleStrategyInitialized = false;
 
-const trimEnv = (value) => (typeof value === 'string' ? value.trim() : '');
+const trimEnv = (value) =>
+    typeof value === 'string' ? value.trim() : '';
 
-// Selects the callback URL based on NODE_ENV:
-//   production  → DEPLOYMENT_GOOGLE_CALLBACK_URL  (e.g. https://epiblogs-mxl1.onrender.com/auth/google/callback)
-//   development → DEVELOPMENT_GOOGLE_CALLBACK_URL (e.g. http://localhost:3000/auth/google/callback)
 export const getCallbackUrl = () => {
     const isProduction = process.env.NODE_ENV === 'production';
 
-    return isProduction
-        ? trimEnv(process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL)
-        : trimEnv(process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL);
+    const url = isProduction
+        ? process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL
+        : process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL;
+
+    return trimEnv(url);
 };
 
-export const isGoogleOAuthConfigured = () => Boolean(
-    trimEnv(process.env.GOOGLE_CLIENT_ID) &&
-    trimEnv(process.env.GOOGLE_CLIENT_SECRET) &&
-    getCallbackUrl()
-);
+export const isGoogleOAuthConfigured = () => {
+    return Boolean(
+        trimEnv(process.env.GOOGLE_CLIENT_ID) &&
+        trimEnv(process.env.GOOGLE_CLIENT_SECRET) &&
+        getCallbackUrl()
+    );
+};
 
 const getGoogleOAuthConfig = () => {
     const clientID = trimEnv(process.env.GOOGLE_CLIENT_ID);
@@ -30,13 +32,13 @@ const getGoogleOAuthConfig = () => {
     const callbackURL = getCallbackUrl();
 
     if (!clientID || !clientSecret || !callbackURL) {
-        throw new Error('Google OAuth is not fully configured');
+        throw new Error('[Google OAuth] Missing configuration');
     }
 
     return {
-        callbackURL,
         clientID,
-        clientSecret
+        clientSecret,
+        callbackURL,
     };
 };
 
@@ -44,33 +46,33 @@ const normalizeGoogleProfile = (profile) => {
     const email = profile.emails?.[0]?.value?.trim().toLowerCase();
 
     if (!email) {
-        throw new Error('Google account email is not available');
+        throw new Error('Google profile missing email');
     }
 
     return {
-        avatar: profile.photos?.[0]?.value?.trim() || undefined,
         email,
-        firstName: profile.name?.givenName?.trim() || 'Google',
         googleId: profile.id,
-        lastName: profile.name?.familyName?.trim() || undefined
+        firstName: profile.name?.givenName?.trim() || 'Google',
+        lastName: profile.name?.familyName?.trim() || undefined,
+        avatar: profile.photos?.[0]?.value?.trim() || undefined,
     };
 };
 
-const applyNonIdentityGoogleProfileFields = (author, normalizedProfile) => {
+const applyProfileUpdates = (author, profile) => {
     let changed = false;
 
-    if (!author.firstName && normalizedProfile.firstName) {
-        author.firstName = normalizedProfile.firstName;
+    if (!author.firstName && profile.firstName) {
+        author.firstName = profile.firstName;
         changed = true;
     }
 
-    if (!author.lastName && normalizedProfile.lastName) {
-        author.lastName = normalizedProfile.lastName;
+    if (!author.lastName && profile.lastName) {
+        author.lastName = profile.lastName;
         changed = true;
     }
 
-    if (!author.avatar && normalizedProfile.avatar) {
-        author.avatar = normalizedProfile.avatar;
+    if (!author.avatar && profile.avatar) {
+        author.avatar = profile.avatar;
         changed = true;
     }
 
@@ -78,75 +80,71 @@ const applyNonIdentityGoogleProfileFields = (author, normalizedProfile) => {
 };
 
 export const syncGoogleAuthor = async (googleProfile) => {
-    const normalizedProfile = normalizeGoogleProfile(googleProfile);
-    let author = await Author.findOne({ email: normalizedProfile.email }).select('+googleId');
+    const profile = normalizeGoogleProfile(googleProfile);
+
+    let author = await Author.findOne({ email: profile.email }).select('+googleId');
 
     if (author) {
-        let changed = applyNonIdentityGoogleProfileFields(author, normalizedProfile);
+        let changed = applyProfileUpdates(author, profile);
 
         if (!author.googleId) {
-            author.googleId = normalizedProfile.googleId;
+            author.googleId = profile.googleId;
             changed = true;
         }
 
-        if (changed) {
-            await author.save();
-        }
+        if (changed) await author.save();
 
         return author;
     }
 
-    author = await Author.findOne({ googleId: normalizedProfile.googleId }).select('+googleId');
+    author = await Author.findOne({ googleId: profile.googleId }).select('+googleId');
 
     if (author) {
-        const changed = applyNonIdentityGoogleProfileFields(author, normalizedProfile);
-
-        if (changed) {
-            await author.save();
-        }
+        const changed = applyProfileUpdates(author, profile);
+        if (changed) await author.save();
 
         return author;
     }
 
-    return Author.create(normalizedProfile);
+    return Author.create(profile);
 };
 
 export const ensureGoogleOAuthStrategy = () => {
-    if (!isGoogleOAuthConfigured() || isGoogleStrategyInitialized) {
-        return;
-    }
+    if (!isGoogleOAuthConfigured() || isGoogleStrategyInitialized) return;
 
-    passport.use(new GoogleStrategy(
-        {
-            ...getGoogleOAuthConfig()
-        },
-        async (_accessToken, _refreshToken, profile, done) => {
-            try {
-                const author = await syncGoogleAuthor(profile);
-                done(null, author);
-            } catch (error) {
-                done(error);
+    passport.use(
+        GOOGLE_STRATEGY_NAME,
+        new GoogleStrategy(
+            getGoogleOAuthConfig(),
+            async (_accessToken, _refreshToken, profile, done) => {
+                try {
+                    const author = await syncGoogleAuthor(profile);
+                    done(null, author);
+                } catch (err) {
+                    done(err);
+                }
             }
-        }
-    ));
+        )
+    );
 
     isGoogleStrategyInitialized = true;
 };
 
 export const getGoogleStrategyName = () => GOOGLE_STRATEGY_NAME;
 
-export const getFrontendAppUrl = () => trimEnv(process.env.FRONTEND_URL) || 'http://localhost:5173';
+export const getFrontendAppUrl = () =>
+    trimEnv(process.env.FRONTEND_URL) || 'http://localhost:5173';
 
+
+// ⚠️ FIX IMPORTANTE QUI SOTTO
 export const buildFrontendAuthCallbackUrl = ({ code, error } = {}) => {
-    const callbackUrl = new URL('/auth/callback', getFrontendAppUrl());
+    const baseUrl = getFrontendAppUrl();
 
-    if (code) {
-        callbackUrl.searchParams.set('code', code);
-    }
+    // avoid double slash bugs
+    const callbackUrl = new URL('/auth/callback', baseUrl);
 
-    if (error) {
-        callbackUrl.searchParams.set('error', error);
-    }
+    if (code) callbackUrl.searchParams.set('code', code);
+    if (error) callbackUrl.searchParams.set('error', error);
 
     return callbackUrl.toString();
 };

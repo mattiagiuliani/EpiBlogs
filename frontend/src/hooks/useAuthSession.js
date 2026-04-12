@@ -10,6 +10,7 @@ import {
   register,
   UNAUTHORIZED_EVENT,
 } from "../assets/api.js";
+
 import {
   getGoogleAuthErrorMessage,
   getGoogleCallbackParams,
@@ -43,14 +44,13 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
     };
 
     window.addEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
-    return () => window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
+    return () =>
+      window.removeEventListener(UNAUTHORIZED_EVENT, handleUnauthorized);
   }, [navigateTo]);
 
   useEffect(() => {
     const handleGoogleCallback = async () => {
-      if (!isAuthCallbackPath(pathname)) {
-        return;
-      }
+      if (!isAuthCallbackPath(pathname)) return;
 
       setIsHandlingAuthCallback(true);
       setIsBootstrapping(true);
@@ -71,8 +71,15 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
 
       try {
         const authPayload = await exchangeGoogleAuthCode(code);
-        const user = normalizeAuthenticatedUser(authPayload.author) ?? await getMe();
+
+        const user = normalizeAuthenticatedUser(authPayload?.author);
+
+        if (!user) {
+          throw new Error("Invalid auth payload");
+        }
+
         setCurrentUser(user);
+
         setAuthError("");
         navigateTo("/", true);
       } catch {
@@ -93,9 +100,7 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
     const bootstrapAuth = async () => {
       const currentPath = getCurrentPath();
 
-      if (isAuthCallbackPath(currentPath) || isHandlingAuthCallback) {
-        return;
-      }
+      if (isAuthCallbackPath(currentPath) || isHandlingAuthCallback) return;
 
       try {
         const user = await getMe();
@@ -156,9 +161,16 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
 
     try {
       const response = await login(formValues);
-      const user = normalizeAuthenticatedUser(response.author) ?? await getMe();
-      setCurrentUser(user);
-      setAuthError("");
+
+      const user = normalizeAuthenticatedUser(response?.author);
+
+      if (!user) {
+        const fallbackUser = await getMe();
+        setCurrentUser(fallbackUser);
+      } else {
+        setCurrentUser(user);
+      }
+
       navigateTo("/", true);
       return true;
     } catch (error) {

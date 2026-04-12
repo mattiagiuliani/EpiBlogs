@@ -4,7 +4,11 @@ import CreatePost from "./Form.jsx";
 import List from "./List.jsx";
 import { useAuthSession } from "./hooks/useAuthSession.js";
 
-const getCurrentPath = () => window.location.pathname || "/";
+export const getCurrentPath = () => {
+  if (typeof window === "undefined") return "/";
+
+  return window.location.pathname.replace(/\/+$/, "") || "/";
+};
 
 const navigateTo = (path, replace = false) => {
   const method = replace ? "replaceState" : "pushState";
