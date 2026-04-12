@@ -1,10 +1,8 @@
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-const FRONTEND_BASE_URL = import.meta.env.VITE_FRONTEND_BASE_URL || (typeof window !== "undefined" ? window.location.origin : "http://localhost:5173");
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 export const UNAUTHORIZED_EVENT = "epiblogs:unauthorized";
 const AUTH_TOKEN_STORAGE_KEY = "epiblogs.authToken";
 
 const buildUrl = (path) => `${API_BASE_URL}${path}`;
-export const buildFrontendUrl = (path) => `${FRONTEND_BASE_URL}${path}`;
 
 const getStorage = () => {
   if (typeof window === "undefined") {
@@ -210,7 +208,6 @@ export const apiPaths = {
   me: "/me",
   googleLogin: "/auth/google",
   googleExchange: "/auth/google/exchange-code",
-  googleCallback: buildFrontendUrl("/auth/callback"),
   authors: "/api/v1/authors",
   posts: "/api/v1/posts",
 };
