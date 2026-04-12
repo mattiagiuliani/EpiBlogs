@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import SearchPost from "./SearchPost.jsx";
-import { apiPaths, deletePost, fetchJson, updatePost } from "./assets/api.js";
+import { deletePost, listPosts, updatePost } from "./assets/api.js";
 
 const DEFAULT_LIMIT = 20;
 
@@ -62,11 +62,7 @@ const PostList = ({ currentUser, onPostsChanged, refreshToken }) => {
         page: String(targetPage),
         limit: String(DEFAULT_LIMIT),
       });
-      const result = await fetchJson(
-        `${apiPaths.posts}?${params.toString()}`,
-        {},
-        "Error fetching posts"
-      );
+      const result = await listPosts(params);
       setPosts(result.data ?? []);
       setTotalPages(result.totalPages ?? 1);
     } catch (err) {

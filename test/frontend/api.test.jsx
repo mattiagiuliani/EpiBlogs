@@ -71,8 +71,8 @@ describe('frontend api helpers', () => {
         expect(requestOptions.headers.get('Authorization')).toBe('Bearer jwt-token');
     });
 
-    it('builds the Google login URL against the backend base URL', () => {
-        expect(getGoogleLoginUrl()).toBe('http://localhost:3000/auth/google');
+    it('builds the Google login URL against the versioned backend base URL', () => {
+        expect(getGoogleLoginUrl()).toBe('http://localhost:3000/api/v1/auth/google');
     });
 
     it('exchanges a one-time Google auth code via POST with credentials', async () => {
@@ -91,7 +91,7 @@ describe('frontend api helpers', () => {
         const response = await exchangeGoogleAuthCode('one-time-code');
 
         const [url, options] = fetchMock.mock.calls[0];
-        expect(url).toBe('http://localhost:3000/auth/google/exchange-code');
+        expect(url).toBe('http://localhost:3000/api/v1/auth/google/exchange-code');
         expect(options.method).toBe('POST');
         expect(options.credentials).toBe('include');
         expect(getStoredAuthToken()).toBe('new-token');
@@ -112,7 +112,7 @@ describe('frontend api helpers', () => {
         await logoutApi();
 
         const [url, options] = fetchMock.mock.calls[0];
-        expect(url).toBe('http://localhost:3000/logout');
+        expect(url).toBe('http://localhost:3000/api/v1/auth/logout');
         expect(options.method).toBe('POST');
         expect(getStoredAuthToken()).toBe('');
     });

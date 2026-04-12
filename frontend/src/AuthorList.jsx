@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { apiPaths, fetchJson } from "./assets/api.js";
+import { listAuthors } from "./assets/api.js";
 
 const AuthorList = () => {
   const [authors, setAuthors] = useState([]);
@@ -11,7 +11,7 @@ const AuthorList = () => {
     setError("");
 
     try {
-      const result = await fetchJson(apiPaths.authors, {}, "Error fetching authors");
+      const result = await listAuthors();
       setAuthors(result.data ?? []);
     } catch (err) {
       setAuthors([]);

@@ -1,15 +1,4 @@
-import { apiPaths, fetchJson } from "./api.js";
+import client from '../api/client.js';
 
-export const createPost = async (postData) => {
-  return fetchJson(
-    apiPaths.posts,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(postData),
-    },
-    "Error creating post"
-  );
-};
+export const createPost = (postData) =>
+    client.post('/posts', postData, 'Error creating post');

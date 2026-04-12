@@ -5,13 +5,10 @@ import { createRoot } from '../../frontend/node_modules/react-dom/client.js';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const apiMocks = vi.hoisted(() => ({
-    apiPaths: {
-        authors: '/api/v1/authors',
-        posts: '/api/v1/posts'
-    },
     deletePost: vi.fn(),
-    fetchJson: vi.fn(),
-    updatePost: vi.fn()
+    listAuthors: vi.fn(),
+    listPosts: vi.fn(),
+    updatePost: vi.fn(),
 }));
 
 const createPostMock = vi.hoisted(() => vi.fn());
@@ -142,7 +139,7 @@ describe('frontend domain components', () => {
     });
 
     it('loads and renders posts, then searches again via the search form', async () => {
-        apiMocks.fetchJson
+        apiMocks.listPosts
             .mockResolvedValueOnce({
                 data: [{
                     _id: 'post-1',
@@ -180,11 +177,7 @@ describe('frontend domain components', () => {
             await Promise.resolve();
         });
 
-        expect(apiMocks.fetchJson).toHaveBeenCalledWith(
-            '/api/v1/posts?search=&page=1&limit=20',
-            {},
-            'Error fetching posts'
-        );
+        expect(apiMocks.listPosts.mock.calls[0][0].toString()).toBe('search=&page=1&limit=20');
         expect(view.container.textContent).toContain('First Post');
         expect(view.container.textContent).toContain('Hello world');
 
@@ -195,18 +188,14 @@ describe('frontend domain components', () => {
             await Promise.resolve();
         });
 
-        expect(apiMocks.fetchJson).toHaveBeenLastCalledWith(
-            '/api/v1/posts?search=second&page=1&limit=20',
-            {},
-            'Error fetching posts'
-        );
+        expect(apiMocks.listPosts.mock.calls.at(-1)[0].toString()).toBe('search=second&page=1&limit=20');
         expect(view.container.textContent).toContain('Second Post');
 
         await view.cleanup();
     });
 
     it('shows an error when posts cannot be loaded', async () => {
-        apiMocks.fetchJson.mockRejectedValue(new Error('Posts failed'));
+        apiMocks.listPosts.mockRejectedValue(new Error('Posts failed'));
         const view = await renderComponent(
             React.createElement(PostList, { currentUser: null, refreshToken: 0 })
         );
@@ -221,7 +210,7 @@ describe('frontend domain components', () => {
     });
 
     it('shows edit and delete buttons only for posts owned by the authenticated author', async () => {
-        apiMocks.fetchJson.mockResolvedValue({
+        apiMocks.listPosts.mockResolvedValue({
             data: [
                 {
                     _id: 'post-1',
@@ -273,7 +262,7 @@ describe('frontend domain components', () => {
     });
 
     it('updates an owned post and refreshes the list', async () => {
-        apiMocks.fetchJson
+        apiMocks.listPosts
             .mockResolvedValueOnce({
                 data: [{
                     _id: 'post-1',
@@ -355,7 +344,7 @@ describe('frontend domain components', () => {
     });
 
     it('deletes an owned post and refreshes the list', async () => {
-        apiMocks.fetchJson
+        apiMocks.listPosts
             .mockResolvedValueOnce({
                 data: [{
                     _id: 'post-1',
@@ -409,7 +398,7 @@ describe('frontend domain components', () => {
     });
 
     it('loads and renders authors, then refreshes them', async () => {
-        apiMocks.fetchJson
+        apiMocks.listAuthors
             .mockResolvedValueOnce({
                 data: [{
                     _id: 'author-1',
@@ -434,7 +423,7 @@ describe('frontend domain components', () => {
             await Promise.resolve();
         });
 
-        expect(apiMocks.fetchJson).toHaveBeenCalledWith('/api/v1/authors', {}, 'Error fetching authors');
+        expect(apiMocks.listAuthors).toHaveBeenCalledTimes(1);
         expect(view.container.textContent).toContain('Mario Rossi');
         expect(view.container.textContent).toContain('Editor');
 
