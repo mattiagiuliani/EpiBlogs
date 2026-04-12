@@ -10,14 +10,12 @@ const trimEnv = (value) => (typeof value === 'string' ? value.trim() : '');
 // Selects the callback URL based on NODE_ENV:
 //   production  → DEPLOYMENT_GOOGLE_CALLBACK_URL  (e.g. https://epiblogs-mxl1.onrender.com/auth/google/callback)
 //   development → DEVELOPMENT_GOOGLE_CALLBACK_URL (e.g. http://localhost:3000/auth/google/callback)
-// Falls back to the legacy GOOGLE_CALLBACK_URL when neither split var is set so
-// existing .env files continue to work without modification.
 export const getCallbackUrl = () => {
     const isProduction = process.env.NODE_ENV === 'production';
 
     return isProduction
-        ? trimEnv(process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL) || trimEnv(process.env.GOOGLE_CALLBACK_URL)
-        : trimEnv(process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL) || trimEnv(process.env.GOOGLE_CALLBACK_URL);
+        ? trimEnv(process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL)
+        : trimEnv(process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL);
 };
 
 export const isGoogleOAuthConfigured = () => Boolean(

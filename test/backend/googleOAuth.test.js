@@ -5,7 +5,6 @@ import { getCallbackUrl, isGoogleOAuthConfigured } from '../../backend/utils/goo
 const originalEnv = {
     DEVELOPMENT_GOOGLE_CALLBACK_URL: process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL,
     DEPLOYMENT_GOOGLE_CALLBACK_URL: process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL,
-    GOOGLE_CALLBACK_URL: process.env.GOOGLE_CALLBACK_URL,
     NODE_ENV: process.env.NODE_ENV
 };
 
@@ -36,28 +35,9 @@ describe('getCallbackUrl — dynamic environment selection', () => {
         expect(getCallbackUrl()).toBe('https://epiblogs-mxl1.onrender.com/auth/google/callback');
     });
 
-    it('falls back to GOOGLE_CALLBACK_URL when split vars are absent (development)', () => {
-        process.env.NODE_ENV = 'development';
-        delete process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL;
-        delete process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL;
-        process.env.GOOGLE_CALLBACK_URL = 'http://localhost:3000/auth/google/callback';
-
-        expect(getCallbackUrl()).toBe('http://localhost:3000/auth/google/callback');
-    });
-
-    it('falls back to GOOGLE_CALLBACK_URL when split vars are absent (production)', () => {
-        process.env.NODE_ENV = 'production';
-        delete process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL;
-        delete process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL;
-        process.env.GOOGLE_CALLBACK_URL = 'https://epiblogs-mxl1.onrender.com/auth/google/callback';
-
-        expect(getCallbackUrl()).toBe('https://epiblogs-mxl1.onrender.com/auth/google/callback');
-    });
-
     it('returns an empty string when no callback URL env var is set', () => {
         delete process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL;
         delete process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL;
-        delete process.env.GOOGLE_CALLBACK_URL;
 
         expect(getCallbackUrl()).toBe('');
     });
@@ -86,7 +66,6 @@ describe('isGoogleOAuthConfigured — callback URL variants', () => {
         process.env.GOOGLE_CLIENT_SECRET = 'client-secret';
         delete process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL;
         delete process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL;
-        delete process.env.GOOGLE_CALLBACK_URL;
 
         expect(isGoogleOAuthConfigured()).toBe(false);
     });

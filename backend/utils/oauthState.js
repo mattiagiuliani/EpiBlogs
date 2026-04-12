@@ -12,8 +12,8 @@ const trimEnv = (value) => (typeof value === 'string' ? value.trim() : '');
 const getActiveCallbackUrl = () => {
     const isProduction = process.env.NODE_ENV === 'production';
     return isProduction
-        ? trimEnv(process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL) || trimEnv(process.env.GOOGLE_CALLBACK_URL)
-        : trimEnv(process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL) || trimEnv(process.env.GOOGLE_CALLBACK_URL);
+        ? trimEnv(process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL)
+        : trimEnv(process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL);
 };
 
 const getCookiePathFromCallbackUrl = () => {

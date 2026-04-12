@@ -22,8 +22,8 @@ const DEPRECATED_VARS = [
     },
     {
         key: 'GOOGLE_CALLBACK_URL',
-        replacement: 'DEVELOPMENT_GOOGLE_CALLBACK_URL / DEPLOYMENT_GOOGLE_CALLBACK_URL',
-        reason: 'split callback URLs are the documented source of truth'
+        replacement: 'none',
+        reason: 'this variable is no longer read by the application; remove it from your environment'
     },
     {
         key: 'JWT_SECRET',
@@ -41,8 +41,7 @@ const trimEnv = (value) => (typeof value === 'string' ? value.trim() : '');
 
 const isGoogleCallbackConfigured = () => [
     process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL,
-    process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL,
-    process.env.GOOGLE_CALLBACK_URL
+    process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL
 ].some((value) => trimEnv(value));
 
 export const validateEnv = (log) => {
@@ -62,7 +61,7 @@ export const validateEnv = (log) => {
     if (!isGoogleCallbackConfigured()) {
         log.warn(
             'No Google OAuth callback URL is set ' +
-            '(DEVELOPMENT_GOOGLE_CALLBACK_URL, DEPLOYMENT_GOOGLE_CALLBACK_URL, or GOOGLE_CALLBACK_URL) ' +
+            '(DEVELOPMENT_GOOGLE_CALLBACK_URL or DEPLOYMENT_GOOGLE_CALLBACK_URL) ' +
             '— Google OAuth will be unavailable'
         );
     }

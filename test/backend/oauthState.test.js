@@ -78,7 +78,7 @@ describe('oauth state helpers', () => {
     });
 
     it('derives hardened cookie options from environment settings', () => {
-        process.env.GOOGLE_CALLBACK_URL = 'https://api.example.com/auth/google/callback';
+        process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL = 'https://api.example.com/auth/google/callback';
         process.env.NODE_ENV = 'production';
         process.env.OAUTH_COOKIE_DOMAIN = '.example.com';
         process.env.OAUTH_COOKIE_SAME_SITE = 'strict';
@@ -91,7 +91,7 @@ describe('oauth state helpers', () => {
             secure: true
         }));
 
-        delete process.env.GOOGLE_CALLBACK_URL;
+        delete process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL;
         delete process.env.NODE_ENV;
         delete process.env.OAUTH_COOKIE_DOMAIN;
         delete process.env.OAUTH_COOKIE_SAME_SITE;
