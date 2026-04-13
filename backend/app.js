@@ -7,35 +7,50 @@ import authentication from './middlewares/authentication.js';
 
 const app = express();
 
-const trustProxySetting = process.env.TRUST_PROXY?.trim();
-
 app.disable('x-powered-by');
 
+// ─────────────────────────────────────────────
+// TRUST PROXY (Render / production safe)
+// ─────────────────────────────────────────────
+const trustProxySetting = process.env.TRUST_PROXY?.trim();
 if (trustProxySetting) {
     app.set('trust proxy', trustProxySetting);
 }
 
+// ─────────────────────────────────────────────
+// CORS CONFIG (SINGLE SOURCE OF TRUTH)
+// ─────────────────────────────────────────────
+const allowedOrigins = [
+    process.env.FRONTEND_URL, // production (Render env)
+    "https://epi-blogs.vercel.app",
+    "http://localhost:5173"
+].filter(Boolean);
+
 const corsOptions = {
     origin: (origin, callback) => {
+        // allow tools like Postman / server-to-server
         if (!origin) return callback(null, true);
 
-        const allowed = [
-            "http://localhost:5173",
-            "https://epi-blogs.vercel.app"
-        ];
-
-        if (allowed.includes(origin) || origin.includes("vercel.app")) {
+        if (
+            allowedOrigins.includes(origin) ||
+            origin.includes("vercel.app")
+        ) {
             return callback(null, true);
         }
 
         return callback(null, false);
     },
     credentials: true,
-    methods: ["GET","POST","PUT","DELETE","PATCH","OPTIONS"],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 };
 
+// ─────────────────────────────────────────────
+// APPLY MIDDLEWARES
+// ─────────────────────────────────────────────
 app.use(cors(corsOptions));
+
+// IMPORTANT: preflight handler
 app.options('*', cors(corsOptions));
 
 app.use(helmet({
@@ -47,8 +62,16 @@ app.use(helmet({
 app.use(express.json({ limit: '100kb' }));
 app.use(passport.initialize());
 
-app.get('/health', (_req, res) => res.json({ status: 'ok' }));
+// ─────────────────────────────────────────────
+// HEALTH CHECK (Render debug)
+// ─────────────────────────────────────────────
+app.get('/health', (_req, res) => {
+    res.json({ status: 'ok' });
+});
 
+// ─────────────────────────────────────────────
+// AUTH + API ROUTES
+// ─────────────────────────────────────────────
 app.use(authentication);
 app.use('/api/v1', apiRouter);
 
