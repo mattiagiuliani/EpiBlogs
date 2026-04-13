@@ -78,7 +78,7 @@ describe('auth router', () => {
             firstName: 'Mario'
         });
 
-        const response = await request(buildApp()).post('/api/v1/auth/register').send({
+        const response = await request(buildApp()).post('/register').send({
             email: 'Test@Example.com ',
             password: 'plain-password',
             firstName: 'Mario',
@@ -114,7 +114,7 @@ describe('auth router', () => {
         verifyPasswordMock.mockResolvedValue(true);
         generateAccessTokenMock.mockReturnValue('jwt-token');
 
-        const response = await request(buildApp()).post('/api/v1/auth/login').send({
+        const response = await request(buildApp()).post('/login').send({
             email: 'author@example.com',
             password: 'correct-password'
         });
@@ -136,7 +136,7 @@ describe('auth router', () => {
             select: vi.fn().mockResolvedValue(null)
         });
 
-        const response = await request(buildApp()).post('/api/v1/auth/login').send({
+        const response = await request(buildApp()).post('/login').send({
             email: 'missing@example.com',
             password: 'wrong-password'
         });
@@ -145,20 +145,20 @@ describe('auth router', () => {
         expect(response.body).toEqual({ message: 'Invalid credentials' });
     });
 
-    it('returns the authenticated user on GET /api/v1/auth/me', async () => {
+    it('returns the authenticated user on GET /me', async () => {
         const author = {
             _id: '507f1f77bcf86cd799439011',
             email: 'author@example.com'
         };
 
-        const response = await request(buildApp(author)).get('/api/v1/auth/me');
+        const response = await request(buildApp(author)).get('/me');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual(author);
     });
 
-    it('rejects unauthenticated access to /api/v1/auth/me', async () => {
-        const response = await request(buildApp()).get('/api/v1/auth/me');
+    it('rejects unauthenticated access to /me', async () => {
+        const response = await request(buildApp()).get('/me');
 
         expect(response.status).toBe(401);
         expect(response.body).toEqual({ message: 'Token missing or invalid' });
@@ -173,7 +173,7 @@ describe('auth router', () => {
             token: 'jwt-token'
         });
 
-        const response = await request(buildApp()).post('/api/v1/auth/google/exchange-code').send({
+        const response = await request(buildApp()).post('/google/exchange-code').send({
             code: 'one-time-code'
         });
 
@@ -191,7 +191,7 @@ describe('auth router', () => {
     it('rejects invalid Google auth codes', async () => {
         consumeAuthCodeMock.mockResolvedValue(null);
 
-        const response = await request(buildApp()).post('/api/v1/auth/google/exchange-code').send({
+        const response = await request(buildApp()).post('/google/exchange-code').send({
             code: 'expired-code'
         });
 
@@ -200,22 +200,10 @@ describe('auth router', () => {
     });
 
     it('clears the auth cookie on logout (POST /logout)', async () => {
-        const response = await request(buildApp()).post('/api/v1/auth/logout');
+        const response = await request(buildApp()).post('/logout');
 
         expect(response.status).toBe(200);
         expect(response.body).toEqual({ message: 'Logged out successfully' });
-    });
-
-    it('returns the authenticated user on GET /api/v1/auth/me', async () => {
-        const author = {
-            _id: '507f1f77bcf86cd799439011',
-            email: 'author@example.com'
-        };
-
-        const response = await request(buildApp(author)).get('/api/v1/auth/me');
-
-        expect(response.status).toBe(200);
-        expect(response.body).toEqual(author);
     });
 
     it('rate limits repeated login attempts', async () => {
@@ -226,7 +214,7 @@ describe('auth router', () => {
 
         for (let index = 0; index < 5; index += 1) {
             const response = await request(buildApp())
-                .post('/api/v1/auth/login')
+                .post('/login')
                 .set('x-forwarded-for', clientIp)
                 .send({
                     email: 'missing@example.com',
@@ -237,7 +225,7 @@ describe('auth router', () => {
         }
 
         const rateLimitedResponse = await request(buildApp())
-            .post('/api/v1/auth/login')
+            .post('/login')
             .set('x-forwarded-for', clientIp)
             .send({
                 email: 'missing@example.com',

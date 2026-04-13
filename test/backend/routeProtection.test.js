@@ -66,7 +66,7 @@ describe('route protection', () => {
     });
 
     it('requires authentication for post creation', async () => {
-        const response = await request(buildApp()).post('/api/v1/posts').send({});
+        const response = await request(buildApp()).post('/').send({});
 
         expect(response.status).toBe(401);
         expect(response.body).toEqual({ message: 'Token missing or invalid' });
@@ -74,7 +74,7 @@ describe('route protection', () => {
     });
 
     it('requires authentication for comment creation', async () => {
-        const response = await request(buildApp()).post('/api/v1/posts/507f1f77bcf86cd799439021/comments').send({});
+        const response = await request(buildApp()).post('/507f1f77bcf86cd799439021/comments').send({});
 
         expect(response.status).toBe(401);
         expect(response.body).toEqual({ message: 'Token missing or invalid' });
@@ -82,7 +82,7 @@ describe('route protection', () => {
     });
 
     it('requires authentication for author updates', async () => {
-        const response = await request(buildApp()).put('/api/v1/authors/507f1f77bcf86cd799439011').send({});
+        const response = await request(buildApp()).put('/507f1f77bcf86cd799439011').send({});
 
         expect(response.status).toBe(401);
         expect(response.body).toEqual({ message: 'Token missing or invalid' });
@@ -91,7 +91,7 @@ describe('route protection', () => {
 
     it('allows protected handlers to execute when authentication is present', async () => {
         const response = await request(buildApp({ authenticated: true }))
-            .post('/api/v1/posts')
+            .post('/')
             .send({});
 
         expect(response.status).toBe(200);

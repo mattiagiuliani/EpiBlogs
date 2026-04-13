@@ -13,22 +13,20 @@ import {
     deletePost,
     getPostById,
     listPosts,
-    listPostsByAuthor,
     updatePost,
     updatePostCover
 } from './posts/postHandlers.js';
 
 const postRouter = Router();
 
-postRouter.get('/api/v1/posts', listPosts);
-postRouter.get('/api/v1/posts/:postId', getPostById);
-postRouter.post('/api/v1/posts', requireAuthentication, createPost);
-postRouter.patch('/api/v1/posts/:postId/cover', requireAuthentication, uploadCloudinary.single('cover'), updatePostCover);
-postRouter.put('/api/v1/posts/:postId', requireAuthentication, updatePost);
-postRouter.delete('/api/v1/posts/:postId', requireAuthentication, deletePost);
-postRouter.get('/api/v1/authors/:authorId/posts', listPostsByAuthor);
+postRouter.get('/', listPosts);
+postRouter.get('/:postId', getPostById);
+postRouter.post('/', requireAuthentication, createPost);
+postRouter.patch('/:postId/cover', requireAuthentication, uploadCloudinary.single('cover'), updatePostCover);
+postRouter.put('/:postId', requireAuthentication, updatePost);
+postRouter.delete('/:postId', requireAuthentication, deletePost);
 
-const commentsBase = '/api/v1/posts/:postId/comments';
+const commentsBase = '/:postId/comments';
 const commentItem = `${commentsBase}/:commentId`;
 
 postRouter.get(commentsBase, listComments);

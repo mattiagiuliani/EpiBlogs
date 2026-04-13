@@ -9,14 +9,16 @@ import {
     updateAuthor,
     updateAuthorAvatar
 } from './authors/handlers.js';
+import { listPostsByAuthor } from './posts/postHandlers.js';
 
 const authorRouter = Router();
 
-authorRouter.get('/api/v1/authors', listAuthors);
-authorRouter.get('/api/v1/authors/:authorId', getAuthorById);
-authorRouter.post('/api/v1/authors', createAuthor);
-authorRouter.patch('/api/v1/authors/:authorId/avatar', requireAuthentication, uploadCloudinary.single('avatar'), updateAuthorAvatar);
-authorRouter.put('/api/v1/authors/:authorId', requireAuthentication, updateAuthor);
-authorRouter.delete('/api/v1/authors/:authorId', requireAuthentication, deleteAuthor);
+authorRouter.get('/', listAuthors);
+authorRouter.get('/:authorId', getAuthorById);
+authorRouter.post('/', createAuthor);
+authorRouter.patch('/:authorId/avatar', requireAuthentication, uploadCloudinary.single('avatar'), updateAuthorAvatar);
+authorRouter.put('/:authorId', requireAuthentication, updateAuthor);
+authorRouter.delete('/:authorId', requireAuthentication, deleteAuthor);
+authorRouter.get('/:authorId/posts', listPostsByAuthor);
 
 export default authorRouter;
