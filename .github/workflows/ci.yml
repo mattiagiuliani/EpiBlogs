@@ -50,5 +50,26 @@ jobs:
       - name: Frontend lint
         run: npm run lint
 
+      - name: Guard — no hardcoded localhost in frontend source
+        run: |
+          if grep -r --include="*.js" --include="*.jsx" --include="*.ts" --include="*.tsx" \
+            "http://localhost" frontend/src; then
+            echo "ERROR: hardcoded localhost URL found in frontend/src — use VITE_API_URL instead"
+            exit 1
+          fi
+
+      - name: Guard — no unexpected localhost in backend source
+        run: |
+          FOUND=$(grep -r --include="*.js" "http://localhost" backend \
+            | grep -v "backend/utils/cors.js" \
+            | grep -v "backend/utils/googleOAuth.js" || true)
+          if [ -n "$FOUND" ]; then
+            echo "ERROR: unexpected hardcoded localhost URL in backend source:"
+            echo "$FOUND"
+            exit 1
+          fi
+
       - name: Frontend build
         run: npm run build
+        env:
+          VITE_API_URL: https://placeholder.ci.example.com

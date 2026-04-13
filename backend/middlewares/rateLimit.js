@@ -65,3 +65,10 @@ export const createGoogleExchangeRateLimit = () => createRateLimit({
     message: 'Too many Google auth exchange attempts. Please try again later.',
     windowMs: 60 * 1000
 });
+
+export const createMeRateLimit = () => createRateLimit({
+    keyPrefix: 'me',
+    maxRequests: 30,
+    message: 'Too many requests. Please try again later.',
+    windowMs: 60 * 1000
+});

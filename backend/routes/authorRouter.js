@@ -14,7 +14,6 @@ const authorRouter = Router();
 
 authorRouter.get('/api/v1/authors', listAuthors);
 authorRouter.get('/api/v1/authors/:authorId', getAuthorById);
-authorRouter.post('/authors', createAuthor);
 authorRouter.post('/api/v1/authors', createAuthor);
 authorRouter.patch('/api/v1/authors/:authorId/avatar', requireAuthentication, uploadCloudinary.single('avatar'), updateAuthorAvatar);
 authorRouter.put('/api/v1/authors/:authorId', requireAuthentication, updateAuthor);

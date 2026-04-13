@@ -80,6 +80,10 @@ export const validateEnv = (log) => {
     }
 
     if (process.env.NODE_ENV === 'production' && !trimEnv(process.env.FRONTEND_URL)) {
-        log.warn('FRONTEND_URL should be set in production so OAuth redirects and CORS match the deployed frontend');
+        log.error(
+            { missing: ['FRONTEND_URL'] },
+            'FRONTEND_URL is required in production for OAuth redirects and CORS. Exiting.'
+        );
+        process.exit(1);
     }
 };

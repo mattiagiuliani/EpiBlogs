@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { requireAuthentication } from '../middlewares/authentication.js';
-import { createGoogleExchangeRateLimit, createLoginRateLimit } from '../middlewares/rateLimit.js';
+import { createGoogleExchangeRateLimit, createLoginRateLimit, createMeRateLimit } from '../middlewares/rateLimit.js';
 import {
     exchangeGoogleAuthCode,
     getAuthenticatedAuthor,
@@ -23,6 +23,7 @@ import {
 const authRouter = Router();
 const loginRateLimit = createLoginRateLimit();
 const googleExchangeRateLimit = createGoogleExchangeRateLimit();
+const meRateLimit = createMeRateLimit();
 
 registerPaths.forEach((path) => {
     authRouter.post(path, registerAuthor);
@@ -36,13 +37,8 @@ logoutPaths.forEach((path) => {
     authRouter.post(path, logoutAuthor);
 });
 
-// GET /auth/logout — convenience alias requested for client-side navigation links.
-// Note: GET-based logout is safe here because the session is an HttpOnly SameSite cookie
-// (not a URL token), so CSRF-logout only causes a minor UX inconvenience, not data exposure.
-authRouter.get('/auth/logout', logoutAuthor);
-
 mePaths.forEach((path) => {
-    authRouter.get(path, requireAuthentication, getAuthenticatedAuthor);
+    authRouter.get(path, meRateLimit, requireAuthentication, getAuthenticatedAuthor);
 });
 
 googleAuthPaths.forEach((path) => {

@@ -28,21 +28,13 @@ postRouter.put('/api/v1/posts/:postId', requireAuthentication, updatePost);
 postRouter.delete('/api/v1/posts/:postId', requireAuthentication, deletePost);
 postRouter.get('/api/v1/authors/:authorId/posts', listPostsByAuthor);
 
-[
-    '/api/v1/posts/:postId',
-    '/blogPosts/:id'
-].forEach((basePath) => {
-    const commentsPath = `${basePath}/comments`;
-    const commentPath = `${commentsPath}/:commentId`;
-    const legacyCommentPath = `${basePath}/comment/:commentId`;
+const commentsBase = '/api/v1/posts/:postId/comments';
+const commentItem = `${commentsBase}/:commentId`;
 
-    postRouter.get(commentsPath, listComments);
-    postRouter.get(commentPath, getSingleComment);
-    postRouter.post(commentsPath, requireAuthentication, createComment);
-    postRouter.put(commentPath, requireAuthentication, updateComment);
-    postRouter.put(legacyCommentPath, requireAuthentication, updateComment);
-    postRouter.delete(commentPath, requireAuthentication, deleteComment);
-    postRouter.delete(legacyCommentPath, requireAuthentication, deleteComment);
-});
+postRouter.get(commentsBase, listComments);
+postRouter.get(commentItem, getSingleComment);
+postRouter.post(commentsBase, requireAuthentication, createComment);
+postRouter.put(commentItem, requireAuthentication, updateComment);
+postRouter.delete(commentItem, requireAuthentication, deleteComment);
 
 export default postRouter;
