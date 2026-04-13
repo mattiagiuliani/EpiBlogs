@@ -24,7 +24,7 @@ const corsOptions = buildCorsOptions();
 // This guarantees that preflight requests receive CORS headers and a 204
 // response before helmet, body-parser, or authentication can run and
 // potentially omit or overwrite the Access-Control-Allow-Origin header.
-app.options('*', cors(corsOptions));
+app.options(/.*/, cors(corsOptions));
 
 app.use(cors(corsOptions));
 
