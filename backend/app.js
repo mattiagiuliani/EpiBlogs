@@ -24,25 +24,7 @@ const corsOptions = buildCorsOptions();
 // This guarantees that preflight requests receive CORS headers and a 204
 // response before helmet, body-parser, or authentication can run and
 // potentially omit or overwrite the Access-Control-Allow-Origin header.
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-
-    const allowed = [
-      "http://localhost:5173",
-      "https://epi-blogs.vercel.app"
-    ];
-
-    if (allowed.includes(origin) || origin.includes("vercel.app")) {
-      return callback(null, true);
-    }
-
-    callback(null, false);
-  },
-  credentials: true,
-  methods: ["GET","POST","PUT","DELETE","OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"]
-};
+app.options(/.*/, cors(corsOptions));
 
 app.use(cors(corsOptions));
 
