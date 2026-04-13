@@ -12,7 +12,7 @@ const normalizeBase = (url) => {
     }
 };
 
-const API_BASE_URL = normalizeBase(API_URL);
+export const API_BASE_URL = normalizeBase(API_URL);
 const API_V1 = `${API_BASE_URL}/api/v1`;
 
 if (import.meta.env.PROD && API_BASE_URL.includes('localhost')) {

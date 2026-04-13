@@ -3,18 +3,7 @@ import AuthPage from "./AuthPage.jsx";
 import CreatePost from "./Form.jsx";
 import List from "./List.jsx";
 import { useAuthSession } from "./hooks/useAuthSession.js";
-
-export const getCurrentPath = () => {
-  if (typeof window === "undefined") return "/";
-
-  return window.location.pathname.replace(/\/+$/, "") || "/";
-};
-
-const navigateTo = (path, replace = false) => {
-  const method = replace ? "replaceState" : "pushState";
-  window.history[method]({}, "", path);
-  window.dispatchEvent(new PopStateEvent("popstate"));
-};
+import { getCurrentPath, navigateTo } from "./utils/navigation.js";
 
 function App() {
   const [refreshToken, setRefreshToken] = useState(0);
