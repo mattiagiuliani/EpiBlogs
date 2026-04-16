@@ -11,10 +11,54 @@ const escapeRegex = (str) => str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 export const buildPostFilter = (query = {}) => {
     const search = query.search ?? query.title ?? '';
-
-    return search
+    const filter = search
         ? { title: { $regex: escapeRegex(search), $options: 'i' } }
         : {};
+
+    // Filter by slug, not by name — the frontend sends ?category=<slug>
+    if (query.category) {
+        filter.categorySlug = query.category;
+    }
+
+    // ?tag=ai or ?tag=ai,web-dev  →  OR logic via $in
+    if (query.tag) {
+        const tags = String(query.tag)
+            .split(',')
+            .map((t) => t.trim())
+            .filter(Boolean);
+        if (tags.length > 0) {
+            filter.tags = { $in: tags };
+        }
+    }
+
+    return filter;
+};
+
+// Body-based filter for POST /api/v1/posts/search.
+// Accepts a structured object instead of query-string params and uses MongoDB
+// $text search (backed by the text index) instead of regex.
+// The GET /posts filter (buildPostFilter) is deliberately left unchanged so
+// the existing endpoint and all its tests remain fully backward compatible.
+export const buildSearchFilter = (body = {}) => {
+    const filter = {};
+
+    // Full-text search via the { title: 'text', content: 'text' } index.
+    if (body.search && String(body.search).trim()) {
+        filter.$text = { $search: String(body.search).trim() };
+    }
+
+    if (body.categorySlug && String(body.categorySlug).trim()) {
+        filter.categorySlug = String(body.categorySlug).trim();
+    }
+
+    if (Array.isArray(body.tags) && body.tags.length > 0) {
+        const tags = body.tags.map(String).map((t) => t.trim()).filter(Boolean);
+        if (tags.length > 0) {
+            filter.tags = { $in: tags };
+        }
+    }
+
+    return filter;
 };
 
 export const sendPostPublishedEmail = (author, post) => {

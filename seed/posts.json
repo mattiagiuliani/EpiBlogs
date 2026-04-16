@@ -1,6 +1,5 @@
 [
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f01",
     "category": "Artificial Intelligence",
     "title": "Understanding Gradient Descent: The Engine Behind Neural Networks",
     "cover": "https://picsum.photos/seed/gradient-descent-neural-networks/800/600",
@@ -13,7 +12,6 @@
     "updatedAt": "2024-03-15T09:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f02",
     "category": "Data Science",
     "title": "Feature Engineering Strategies for High-Dimensional Data",
     "cover": "https://picsum.photos/seed/feature-engineering-high-dimensional/800/600",
@@ -26,7 +24,6 @@
     "updatedAt": "2024-06-22T10:30:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f03",
     "category": "Data Science",
     "title": "The Bias-Variance Tradeoff Explained with Python Examples",
     "cover": "https://picsum.photos/seed/bias-variance-tradeoff-python/800/600",
@@ -39,7 +36,6 @@
     "updatedAt": "2024-09-10T08:45:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f04",
     "category": "Data Science",
     "title": "Building a Recommendation Engine with Collaborative Filtering",
     "cover": "https://picsum.photos/seed/recommendation-engine-collaborative-filtering/800/600",
@@ -52,7 +48,6 @@
     "updatedAt": "2025-01-08T11:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f05",
     "category": "Web Development",
     "title": "Building RESTful APIs with Express.js and MongoDB",
     "cover": "https://picsum.photos/seed/restful-apis-express-mongodb/800/600",
@@ -65,7 +60,6 @@
     "updatedAt": "2024-04-05T09:30:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f06",
     "category": "Web Development",
     "title": "State Management in React: Redux vs. Context API",
     "cover": "https://picsum.photos/seed/state-management-react-redux-context/800/600",
@@ -78,7 +72,6 @@
     "updatedAt": "2024-07-14T14:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f07",
     "category": "Web Development",
     "title": "JWT Authentication in a MERN Stack Application",
     "cover": "https://picsum.photos/seed/jwt-authentication-mern-stack/800/600",
@@ -91,7 +84,6 @@
     "updatedAt": "2024-11-20T10:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f08",
     "category": "DevOps",
     "title": "CI/CD Pipelines with GitHub Actions: A Practical Guide",
     "cover": "https://picsum.photos/seed/cicd-pipelines-github-actions/800/600",
@@ -104,7 +96,6 @@
     "updatedAt": "2024-02-28T09:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f09",
     "category": "Cloud Computing",
     "title": "Kubernetes Deployment Strategies: Rolling, Blue-Green, and Canary",
     "cover": "https://picsum.photos/seed/kubernetes-deployment-strategies/800/600",
@@ -117,7 +108,6 @@
     "updatedAt": "2024-08-03T11:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f0a",
     "category": "Cloud Computing",
     "title": "Infrastructure as Code with Terraform on AWS",
     "cover": "https://picsum.photos/seed/infrastructure-as-code-terraform-aws/800/600",
@@ -130,7 +120,6 @@
     "updatedAt": "2025-02-14T10:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f0b",
     "category": "Cybersecurity",
     "title": "OWASP Top 10: Understanding and Mitigating Web Vulnerabilities",
     "cover": "https://picsum.photos/seed/owasp-top-10-web-vulnerabilities/800/600",
@@ -143,7 +132,6 @@
     "updatedAt": "2024-05-17T09:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f0c",
     "category": "Cybersecurity",
     "title": "Zero Trust Architecture: Principles and Implementation",
     "cover": "https://picsum.photos/seed/zero-trust-architecture/800/600",
@@ -156,7 +144,6 @@
     "updatedAt": "2024-10-09T10:30:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f0d",
     "category": "Cybersecurity",
     "title": "Penetration Testing Fundamentals for Web Applications",
     "cover": "https://picsum.photos/seed/penetration-testing-web-applications/800/600",
@@ -169,7 +156,6 @@
     "updatedAt": "2025-03-21T09:30:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f0e",
     "category": "Mathematics",
     "title": "Linear Algebra for Machine Learning: Vectors, Matrices, and Transformations",
     "cover": "https://picsum.photos/seed/linear-algebra-machine-learning/800/600",
@@ -182,7 +168,6 @@
     "updatedAt": "2024-04-28T10:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f0f",
     "category": "Mathematics",
     "title": "Fourier Analysis and Its Applications in Signal Processing",
     "cover": "https://picsum.photos/seed/fourier-analysis-signal-processing/800/600",
@@ -195,7 +180,6 @@
     "updatedAt": "2024-12-05T11:30:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f10",
     "category": "Quantum Computing",
     "title": "Quantum Entanglement: From Einstein's Spooky Action to Modern Qubits",
     "cover": "https://picsum.photos/seed/quantum-entanglement-qubits/800/600",
@@ -208,7 +192,6 @@
     "updatedAt": "2024-03-08T09:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f11",
     "category": "Quantum Computing",
     "title": "Quantum Supremacy: What It Means and Why It Matters",
     "cover": "https://picsum.photos/seed/quantum-supremacy-explained/800/600",
@@ -221,7 +204,6 @@
     "updatedAt": "2024-07-25T14:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f12",
     "category": "Quantum Computing",
     "title": "The Variational Quantum Eigensolver Algorithm Explained",
     "cover": "https://picsum.photos/seed/variational-quantum-eigensolver/800/600",
@@ -234,7 +216,6 @@
     "updatedAt": "2025-01-30T10:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f13",
     "category": "Web Development",
     "title": "Mastering CSS Grid and Flexbox for Responsive Layouts",
     "cover": "https://picsum.photos/seed/css-grid-flexbox-layouts/800/600",
@@ -247,7 +228,6 @@
     "updatedAt": "2024-06-11T10:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f14",
     "category": "Web Development",
     "title": "Web Accessibility: Building Inclusive Digital Experiences",
     "cover": "https://picsum.photos/seed/web-accessibility-inclusive-design/800/600",
@@ -260,7 +240,6 @@
     "updatedAt": "2024-09-28T10:30:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f15",
     "category": "Artificial Intelligence",
     "title": "Transformer Architecture: How Self-Attention Revolutionized NLP",
     "cover": "https://picsum.photos/seed/transformer-architecture-self-attention/800/600",
@@ -273,7 +252,6 @@
     "updatedAt": "2024-01-22T09:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f16",
     "category": "Artificial Intelligence",
     "title": "Reinforcement Learning: From Q-Learning to Proximal Policy Optimization",
     "cover": "https://picsum.photos/seed/reinforcement-learning-q-learning-ppo/800/600",
@@ -286,7 +264,6 @@
     "updatedAt": "2024-05-31T10:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f17",
     "category": "Artificial Intelligence",
     "title": "Large Language Models: How GPT Works Under the Hood",
     "cover": "https://picsum.photos/seed/large-language-models-gpt-internals/800/600",
@@ -299,7 +276,6 @@
     "updatedAt": "2024-10-15T09:30:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f18",
     "category": "Artificial Intelligence",
     "title": "Convolutional Neural Networks for Visual Recognition",
     "cover": "https://picsum.photos/seed/convolutional-neural-networks-vision/800/600",
@@ -312,7 +288,6 @@
     "updatedAt": "2025-02-08T10:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f19",
     "category": "Cloud Computing",
     "title": "Serverless Computing with AWS Lambda: Patterns and Best Practices",
     "cover": "https://picsum.photos/seed/serverless-aws-lambda-patterns/800/600",
@@ -325,7 +300,6 @@
     "updatedAt": "2024-08-19T09:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f1a",
     "category": "Cloud Computing",
     "title": "Microservices vs. Monoliths: Making the Right Architectural Choice",
     "cover": "https://picsum.photos/seed/microservices-vs-monoliths/800/600",
@@ -338,7 +312,6 @@
     "updatedAt": "2025-01-15T11:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f1b",
     "category": "Data Science",
     "title": "Data Pipelines with Apache Kafka: Building Real-Time Stream Processing Systems",
     "cover": "https://picsum.photos/seed/data-pipelines-apache-kafka/800/600",
@@ -351,7 +324,6 @@
     "updatedAt": "2024-04-11T10:00:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f1c",
     "category": "Computer Science",
     "title": "Graph Databases and Neo4j: Modeling Connected Data",
     "cover": "https://picsum.photos/seed/graph-databases-neo4j/800/600",
@@ -364,7 +336,6 @@
     "updatedAt": "2024-11-07T10:30:00.000Z"
   },
   {
-    "_id": "674c2d3e4f5a6b7c8d9e0f1d",
     "category": "Mathematics",
     "title": "Statistical Hypothesis Testing: From p-Values to Effect Sizes",
     "cover": "https://picsum.photos/seed/statistical-hypothesis-testing/800/600",
@@ -375,5 +346,270 @@
     "comments": [],
     "createdAt": "2025-03-05T09:00:00.000Z",
     "updatedAt": "2025-03-05T09:00:00.000Z"
+  },
+  {
+    "category": "Artificial Intelligence",
+    "title": "The Rise of Generative AI: Transforming Creativity and Industry",
+    "cover": "https://picsum.photos/seed/generative-ai/800/600",
+    "readTime": { "value": 6, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd01",
+    "authorEmail": "alice.chen@epicode.com",
+    "content": "<h2>Generative AI Revolution</h2><p>Generative AI models such as GPT and diffusion networks are reshaping industries by automating content creation, design, and software development. These models learn patterns from vast datasets to generate realistic text, images, and audio.</p><h2>Applications Across Industries</h2><p>From marketing and healthcare to finance and entertainment, generative AI enhances productivity and enables innovation at unprecedented scale.</p>",
+    "comments": [],
+    "createdAt": "2024-02-01T09:00:00.000Z",
+    "updatedAt": "2024-02-01T09:00:00.000Z"
+  },
+  {
+    "category": "Machine Learning",
+    "title": "Supervised vs Unsupervised Learning: A Practical Guide",
+    "cover": "https://picsum.photos/seed/supervised-unsupervised/800/600",
+    "readTime": { "value": 7, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd01",
+    "authorEmail": "alice.chen@epicode.com",
+    "content": "<h2>Understanding Learning Paradigms</h2><p>Supervised learning relies on labeled data, while unsupervised learning discovers hidden patterns within unlabeled datasets. Both approaches are essential in modern data-driven applications.</p>",
+    "comments": [],
+    "createdAt": "2024-02-10T09:00:00.000Z",
+    "updatedAt": "2024-02-10T09:00:00.000Z"
+  },
+  {
+    "category": "Web Development",
+    "title": "Building Scalable Applications with React and Node.js",
+    "cover": "https://picsum.photos/seed/react-node-scalable/800/600",
+    "readTime": { "value": 6, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd02",
+    "authorEmail": "marco.rossi@epicode.com",
+    "content": "<h2>The MERN Stack</h2><p>React and Node.js form the backbone of modern full-stack applications. By combining them with MongoDB and Express, developers can build scalable and high-performance systems.</p>",
+    "comments": [],
+    "createdAt": "2024-02-15T09:00:00.000Z",
+    "updatedAt": "2024-02-15T09:00:00.000Z"
+  },
+  {
+    "category": "Cloud Computing",
+    "title": "Introduction to Cloud Computing: AWS, Azure, and Google Cloud",
+    "cover": "https://picsum.photos/seed/cloud-computing/800/600",
+    "readTime": { "value": 5, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd03",
+    "authorEmail": "priya.patel@epicode.com",
+    "content": "<h2>The Cloud Revolution</h2><p>Cloud computing enables organizations to scale infrastructure dynamically, reduce operational costs, and deploy applications globally with minimal latency.</p>",
+    "comments": [],
+    "createdAt": "2024-02-20T09:00:00.000Z",
+    "updatedAt": "2024-02-20T09:00:00.000Z"
+  },
+  {
+    "category": "Cybersecurity",
+    "title": "Understanding Zero Trust Security Architecture",
+    "cover": "https://picsum.photos/seed/zero-trust/800/600",
+    "readTime": { "value": 6, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd03",
+    "authorEmail": "priya.patel@epicode.com",
+    "content": "<h2>Never Trust, Always Verify</h2><p>Zero Trust is a modern cybersecurity model that eliminates implicit trust and continuously validates user and device identities.</p>",
+    "comments": [],
+    "createdAt": "2024-02-25T09:00:00.000Z",
+    "updatedAt": "2024-02-25T09:00:00.000Z"
+  },
+  {
+    "category": "DevOps",
+    "title": "CI/CD Pipelines Explained: From Code to Production",
+    "cover": "https://picsum.photos/seed/cicd-pipeline/800/600",
+    "readTime": { "value": 7, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd03",
+    "authorEmail": "priya.patel@epicode.com",
+    "content": "<h2>Continuous Integration and Delivery</h2><p>CI/CD automates testing and deployment processes, enabling teams to deliver software faster and more reliably.</p>",
+    "comments": [],
+    "createdAt": "2024-03-01T09:00:00.000Z",
+    "updatedAt": "2024-03-01T09:00:00.000Z"
+  },
+  {
+    "category": "Blockchain",
+    "title": "Blockchain Beyond Cryptocurrency",
+    "cover": "https://picsum.photos/seed/blockchain/800/600",
+    "readTime": { "value": 6, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd02",
+    "authorEmail": "marco.rossi@epicode.com",
+    "content": "<h2>Decentralization in Action</h2><p>Blockchain technology ensures transparency, immutability, and security across decentralized systems, extending far beyond digital currencies.</p>",
+    "comments": [],
+    "createdAt": "2024-03-05T09:00:00.000Z",
+    "updatedAt": "2024-03-05T09:00:00.000Z"
+  },
+  {
+    "category": "Quantum Computing",
+    "title": "Quantum Computing Fundamentals for Developers",
+    "cover": "https://picsum.photos/seed/quantum-computing/800/600",
+    "readTime": { "value": 8, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd01",
+    "authorEmail": "alice.chen@epicode.com",
+    "content": "<h2>Understanding Qubits</h2><p>Quantum computers leverage superposition and entanglement to perform computations exponentially faster than classical machines in specific domains.</p>",
+    "comments": [],
+    "createdAt": "2024-03-12T09:00:00.000Z",
+    "updatedAt": "2024-03-12T09:00:00.000Z"
+  },
+  {
+    "category": "Game Development",
+    "title": "Introduction to Game Development with Unity",
+    "cover": "https://picsum.photos/seed/unity-game-dev/800/600",
+    "readTime": { "value": 6, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd02",
+    "authorEmail": "marco.rossi@epicode.com",
+    "content": "<h2>Creating Immersive Experiences</h2><p>Unity enables developers to build interactive 2D and 3D games using C# and a powerful rendering engine.</p>",
+    "comments": [],
+    "createdAt": "2024-03-18T09:00:00.000Z",
+    "updatedAt": "2024-03-18T09:00:00.000Z"
+  },
+
+  {
+    "category": "Web Development",
+    "title": "Mastering TypeScript for Large-Scale Applications",
+    "cover": "https://picsum.photos/seed/typescript/800/600",
+    "readTime": { "value": 7, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd02",
+    "authorEmail": "marco.rossi@epicode.com",
+    "content": "<h2>Why TypeScript Matters</h2><p>TypeScript introduces static typing to JavaScript, improving code reliability, maintainability, and developer productivity.</p>",
+    "comments": [],
+    "createdAt": "2024-03-25T09:00:00.000Z",
+    "updatedAt": "2024-03-25T09:00:00.000Z"
+  },
+
+  {
+    "category": "Data Science",
+    "title": "Data Visualization Best Practices with Python",
+    "cover": "https://picsum.photos/seed/data-visualization/800/600",
+    "readTime": { "value": 6, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd01",
+    "authorEmail": "alice.chen@epicode.com",
+    "content": "<h2>Turning Data into Insights</h2><p>Libraries such as Matplotlib, Seaborn, and Plotly enable analysts to communicate insights effectively through compelling visualizations.</p>",
+    "comments": [],
+    "createdAt": "2024-04-01T09:00:00.000Z",
+    "updatedAt": "2024-04-01T09:00:00.000Z"
+  },
+
+  {
+    "category": "DevOps",
+    "title": "Containerization with Docker: A Practical Guide",
+    "cover": "https://picsum.photos/seed/docker/800/600",
+    "readTime": { "value": 5, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd03",
+    "authorEmail": "priya.patel@epicode.com",
+    "content": "<h2>Build Once, Run Anywhere</h2><p>Docker containers package applications and their dependencies into portable environments, simplifying deployment and scaling.</p>",
+    "comments": [],
+    "createdAt": "2024-04-05T09:00:00.000Z",
+    "updatedAt": "2024-04-05T09:00:00.000Z"
+  },
+
+  {
+    "category": "Cloud Computing",
+    "title": "Kubernetes Orchestration for Modern Applications",
+    "cover": "https://picsum.photos/seed/kubernetes/800/600",
+    "readTime": { "value": 8, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd03",
+    "authorEmail": "priya.patel@epicode.com",
+    "content": "<h2>Managing Containers at Scale</h2><p>Kubernetes automates deployment, scaling, and management of containerized applications across clusters.</p>",
+    "comments": [],
+    "createdAt": "2024-04-10T09:00:00.000Z",
+    "updatedAt": "2024-04-10T09:00:00.000Z"
+  },
+
+  {
+    "category": "Artificial Intelligence",
+    "title": "Natural Language Processing with Transformers",
+    "cover": "https://picsum.photos/seed/transformers-nlp/800/600",
+    "readTime": { "value": 9, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd01",
+    "authorEmail": "alice.chen@epicode.com",
+    "content": "<h2>The Transformer Architecture</h2><p>Transformers leverage self-attention mechanisms to process sequences efficiently, revolutionizing natural language processing.</p>",
+    "comments": [],
+    "createdAt": "2024-04-18T09:00:00.000Z",
+    "updatedAt": "2024-04-18T09:00:00.000Z"
+  },
+
+  {
+    "category": "Cybersecurity",
+    "title": "Ethical Hacking and Penetration Testing Essentials",
+    "cover": "https://picsum.photos/seed/ethical-hacking/800/600",
+    "readTime": { "value": 7, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd03",
+    "authorEmail": "priya.patel@epicode.com",
+    "content": "<h2>Defending Systems Proactively</h2><p>Ethical hackers simulate cyberattacks to identify vulnerabilities and strengthen security defenses.</p>",
+    "comments": [],
+    "createdAt": "2024-04-25T09:00:00.000Z",
+    "updatedAt": "2024-04-25T09:00:00.000Z"
+  },
+
+  {
+    "category": "Blockchain",
+    "title": "Smart Contracts with Solidity and Ethereum",
+    "cover": "https://picsum.photos/seed/smart-contracts/800/600",
+    "readTime": { "value": 7, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd02",
+    "authorEmail": "marco.rossi@epicode.com",
+    "content": "<h2>Automating Trust</h2><p>Smart contracts are self-executing agreements stored on the blockchain, enabling decentralized applications.</p>",
+    "comments": [],
+    "createdAt": "2024-05-01T09:00:00.000Z",
+    "updatedAt": "2024-05-01T09:00:00.000Z"
+  },
+
+  {
+    "category": "Game Development",
+    "title": "Building Real-Time Multiplayer Games with Unreal Engine",
+    "cover": "https://picsum.photos/seed/unreal-engine/800/600",
+    "readTime": { "value": 8, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd02",
+    "authorEmail": "marco.rossi@epicode.com",
+    "content": "<h2>Next-Generation Game Development</h2><p>Unreal Engine provides powerful tools for creating photorealistic and multiplayer gaming experiences.</p>",
+    "comments": [],
+    "createdAt": "2024-05-10T09:00:00.000Z",
+    "updatedAt": "2024-05-10T09:00:00.000Z"
+  },
+
+  {
+    "category": "Data Science",
+    "title": "Introduction to Big Data with Apache Spark",
+    "cover": "https://picsum.photos/seed/apache-spark/800/600",
+    "readTime": { "value": 7, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd01",
+    "authorEmail": "alice.chen@epicode.com",
+    "content": "<h2>Processing Data at Scale</h2><p>Apache Spark enables distributed data processing with remarkable speed and efficiency.</p>",
+    "comments": [],
+    "createdAt": "2024-05-20T09:00:00.000Z",
+    "updatedAt": "2024-05-20T09:00:00.000Z"
+  },
+
+  {
+    "category": "Web Development",
+    "title": "Next.js and Server-Side Rendering Explained",
+    "cover": "https://picsum.photos/seed/nextjs/800/600",
+    "readTime": { "value": 6, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd02",
+    "authorEmail": "marco.rossi@epicode.com",
+    "content": "<h2>Modern React Frameworks</h2><p>Next.js enhances React with server-side rendering, static site generation, and performance optimizations.</p>",
+    "comments": [],
+    "createdAt": "2024-06-01T09:00:00.000Z",
+    "updatedAt": "2024-06-01T09:00:00.000Z"
+  },
+
+  {
+    "category": "Cloud Computing",
+    "title": "Serverless Architectures with AWS Lambda",
+    "cover": "https://picsum.photos/seed/serverless-aws/800/600",
+    "readTime": { "value": 6, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd03",
+    "authorEmail": "priya.patel@epicode.com",
+    "content": "<h2>Code Without Servers</h2><p>AWS Lambda allows developers to run code without managing servers, enabling scalable and cost-effective solutions.</p>",
+    "comments": [],
+    "createdAt": "2024-06-10T09:00:00.000Z",
+    "updatedAt": "2024-06-10T09:00:00.000Z"
+  },
+
+  {
+    "category": "Artificial Intelligence",
+    "title": "Computer Vision with Convolutional Neural Networks",
+    "cover": "https://picsum.photos/seed/computer-vision/800/600",
+    "readTime": { "value": 8, "unit": "min" },
+    "author": "664a1b2c3d4e5f6789abcd01",
+    "authorEmail": "alice.chen@epicode.com",
+    "content": "<h2>Teaching Machines to See</h2><p>Convolutional Neural Networks enable image classification, object detection, and facial recognition.</p>",
+    "comments": [],
+    "createdAt": "2024-06-20T09:00:00.000Z",
+    "updatedAt": "2024-06-20T09:00:00.000Z"
   }
+
 ]

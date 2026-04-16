@@ -1066,3 +1066,280 @@ a:hover {
 .animate-in {
   animation: fadeIn 240ms ease both;
 }
+
+/* ============================================================
+   FILTER PANEL
+   ============================================================ */
+.filters-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+/* Search + category sit side-by-side */
+.filters-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.65rem;
+  align-items: stretch;
+}
+
+.filters-row .form-select {
+  width: auto;
+  min-width: 11rem;
+}
+
+/* ============================================================
+   SEARCH INPUT WRAPPER
+   ============================================================ */
+.search-input-wrapper {
+  position: relative;
+}
+
+/* Push text away from the × button */
+.search-input-wrapper .form-control {
+  padding-right: 2.5rem;
+}
+
+/* Cancel button overlaid on the right side of the input */
+.search-clear-btn {
+  position: absolute;
+  right: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+  padding: 0 0.15rem;
+  transition: color var(--ease);
+}
+
+.search-clear-btn:hover {
+  color: var(--text-bright);
+}
+
+/* ============================================================
+   TAG FILTER  (filter chips + inline input)
+   ============================================================ */
+.tag-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* The pill-shaped container that holds chips and the raw input */
+.tag-filter__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem;
+  flex: 1;
+  min-height: 2.6rem;
+  padding: 0.35rem 0.75rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  cursor: text;
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+
+.tag-filter__inner:focus-within {
+  border-color: rgba(0, 170, 255, 0.5);
+  box-shadow: 0 0 0 3px rgba(0, 170, 255, 0.1), var(--glow-sm);
+}
+
+.tag-filter__input {
+  flex: 1;
+  min-width: 8rem;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 0.875rem;
+  padding: 0.1rem 0;
+}
+
+.tag-filter__input::placeholder {
+  color: rgba(100, 140, 190, 0.3);
+}
+
+/* ============================================================
+   TAG CHIPS (shared between TagFilter and PostCard)
+   ============================================================ */
+/* Base chip — used on post cards for display */
+.post-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: rgba(155, 92, 246, 0.1);
+  border: 1px solid rgba(155, 92, 246, 0.22);
+  color: #c4b5fd;
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+/* Active chip — used inside TagFilter for selected filters */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.15rem 0.5rem 0.15rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(0, 229, 255, 0.1);
+  border: 1px solid rgba(0, 229, 255, 0.28);
+  color: var(--cyan);
+  font-size: 0.7rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+  white-space: nowrap;
+}
+
+.tag-chip--active {
+  /* alias — same styles, name used by TagFilter */
+}
+
+.tag-chip__remove {
+  display: inline-flex;
+  align-items: center;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0;
+  opacity: 0.65;
+  transition: opacity var(--ease);
+}
+
+.tag-chip__remove:hover {
+  opacity: 1;
+}
+
+/* ============================================================
+   POST CARD EXTRAS  (classes referenced in PostCard / PostList)
+   ============================================================ */
+.post-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.45rem;
+}
+
+.post-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin: 0.4rem 0 0;
+}
+
+.post-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.85rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--border);
+}
+
+/* ============================================================
+   BUTTON SIZE MODIFIER
+   ============================================================ */
+.btn-sm {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.8rem;
+  border-radius: var(--r-sm);
+}
+
+/* ============================================================
+   SKELETON LOADER
+   ============================================================ */
+@keyframes shimmer {
+  0%   { background-position: -600px 0; }
+  100% { background-position:  600px 0; }
+}
+
+.skeleton-card {
+  pointer-events: none;
+  min-height: 11rem;
+  padding: 1rem 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.skeleton-line {
+  border-radius: var(--r-sm);
+  margin-bottom: 0.65rem;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 170, 255, 0.04) 25%,
+    rgba(0, 170, 255, 0.11) 50%,
+    rgba(0, 170, 255, 0.04) 75%
+  );
+  background-size: 1200px 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+.skeleton-title {
+  height: 0.9rem;
+  width: 68%;
+}
+
+.skeleton-text {
+  height: 0.72rem;
+  width: 92%;
+}
+
+.skeleton-text--short {
+  width: 52%;
+}
+
+.skeleton-meta {
+  height: 0.65rem;
+  width: 38%;
+  margin-top: auto;
+  margin-bottom: 0;
+}
+
+/* ============================================================
+   OPTIMISTIC CREATE CARD
+   ============================================================ */
+.post-card--pending {
+  opacity: 0.65;
+  border-color: rgba(0, 229, 255, 0.25);
+  animation: pulse-glow 1.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.post-preview--muted {
+  color: var(--text-muted);
+  font-style: italic;
+  font-size: 0.8rem;
+}
+
+/* ============================================================
+   RESPONSIVE ADDITIONS
+   ============================================================ */
+@media (max-width: 767px) {
+  .filters-row {
+    grid-template-columns: 1fr;
+  }
+
+  .filters-row .form-select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .tag-filter {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

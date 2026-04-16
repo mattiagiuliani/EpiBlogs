@@ -7,6 +7,9 @@ import { getCurrentPath, navigateTo } from "./utils/navigation.js";
 
 function App() {
   const [refreshToken, setRefreshToken] = useState(0);
+  // Optimistic create: holds the temp post that Form fires before the API call.
+  // Cleared on success (real data arrives via refreshToken) or on rollback.
+  const [pendingPost, setPendingPost] = useState(null);
   const {
     authError,
     authSuccess,
@@ -21,8 +24,18 @@ function App() {
     pathname,
   } = useAuthSession({ navigateTo, getCurrentPath });
 
-  const handlePostCreated = () => {
-    setRefreshToken((currentValue) => currentValue + 1);
+  // Called by Form before the API request — show temp post immediately.
+  const handleBeforeCreate = (tempPost) => {
+    setPendingPost(tempPost);
+  };
+
+  // Called by Form after the API request resolves (success or failure).
+  // newPost === null means rollback; tempId is always provided so we can clear.
+  const handlePostCreated = (newPost, _tempId) => {
+    setPendingPost(null); // Remove optimistic placeholder
+    if (newPost) {
+      setRefreshToken((currentValue) => currentValue + 1);
+    }
   };
 
   const getUserDisplayName = () => {
@@ -115,13 +128,18 @@ function App() {
         {/* Main two-column layout */}
         <div className="main-grid">
           <div>
-            <CreatePost onCreated={handlePostCreated} currentUser={currentUser} />
+            <CreatePost
+              onCreated={handlePostCreated}
+              onBeforeCreate={handleBeforeCreate}
+              currentUser={currentUser}
+            />
           </div>
           <div>
             <List
               currentUser={currentUser}
               onPostsChanged={handlePostCreated}
               refreshToken={refreshToken}
+              optimisticPost={pendingPost}
             />
           </div>
         </div>

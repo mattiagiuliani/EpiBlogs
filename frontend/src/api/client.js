@@ -1,8 +1,23 @@
 const API_URL = import.meta.env.VITE_API_URL;
 
-if (!API_URL) {
+// In production (Vercel build) the variable MUST be present — a missing value
+// means the env var was never set in the Vercel dashboard.
+// In local development we fall back to localhost so the app starts even when
+// the developer hasn't copied .env.example → .env yet.
+if (!API_URL && import.meta.env.PROD) {
     throw new Error('[EpiBlogs] Missing VITE_API_URL');
 }
+
+if (!API_URL && !import.meta.env.PROD) {
+    console.warn(
+        '[EpiBlogs] VITE_API_URL is not set. ' +
+        'Falling back to http://localhost:3000. ' +
+        'Copy frontend/.env.example → frontend/.env and restart Vite to silence this.'
+    );
+}
+
+// TEMPORARY DEBUG LOG — remove once Vercel env var is confirmed working.
+console.log('[ENV DEBUG] VITE_API_URL =', import.meta.env.VITE_API_URL);
 
 const normalizeBase = (url) => {
     try {
@@ -12,7 +27,7 @@ const normalizeBase = (url) => {
     }
 };
 
-export const API_BASE_URL = normalizeBase(API_URL);
+export const API_BASE_URL = normalizeBase(API_URL ?? 'http://localhost:3000');
 const API_V1 = `${API_BASE_URL}/api/v1`;
 
 if (import.meta.env.PROD && API_BASE_URL.includes('localhost')) {

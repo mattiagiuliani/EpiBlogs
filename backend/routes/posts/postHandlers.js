@@ -1,10 +1,12 @@
+import Category from '../../models/Category.js';
 import Post from '../../models/Post.js';
 import logger from '../../utils/logger.js';
 import { isOwnedByAuthenticatedAuthor, sendForbiddenOwnershipError } from '../../utils/ownership.js';
-import { pickPostInput } from '../../utils/postData.js';
+import { normalizeTags, pickPostInput } from '../../utils/postData.js';
 import { sendValidationError } from '../../utils/routeErrors.js';
 import {
     buildPostFilter,
+    buildSearchFilter,
     findAuthorByIdOrRespond,
     findOwnedPostOrRespond,
     findPostByIdOrRespond,
@@ -12,12 +14,50 @@ import {
 } from './postHelpers.js';
 import { validateAuthorId, validatePostBody, validatePostId } from './validators.js';
 
+// Resolve a Category document by name OR slug.
+// Returns { name, slug } if found, null otherwise.
+// This allows the frontend to send either form without server-side breakage.
+const resolveCategoryFields = async (categoryInput) => {
+    if (!categoryInput) return null;
+    try {
+        return await Category.findOne({
+            $or: [{ name: categoryInput }, { slug: categoryInput }]
+        }).lean();
+    } catch {
+        return null;
+    }
+};
+
 export const listPosts = async (request, response) => {
     try {
         const limit = Math.min(Math.max(Number(request.query.limit) || 20, 1), 100);
         const page = Math.max(Number(request.query.page) || 1, 1);
         const skip = (page - 1) * limit;
         const filter = buildPostFilter(request.query);
+
+        const [data, total] = await Promise.all([
+            Post.find(filter).skip(skip).limit(limit).lean(),
+            Post.countDocuments(filter)
+        ]);
+
+        response.send({ data, total, page, limit, totalPages: Math.ceil(total / limit) });
+    } catch (error) {
+        logger.error({ err: error });
+        response.status(500).send({ message: error.message });
+    }
+};
+
+// POST /api/v1/posts/search
+// Body-driven search using the MongoDB text index (title + content).
+// Accepts { search?, categorySlug?, tags? } and returns the same paginated
+// envelope as GET /posts. Pagination is still controlled via query params
+// (?page=&limit=) so callers can bookmark result pages.
+export const searchPosts = async (request, response) => {
+    try {
+        const limit = Math.min(Math.max(Number(request.query.limit) || 20, 1), 100);
+        const page = Math.max(Number(request.query.page) || 1, 1);
+        const skip = (page - 1) * limit;
+        const filter = buildSearchFilter(request.body);
 
         const [data, total] = await Promise.all([
             Post.find(filter).skip(skip).limit(limit).lean(),
@@ -72,8 +112,12 @@ export const createPost = async (request, response) => {
             return;
         }
 
+        const categoryDoc = await resolveCategoryFields(postData.category);
+
         const newPost = await Post.create({
-            category: postData.category,
+            category: categoryDoc?.name ?? postData.category,
+            categorySlug: categoryDoc?.slug,
+            tags: normalizeTags(postData.tags),
             title: postData.title,
             cover: postData.cover,
             readTime: postData.readTime,
@@ -158,6 +202,21 @@ export const updatePost = async (request, response) => {
 
         if (!validatePostBody(updateData, response, { partial: true })) {
             return;
+        }
+
+        // Normalize category: if category was provided (as name or slug),
+        // resolve it to its canonical name + slug from the Category collection.
+        if (updateData.category) {
+            const categoryDoc = await resolveCategoryFields(updateData.category);
+            if (categoryDoc) {
+                updateData.category = categoryDoc.name;
+                updateData.categorySlug = categoryDoc.slug;
+            }
+        }
+
+        // Normalize tags if provided; an explicit empty array clears all tags.
+        if (Object.hasOwn(updateData, 'tags')) {
+            updateData.tags = normalizeTags(updateData.tags);
         }
 
         const postModified = await Post.findByIdAndUpdate(

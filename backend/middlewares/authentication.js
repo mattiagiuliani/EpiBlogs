@@ -58,6 +58,9 @@ const applyAuthentication = async (request) => {
 };
 
 const authentication = async (request, _response, next) => {
+    if (request.method === 'OPTIONS') {
+        return next();
+    }
     await applyAuthentication(request);
     next();
 };

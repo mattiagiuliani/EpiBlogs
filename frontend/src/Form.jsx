@@ -1,10 +1,20 @@
 import { createPost } from "./assets/createPostFetch.js";
-import { useState } from "react";
+import { listCategories } from "./assets/api.js";
+import TagInput from "./TagInput.jsx";
+import { useEffect, useState } from "react";
 
-const CreatePost = ({ onCreated, currentUser }) => {
+const CreatePost = ({ onCreated, onBeforeCreate, currentUser }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [tags, setTags] = useState([]);
+
+  useEffect(() => {
+    listCategories()
+      .then(setCategories)
+      .catch(() => setCategories([]));
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -23,14 +33,22 @@ const CreatePost = ({ onCreated, currentUser }) => {
       },
       author: currentUser?._id,
       content: formData.get("content"),
+      tags,
     };
+
+    // Optimistic create: show the post in the list immediately before the
+    // API responds. A temporary ID is used as a placeholder.
+    const tempId = `temp_${Date.now()}`;
+    onBeforeCreate?.({ ...postData, _id: tempId, authorEmail: currentUser?.email });
 
     try {
       const data = await createPost(postData);
       e.target.reset();
-      onCreated?.(data);
+      setTags([]);
+      onCreated?.(data, tempId);
       setSuccessMessage("Post created successfully.");
     } catch (err) {
+      onCreated?.(null, tempId); // signal rollback to parent
       setErrorMessage(err.message);
     } finally {
       setIsSubmitting(false);
@@ -63,13 +81,30 @@ const CreatePost = ({ onCreated, currentUser }) => {
           <label className="form-label" htmlFor="post-category">
             Category
           </label>
-          <input
-            id="post-category"
-            className="form-control"
-            name="category"
-            placeholder="Tech, News, Lifestyle..."
-            required
-          />
+          {categories.length > 0 ? (
+            <select
+              id="post-category"
+              className="form-select"
+              name="category"
+              defaultValue="web-development"
+              required
+            >
+              {categories.map((cat) => (
+                <option key={cat.slug} value={cat.slug}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <input
+              id="post-category"
+              className="form-control"
+              name="category"
+              placeholder="Web Development"
+              defaultValue="Web Development"
+              required
+            />
+          )}
         </div>
 
         <div className="form-group">
@@ -138,6 +173,11 @@ const CreatePost = ({ onCreated, currentUser }) => {
           <span className="form-text">
             Posts are created under your authenticated author profile.
           </span>
+        </div>
+
+        <div className="form-group">
+          <label className="form-label">Tags</label>
+          <TagInput tags={tags} onChange={setTags} />
         </div>
 
         <div className="form-group mb-4">

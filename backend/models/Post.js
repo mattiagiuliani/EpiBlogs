@@ -32,7 +32,8 @@ const PostSchema = new Schema ({
     category: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
+        default: 'Web Development'
     },
     title: {
         type: String,
@@ -81,6 +82,18 @@ const PostSchema = new Schema ({
     comments: {
         type: [CommentSchema],
         default: []
+    },
+    // Slug-based category identifier — derived automatically from Category collection
+    // on create/update. Optional so existing posts without it remain valid.
+    categorySlug: {
+        type: String,
+        trim: true
+    },
+    // Multi-tag system. Optional; existing posts default to [].
+    // Tags are stored as normalized slugs (lowercase, hyphenated).
+    tags: {
+        type: [String],
+        default: []
     }
 },
 {
@@ -89,7 +102,13 @@ const PostSchema = new Schema ({
 
 PostSchema.index({ author: 1, createdAt: -1 });
 PostSchema.index({ category: 1, createdAt: -1 });
+PostSchema.index({ categorySlug: 1, createdAt: -1 });
+PostSchema.index({ tags: 1 });
 PostSchema.index({ createdAt: -1 });
+// Full-text search index — used by POST /api/v1/posts/search.
+// MongoDB allows exactly one text index per collection; all text-searchable
+// fields must be declared here together.
+PostSchema.index({ title: 'text', content: 'text' });
 
 const Post = model('Post', PostSchema);
 

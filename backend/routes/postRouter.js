@@ -13,6 +13,7 @@ import {
     deletePost,
     getPostById,
     listPosts,
+    searchPosts,
     updatePost,
     updatePostCover
 } from './posts/postHandlers.js';
@@ -20,6 +21,9 @@ import {
 const postRouter = Router();
 
 postRouter.get('/', listPosts);
+// /search must be declared before /:postId so Express doesn't treat
+// the literal string "search" as a postId parameter.
+postRouter.post('/search', searchPosts);
 postRouter.get('/:postId', getPostById);
 postRouter.post('/', requireAuthentication, createPost);
 postRouter.patch('/:postId/cover', requireAuthentication, uploadCloudinary.single('cover'), updatePostCover);

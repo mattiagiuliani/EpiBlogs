@@ -1,0 +1,137 @@
+[
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c01",
+    "name": "Artificial Intelligence",
+    "slug": "artificial-intelligence",
+    "description": "Explore the latest advances in AI systems, large language models, and intelligent automation shaping the future of technology.",
+    "color": "#6366f1",
+    "createdAt": "2024-01-10T08:00:00.000Z",
+    "updatedAt": "2024-01-10T08:00:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c02",
+    "name": "Machine Learning",
+    "slug": "machine-learning",
+    "description": "Deep dives into ML algorithms, model training pipelines, evaluation strategies, and real-world deployment patterns.",
+    "color": "#8b5cf6",
+    "createdAt": "2024-01-10T08:05:00.000Z",
+    "updatedAt": "2024-01-10T08:05:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c03",
+    "name": "Data Science",
+    "slug": "data-science",
+    "description": "From exploratory analysis and statistical modelling to storytelling with data and building reproducible research pipelines.",
+    "color": "#06b6d4",
+    "createdAt": "2024-01-10T08:10:00.000Z",
+    "updatedAt": "2024-01-10T08:10:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c04",
+    "name": "Web Development",
+    "slug": "web-development",
+    "description": "Full-stack web engineering: REST APIs, authentication, performance optimisation, and modern architectural patterns.",
+    "color": "#f59e0b",
+    "createdAt": "2024-01-10T08:15:00.000Z",
+    "updatedAt": "2024-01-10T08:15:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c05",
+    "name": "Frontend Development",
+    "slug": "frontend-development",
+    "description": "Component architecture, state management, accessibility, animations, and everything that runs in the browser.",
+    "color": "#10b981",
+    "createdAt": "2024-01-10T08:20:00.000Z",
+    "updatedAt": "2024-01-10T08:20:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c06",
+    "name": "Backend Development",
+    "slug": "backend-development",
+    "description": "Server-side architecture, databases, microservices, event-driven systems, and API design for scalable applications.",
+    "color": "#3b82f6",
+    "createdAt": "2024-01-10T08:25:00.000Z",
+    "updatedAt": "2024-01-10T08:25:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c07",
+    "name": "Cloud Computing",
+    "slug": "cloud-computing",
+    "description": "AWS, Azure, and GCP deep dives: serverless, managed services, cost optimisation, and cloud-native design patterns.",
+    "color": "#0ea5e9",
+    "createdAt": "2024-01-10T08:30:00.000Z",
+    "updatedAt": "2024-01-10T08:30:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c08",
+    "name": "DevOps",
+    "slug": "devops",
+    "description": "CI/CD pipelines, container orchestration, infrastructure as code, and site reliability engineering practices.",
+    "color": "#f97316",
+    "createdAt": "2024-01-10T08:35:00.000Z",
+    "updatedAt": "2024-01-10T08:35:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c09",
+    "name": "Cybersecurity",
+    "slug": "cybersecurity",
+    "description": "Threat modelling, penetration testing, zero-trust architecture, and secure software development lifecycle.",
+    "color": "#ef4444",
+    "createdAt": "2024-01-10T08:40:00.000Z",
+    "updatedAt": "2024-01-10T08:40:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c0a",
+    "name": "Data Engineering",
+    "slug": "data-engineering",
+    "description": "ETL pipelines, data lakes, streaming architectures, and the tooling that powers modern analytical platforms.",
+    "color": "#a855f7",
+    "createdAt": "2024-01-10T08:45:00.000Z",
+    "updatedAt": "2024-01-10T08:45:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c0b",
+    "name": "Quantum Computing",
+    "slug": "quantum-computing",
+    "description": "Quantum circuits, error correction, variational algorithms, and the path toward quantum advantage over classical systems.",
+    "color": "#14b8a6",
+    "createdAt": "2024-01-10T08:50:00.000Z",
+    "updatedAt": "2024-01-10T08:50:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c0c",
+    "name": "Blockchain",
+    "slug": "blockchain",
+    "description": "Smart contracts, DeFi protocols, Layer 2 scaling, and the decentralised infrastructure reshaping finance and ownership.",
+    "color": "#f59e0b",
+    "createdAt": "2024-01-10T08:55:00.000Z",
+    "updatedAt": "2024-01-10T08:55:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c0d",
+    "name": "Internet of Things",
+    "slug": "internet-of-things",
+    "description": "Connected device architectures, edge computing, MQTT messaging, and secure IoT deployments at industrial scale.",
+    "color": "#84cc16",
+    "createdAt": "2024-01-10T09:00:00.000Z",
+    "updatedAt": "2024-01-10T09:00:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c0e",
+    "name": "Game Development",
+    "slug": "game-development",
+    "description": "Game engine internals, shader programming, procedural generation, physics simulation, and multiplayer architecture.",
+    "color": "#ec4899",
+    "createdAt": "2024-01-10T09:05:00.000Z",
+    "updatedAt": "2024-01-10T09:05:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c0f",
+    "name": "Mobile Development",
+    "slug": "mobile-development",
+    "description": "Cross-platform and native mobile engineering with React Native, Flutter, Swift, and Kotlin for iOS and Android.",
+    "color": "#6366f1",
+    "createdAt": "2024-01-10T09:10:00.000Z",
+    "updatedAt": "2024-01-10T09:10:00.000Z"
+  }
+]

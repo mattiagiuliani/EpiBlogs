@@ -83,6 +83,11 @@ export const exchangeGoogleAuthCode = async (code) => {
     return { ...response, author: normalizeAuthenticatedUser(response.author) };
 };
 
+// ── Category domain functions ─────────────────────────────────────────────────
+
+export const listCategories = () =>
+    client.get('/categories', 'Error fetching categories');
+
 // ── Author domain functions ───────────────────────────────────────────────────
 
 export const listAuthors = () =>
@@ -95,6 +100,19 @@ export const listAuthors = () =>
  */
 export const listPosts = (params) =>
     client.get(`/posts?${params.toString()}`, 'Error fetching posts');
+
+/**
+ * Full-text search via the scalable POST endpoint.
+ * Uses the MongoDB text index (title + content) instead of regex.
+ * @param {{ search?: string, categorySlug?: string, tags?: string[] }} body
+ * @param {URLSearchParams} [params]  Pagination (?page=&limit=).
+ */
+export const searchPosts = (body, params = new URLSearchParams()) =>
+    client.post(
+        `/posts/search?${params.toString()}`,
+        body,
+        'Error searching posts',
+    );
 
 export const updatePost = (postId, payload) =>
     client.put(`/posts/${postId}`, payload, 'Error updating post');
