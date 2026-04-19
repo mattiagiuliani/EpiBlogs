@@ -187,6 +187,7 @@ const setCached = (key, data) => {
 };
 
 /** Wipe the entire cache — called after any mutation so stale pages are not served. */
+// eslint-disable-next-line react-refresh/only-export-components
 export const clearCache = () => { postCache.clear(); lsClear(); };
 
 /** Lightweight structural equality check used for SWR change detection. */
@@ -320,13 +321,9 @@ const PostList = ({ currentUser, onPostsChanged, refreshToken, optimisticPost })
   }, []);
 
   // Re-fetch whenever any filter or the external refreshToken changes.
-  // Tags is an array, so we derive a string key to avoid reference-equality misses.
-  const tagsKey = tags.join(',');
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     doFetch(search, category, tags, page);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [search, category, tagsKey, page, refreshToken]);
+  }, [doFetch, search, category, tags, page, refreshToken]);
 
   // Load categories once (used by the inline edit form)
   useEffect(() => {

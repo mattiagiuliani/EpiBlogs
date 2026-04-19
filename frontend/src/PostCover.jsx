@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo } from "react";
 
 const hashString = (value) => {
   let hash = 0;
@@ -32,11 +32,7 @@ const PostCover = ({ cover, title, category, style, className = "post-cover" }) 
     [title, category]
   );
 
-  const [currentUrl, setCurrentUrl] = useState(cover || fallbackUrl);
-
-  useEffect(() => {
-    setCurrentUrl(cover || fallbackUrl);
-  }, [cover, fallbackUrl]);
+  const currentUrl = cover || fallbackUrl;
 
   if (!currentUrl) return null;
 
@@ -48,9 +44,9 @@ const PostCover = ({ cover, title, category, style, className = "post-cover" }) 
         className="post-cover-image"
         loading="lazy"
         decoding="async"
-        onError={() => {
-          if (currentUrl !== fallbackUrl) {
-            setCurrentUrl(fallbackUrl);
+        onError={(event) => {
+          if (event.currentTarget.src !== fallbackUrl) {
+            event.currentTarget.src = fallbackUrl;
           }
         }}
       />

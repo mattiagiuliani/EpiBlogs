@@ -17,9 +17,14 @@ const apiMocks = vi.hoisted(() => ({
 vi.mock('../../frontend/src/assets/api.js', () => apiMocks);
 
 // client.js — used directly by PostDetail for the post fetch
-const clientMock = vi.hoisted(() => ({
-    default: { get: vi.fn() },
-}));
+const clientMock = vi.hoisted(() => {
+    const mockedClient = { get: vi.fn() };
+
+    return {
+        client: mockedClient,
+        default: mockedClient,
+    };
+});
 vi.mock('../../frontend/src/api/client.js', () => clientMock);
 
 const { default: PostDetail } = await import('../../frontend/src/PostDetail.jsx');

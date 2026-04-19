@@ -9,7 +9,7 @@ const PostDetail = ({ currentUser, onLogout }) => {
   const { postId } = useParams();
   const navigate = useNavigate();
   const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loadedPostId, setLoadedPostId] = useState(null);
   const [error, setError] = useState("");
 
   const { comments, loading: commentsLoading, error: commentsError, submitting, addComment } =
@@ -19,15 +19,29 @@ const PostDetail = ({ currentUser, onLogout }) => {
     usePostLikes(postId, currentUser);
 
   const textareaRef = useRef(null);
+  const loading = loadedPostId !== postId && !error;
 
   useEffect(() => {
-    setLoading(true);
-    setError("");
+    let active = true;
+
     client
       .get(`/posts/${postId}`, "Error loading post")
-      .then(setPost)
-      .catch((err) => setError(err.message))
-      .finally(() => setLoading(false));
+      .then((data) => {
+        if (!active) return;
+        setPost(data);
+        setError("");
+        setLoadedPostId(postId);
+      })
+      .catch((err) => {
+        if (!active) return;
+        setPost(null);
+        setError(err.message);
+        setLoadedPostId(postId);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [postId]);
 
   if (loading) {

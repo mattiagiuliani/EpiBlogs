@@ -36,7 +36,7 @@ function App() {
 
   // Called by Form after the API request resolves (success or failure).
   // newPost === null means rollback; tempId is always provided so we can clear.
-  const handlePostCreated = (newPost, _tempId) => {
+  const handlePostCreated = (newPost) => {
     setPendingPost(null); // Remove optimistic placeholder
     if (newPost) {
       setRefreshToken((currentValue) => currentValue + 1);
@@ -47,7 +47,6 @@ function App() {
     let isMounted = true;
 
     if (!currentUser?._id) {
-      setAuthorSummary(null);
       return () => {
         isMounted = false;
       };
