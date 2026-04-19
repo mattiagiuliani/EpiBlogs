@@ -35,6 +35,14 @@ app.options(/.*/, cors(corsOptions));
 // helmet() causes the second call to overwrite the CSP with Helmet defaults.
 const isDevelopment = !isProduction;
 const frontendUrl = process.env[frontendUrlKey]?.trim();
+const allowedOriginsFromEnv = (process.env.CORS_ALLOWED_ORIGINS ?? '')
+    .split(',')
+    .map((value) => value.trim())
+    .filter(Boolean);
+const developmentConnectOrigins = Array.from(new Set([
+    process.env.DEVELOPMENT_FRONTEND_URL?.trim(),
+    ...allowedOriginsFromEnv,
+].filter(Boolean)));
 
 // Gstatic hosts: www.gstatic.com serves Google OAuth UI assets (inline styles,
 // icons); fonts.gstatic.com serves the actual font files. Both are required.
@@ -52,7 +60,7 @@ const connectSrc = [
     'https://accounts.google.com',
     'https://oauth2.googleapis.com',
     'https://www.googleapis.com',
-    ...(isDevelopment ? ['http://localhost:3000', 'http://localhost:5173'] : []),
+    ...(isDevelopment ? developmentConnectOrigins : []),
     ...(frontendUrl && !isDevelopment ? [frontendUrl] : []),
 ];
 
