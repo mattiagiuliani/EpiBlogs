@@ -22,9 +22,6 @@ if (!API_URL && !import.meta.env.PROD) {
     );
 }
 
-// TEMPORARY DEBUG LOG — remove once Vercel env var is confirmed working.
-console.log('[ENV DEBUG] API URL selected =', API_URL);
-
 const normalizeBase = (url) => {
     try {
         return new URL(url).origin;
@@ -73,7 +70,7 @@ const buildHeaders = (existingHeaders = {}, includeContentType = false) => {
         headers.set('Content-Type', 'application/json');
     }
 
-    // REMOVED: No longer send Authorization header - rely on HttpOnly cookie only
+    // Auth is managed by HttpOnly cookie (credentials: 'include').
     return headers;
 };
 
@@ -129,7 +126,7 @@ const request = (method, path, body, fallback) => {
     );
 };
 
-const client = {
+export const client = {
     get: (path, fallback) => request('GET', path, undefined, fallback),
     post: (path, body, fallback) => request('POST', path, body, fallback),
     put: (path, body, fallback) => request('PUT', path, body, fallback),

@@ -2,8 +2,10 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const authorFindByIdMock = vi.fn();
 const categoryFindOneMock = vi.fn();
+const postAggregateMock = vi.fn();
 const postCountDocumentsMock = vi.fn();
 const postCreateMock = vi.fn();
+const postDistinctMock = vi.fn();
 const postFindByIdMock = vi.fn();
 const postFindByIdAndDeleteMock = vi.fn();
 const postFindByIdAndUpdateMock = vi.fn();
@@ -26,8 +28,10 @@ vi.mock('../../backend/models/Category.js', () => ({
 
 vi.mock('../../backend/models/Post.js', () => ({
     default: {
+        aggregate: postAggregateMock,
         countDocuments: postCountDocumentsMock,
         create: postCreateMock,
+        distinct: postDistinctMock,
         find: postFindMock,
         findById: postFindByIdMock,
         findByIdAndDelete: postFindByIdAndDeleteMock,
@@ -50,6 +54,7 @@ const {
     createPost,
     deletePost,
     getPostById,
+    listPostTags,
     listPosts,
     listPostsByAuthor,
     searchPosts,
@@ -67,6 +72,8 @@ describe('post handlers', () => {
         vi.clearAllMocks();
         // Default: Category lookup returns null so existing tests remain unaffected.
         categoryFindOneMock.mockReturnValue({ lean: vi.fn().mockResolvedValue(null) });
+        postAggregateMock.mockResolvedValue([]);
+        postDistinctMock.mockResolvedValue([]);
         sendMailMock.mockReturnValue({
             catch: vi.fn()
         });
@@ -325,7 +332,7 @@ describe('post handlers', () => {
 
         await updatePostCover({
             author: { _id: '507f1f77bcf86cd799439011' },
-            file: { path: 'https://cdn.example/cover.jpg' },
+            file: { secure_url: 'https://cdn.example/cover.jpg' },
             params: { postId: '507f1f77bcf86cd799439021' }
         }, response);
 
@@ -647,6 +654,48 @@ describe('post handlers', () => {
         }));
     });
 
+    it('lists tags with counts sorted by popularity', async () => {
+        postAggregateMock.mockResolvedValue([
+            { tag: 'ai', count: 15 },
+            { tag: 'web-dev', count: 8 },
+            { tag: 'backend', count: 5 }
+        ]);
+        const response = createResponse();
+
+        await listPostTags({ query: {} }, response);
+
+        expect(response.send).toHaveBeenCalledWith({ data: [
+            { tag: 'ai', count: 15 },
+            { tag: 'web-dev', count: 8 },
+            { tag: 'backend', count: 5 }
+        ] });
+    });
+
+    it('filters null, undefined, and string "undefined"/"null" from tags list', async () => {
+        postAggregateMock.mockResolvedValue([
+            { tag: 'valid-tag', count: 10 }
+        ]);
+        const response = createResponse();
+
+        await listPostTags({ query: {} }, response);
+
+        // Verify the aggregation pipeline filters out invalid values
+        expect(postAggregateMock).toHaveBeenCalledWith(expect.arrayContaining([
+            expect.objectContaining({
+                $match: { tags: { $nin: [null, undefined, '', 'undefined', 'null'] } }
+            })
+        ]));
+    });
+
+    it('returns empty list when no tags exist', async () => {
+        postAggregateMock.mockResolvedValue([]);
+        const response = createResponse();
+
+        await listPostTags({ query: {} }, response);
+
+        expect(response.send).toHaveBeenCalledWith({ data: [] });
+    });
+
     it('filters posts by a single tag', async () => {
         postFindMock.mockReturnValue({
             skip: vi.fn().mockReturnThis(),
@@ -671,6 +720,20 @@ describe('post handlers', () => {
         const response = createResponse();
 
         await listPosts({ query: { tag: 'ai,web-dev' } }, response);
+
+        expect(postFindMock).toHaveBeenCalledWith({ tags: { $in: ['ai', 'web-dev'] } });
+    });
+
+    it('filters posts by multiple tags using ?tags= alias', async () => {
+        postFindMock.mockReturnValue({
+            skip: vi.fn().mockReturnThis(),
+            limit: vi.fn().mockReturnThis(),
+            lean: vi.fn().mockResolvedValue([])
+        });
+        postCountDocumentsMock.mockResolvedValue(0);
+        const response = createResponse();
+
+        await listPosts({ query: { tags: 'ai,web-dev' } }, response);
 
         expect(postFindMock).toHaveBeenCalledWith({ tags: { $in: ['ai', 'web-dev'] } });
     });
@@ -711,6 +774,24 @@ describe('post handlers', () => {
             expect.objectContaining({ tags: ['node-js', 'express'] }),
             { returnDocument: 'after', runValidators: true }
         );
+    });
+
+    it('lists preset tags with counts sorted by popularity', async () => {
+        postAggregateMock.mockResolvedValue([
+            { tag: 'ai', count: 15 },
+            { tag: 'node-js', count: 8 }
+        ]);
+        const response = createResponse();
+
+        await listPostTags({ query: { limit: '50' } }, response);
+
+        expect(postAggregateMock).toHaveBeenCalled();
+        expect(response.send).toHaveBeenCalledWith({ 
+            data: [
+                { tag: 'ai', count: 15 },
+                { tag: 'node-js', count: 8 }
+            ] 
+        });
     });
 
     it('lists posts by author', async () => {

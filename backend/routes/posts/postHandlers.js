@@ -47,6 +47,27 @@ export const listPosts = async (request, response) => {
     }
 };
 
+export const listPostTags = async (request, response) => {
+    try {
+        const limit = Math.min(Math.max(Number(request.query.limit) || 50, 1), 100);
+        
+        // Aggregation pipeline: group by tag, count occurrences, filter invalid, sort by count DESC
+        const data = await Post.aggregate([
+            { $unwind: '$tags' },
+            { $match: { tags: { $nin: [null, undefined, '', 'undefined', 'null'] } } },
+            { $group: { _id: '$tags', count: { $sum: 1 } } },
+            { $project: { tag: '$_id', count: 1, _id: 0 } },
+            { $sort: { count: -1, tag: 1 } },
+            { $limit: limit }
+        ]);
+
+        response.send({ data });
+    } catch (error) {
+        logger.error({ err: error });
+        response.status(500).send({ message: error.message });
+    }
+};
+
 // POST /api/v1/posts/search
 // Body-driven search using the MongoDB text index (title + content).
 // Accepts { search?, categorySlug?, tags? } and returns the same paginated
@@ -158,9 +179,14 @@ export const updatePostCover = async (request, response) => {
             return response.status(400).send({ message: 'Cover file is required' });
         }
 
+        const coverUrl = request.file.secure_url || request.file.url || request.file.path;
+        if (!coverUrl) {
+            return response.status(500).send({ message: 'Unable to resolve uploaded cover URL' });
+        }
+
         const postModified = await Post.findByIdAndUpdate(
             request.params.postId,
-            { cover: request.file.path },
+            { cover: coverUrl },
             { returnDocument: 'after', runValidators: true }
         );
 

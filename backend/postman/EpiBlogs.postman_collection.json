@@ -2,17 +2,13 @@
   "info": {
     "name": "EpiBlogs API",
     "_postman_id": "c2ec0790-88c2-4a50-bd9b-f1a661f4b1cf",
-    "description": "Collection Postman allineata al progetto EpiBlogs. Copre autenticazione JWT + cookie HttpOnly, Google OAuth exchange, CRUD authors/posts/comments, ownership sui record e upload avatar/cover. Le GET pubbliche non richiedono Authorization, mentre tutte le mutazioni e /me richiedono sessione valida o Bearer token.",
+    "description": "Collection Postman allineata al progetto EpiBlogs (API versionata /api/v1). Copre autenticazione con cookie HttpOnly, Google OAuth exchange, CRUD authors/posts/comments, likes, ownership sui record e upload avatar/cover. Le GET pubbliche non richiedono autenticazione; tutte le mutazioni e /api/v1/auth/me richiedono sessione valida via cookie.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
     {
       "key": "baseUrl",
       "value": "http://localhost:3000"
-    },
-    {
-      "key": "accessToken",
-      "value": ""
     },
     {
       "key": "authorId",
@@ -34,7 +30,7 @@
   "item": [
     {
       "name": "Auth",
-      "description": "I flussi email/password e Google convergono nello stesso JWT applicativo. Le request di register/login salvano automaticamente token e authorId nelle variabili di collection.",
+      "description": "Flussi auth allineati a /api/v1/auth/*: login, logout, /me e Google exchange usano la sessione via cookie HttpOnly. Register crea soltanto l'autore e non apre automaticamente la sessione. In Postman usa la cookie jar.",
       "item": [
         {
           "name": "Register Author",
@@ -65,15 +61,18 @@
               "raw": "{\n  \"email\": \"mario.rossi@example.com\",\n  \"password\": \"secret123\",\n  \"firstName\": \"Mario\",\n  \"lastName\": \"Rossi\",\n  \"profile\": \"Full stack developer\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/authors",
+              "raw": "{{baseUrl}}/api/v1/auth/register",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
-                "authors"
+                "api",
+                "v1",
+                "auth",
+                "register"
               ]
             },
-            "description": "Route pubblica usata anche dal frontend per creare un autore locale."
+            "description": "Route pubblica per registrazione autore locale. Crea l'account ma non imposta il cookie di sessione: esegui poi Login per autenticarti in Postman."
           }
         },
         {
@@ -85,9 +84,6 @@
                 "type": "text/javascript",
                 "exec": [
                   "const data = pm.response.json();",
-                  "if (data && data.token) {",
-                  "  pm.collectionVariables.set('accessToken', data.token);",
-                  "}",
                   "if (data && data.author && data.author._id) {",
                   "  pm.collectionVariables.set('authorId', data.author._id);",
                   "}"
@@ -108,11 +104,14 @@
               "raw": "{\n  \"email\": \"mario.rossi@example.com\",\n  \"password\": \"secret123\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/login",
+              "raw": "{{baseUrl}}/api/v1/auth/login",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
+                "v1",
+                "auth",
                 "login"
               ]
             }
@@ -122,18 +121,16 @@
           "name": "Get Me",
           "request": {
             "method": "GET",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
+            "header": [],
             "url": {
-              "raw": "{{baseUrl}}/me",
+              "raw": "{{baseUrl}}/api/v1/auth/me",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
+                "v1",
+                "auth",
                 "me"
               ]
             }
@@ -144,11 +141,13 @@
           "request": {
             "method": "GET",
             "url": {
-              "raw": "{{baseUrl}}/auth/google",
+              "raw": "{{baseUrl}}/api/v1/auth/google",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
+                "v1",
                 "auth",
                 "google"
               ]
@@ -165,9 +164,6 @@
                 "type": "text/javascript",
                 "exec": [
                   "const data = pm.response.json();",
-                  "if (data && data.token) {",
-                  "  pm.collectionVariables.set('accessToken', data.token);",
-                  "}",
                   "if (data && data.author && data.author._id) {",
                   "  pm.collectionVariables.set('authorId', data.author._id);",
                   "}"
@@ -188,11 +184,13 @@
               "raw": "{\n  \"code\": \"{{googleAuthCode}}\"\n}"
             },
             "url": {
-              "raw": "{{baseUrl}}/auth/google/exchange-code",
+              "raw": "{{baseUrl}}/api/v1/auth/google/exchange-code",
               "host": [
                 "{{baseUrl}}"
               ],
               "path": [
+                "api",
+                "v1",
                 "auth",
                 "google",
                 "exchange-code"
@@ -200,12 +198,32 @@
             },
             "description": "Scambia il one-time code OAuth con il JWT applicativo. Valido solo una volta e a breve scadenza."
           }
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Termina la sessione corrente e pulisce la cookie auth."
+          }
         }
       ]
     },
     {
       "name": "Authors",
-      "description": "Le letture sono pubbliche. Le mutazioni sono ownership-based: puoi modificare o eliminare solo il tuo profilo.",
+      "description": "Le letture sono pubbliche. Le mutazioni sono ownership-based: puoi modificare o eliminare solo il tuo profilo autenticato via cookie.",
       "item": [
         {
           "name": "Get Authors",
@@ -250,10 +268,6 @@
             "method": "PUT",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              },
-              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
@@ -280,12 +294,7 @@
           "name": "Upload Author Avatar",
           "request": {
             "method": "PATCH",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -315,12 +324,7 @@
           "name": "Delete Author",
           "request": {
             "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/authors/{{authorId}}",
               "host": [
@@ -338,8 +342,32 @@
       ]
     },
     {
+      "name": "Categories",
+      "description": "Categorie pubbliche disponibili per classificare i post.",
+      "item": [
+        {
+          "name": "Get Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/categories",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "categories"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
       "name": "Posts",
-      "description": "Le letture sono pubbliche. I post possono essere creati, modificati e cancellati solo dal proprietario del profilo autore associato.",
+      "description": "Le letture sono pubbliche. I post possono essere creati, modificati e cancellati solo dal proprietario del profilo autore associato (sessione cookie).",
       "item": [
         {
           "name": "Get Posts",
@@ -347,7 +375,7 @@
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "{{baseUrl}}/api/v1/posts",
+              "raw": "{{baseUrl}}/api/v1/posts?search=&category=&tag=&tags=&page=&limit=",
               "host": [
                 "{{baseUrl}}"
               ],
@@ -360,9 +388,95 @@
                 {
                   "key": "search",
                   "value": ""
+                },
+                {
+                  "key": "category",
+                  "value": ""
+                },
+                {
+                  "key": "tag",
+                  "value": ""
+                },
+                {
+                  "key": "tags",
+                  "value": ""
+                },
+                {
+                  "key": "page",
+                  "value": ""
+                },
+                {
+                  "key": "limit",
+                  "value": ""
                 }
               ]
-            }
+            },
+            "description": "Lista pubblica dei post. Supporta filtro title regex via `search`, filtro categoria via slug in `category`, e filtro tag via `tag` oppure `tags` (comma-separated). Paginazione con `page` e `limit`."
+          }
+        },
+        {
+          "name": "Get Post Tags",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/tags?limit=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "posts",
+                "tags"
+              ],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            },
+            "description": "Ritorna i tag disponibili aggregati dal database nel formato `{ data: [{ tag, count }] }`, ordinati per frequenza desc e poi alfabeticamente. `limit` opzionale (default 50, max 100)."
+          }
+        },
+        {
+          "name": "Search Posts",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"search\": \"express mongodb\",\n  \"categorySlug\": \"web-development\",\n  \"tags\": [\"web-dev\", \"javascript\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/search?page=1&limit=20",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "posts",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            },
+            "description": "Ricerca strutturata tramite text index MongoDB. Il body supporta `search`, `categorySlug` e `tags`; la paginazione resta sui query params `page` e `limit`."
           }
         },
         {
@@ -404,17 +518,13 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              },
-              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"category\": \"Tech\",\n  \"title\": \"Titolo articolo\",\n  \"cover\": \"https://example.com/cover.jpg\",\n  \"readTime\": {\n    \"value\": 5,\n    \"unit\": \"min\"\n  },\n  \"author\": \"{{authorId}}\",\n  \"content\": \"<h1>Articolo</h1><p>Contenuto HTML</p>\"\n}"
+              "raw": "{\n  \"category\": \"web-development\",\n  \"title\": \"Titolo articolo\",\n  \"cover\": \"https://example.com/cover.jpg\",\n  \"readTime\": {\n    \"value\": 5,\n    \"unit\": \"min\"\n  },\n  \"author\": \"{{authorId}}\",\n  \"content\": \"<h1>Articolo</h1><p>Contenuto HTML</p>\",\n  \"tags\": [\"web-dev\", \"javascript\", \"api\"]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts",
@@ -426,7 +536,8 @@
                 "v1",
                 "posts"
               ]
-            }
+            },
+            "description": "Crea un post del profilo autore autenticato. `category` puo essere nome o slug; il backend salva i tag normalizzati come slug lowercase/hyphenated."
           }
         },
         {
@@ -435,17 +546,13 @@
             "method": "PUT",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              },
-              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"title\": \"Titolo aggiornato\",\n  \"content\": \"<h1>Articolo aggiornato</h1><p>Nuovo contenuto HTML</p>\"\n}"
+              "raw": "{\n  \"category\": \"web-development\",\n  \"title\": \"Titolo aggiornato\",\n  \"content\": \"<h1>Articolo aggiornato</h1><p>Nuovo contenuto HTML</p>\",\n  \"tags\": [\"web-dev\", \"restful\", \"mongodb\"]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts/{{postId}}",
@@ -458,19 +565,15 @@
                 "posts",
                 "{{postId}}"
               ]
-            }
+            },
+            "description": "Aggiornamento parziale del post. Se `tags` e presente viene normalizzato; un array vuoto esplicito rimuove tutti i tag dal post."
           }
         },
         {
           "name": "Upload Post Cover",
           "request": {
             "method": "PATCH",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
+            "header": [],
             "body": {
               "mode": "formdata",
               "formdata": [
@@ -500,12 +603,7 @@
           "name": "Delete Post",
           "request": {
             "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts/{{postId}}",
               "host": [
@@ -539,12 +637,54 @@
               ]
             }
           }
+        },
+        {
+          "name": "Get Likes",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/{{postId}}/likes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "posts",
+                "{{postId}}",
+                "likes"
+              ]
+            },
+            "description": "Legge il conteggio likes del post (pubblica)."
+          }
+        },
+        {
+          "name": "Toggle Like",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/posts/{{postId}}/likes",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "posts",
+                "{{postId}}",
+                "likes"
+              ]
+            },
+            "description": "Aggiunge/rimuove il like dell'autore autenticato (cookie richiesta)."
+          }
         }
       ]
     },
     {
       "name": "Comments",
-      "description": "Le letture sono pubbliche. Create, update e delete richiedono JWT o cookie valido; update e delete sono ownership-based.",
+      "description": "Le letture sono pubbliche. Create, update e delete richiedono sessione valida via cookie; update e delete sono ownership-based.",
       "item": [
         {
           "name": "Get Comments",
@@ -607,10 +747,6 @@
             "method": "POST",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              },
-              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
@@ -640,10 +776,6 @@
             "method": "PUT",
             "header": [
               {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              },
-              {
                 "key": "Content-Type",
                 "value": "application/json"
               }
@@ -672,12 +804,7 @@
           "name": "Delete Comment",
           "request": {
             "method": "DELETE",
-            "header": [
-              {
-                "key": "Authorization",
-                "value": "Bearer {{accessToken}}"
-              }
-            ],
+            "header": [],
             "url": {
               "raw": "{{baseUrl}}/api/v1/posts/{{postId}}/comments/{{commentId}}",
               "host": [

@@ -188,7 +188,7 @@ describe('author handlers', () => {
 
         await updateAuthorAvatar({
             author: { _id: '507f1f77bcf86cd799439011' },
-            file: { path: 'https://cdn.example/avatar.jpg' },
+            file: { secure_url: 'https://cdn.example/avatar.jpg' },
             params: { authorId: '507f1f77bcf86cd799439011' }
         }, response);
 

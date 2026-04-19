@@ -4,7 +4,8 @@ import PostCard from './PostCard.jsx';
 import SearchBar from './SearchBar.jsx';
 import TagFilter from './TagFilter.jsx';
 import TagInput from './TagInput.jsx';
-import { deletePost, listCategories, listPosts, updatePost } from './assets/api.js';
+import { deletePost, listCategories, listPostTags, listPosts, updatePost } from './assets/api.js';
+import { PREDEFINED_TAGS } from './constants/tags.js';
 
 const DEFAULT_LIMIT = 20;
 
@@ -186,7 +187,7 @@ const setCached = (key, data) => {
 };
 
 /** Wipe the entire cache — called after any mutation so stale pages are not served. */
-const clearCache = () => { postCache.clear(); lsClear(); };
+export const clearCache = () => { postCache.clear(); lsClear(); };
 
 /** Lightweight structural equality check used for SWR change detection. */
 const dataChanged = (a, b) => JSON.stringify(a) !== JSON.stringify(b);
@@ -227,6 +228,7 @@ const PostList = ({ currentUser, onPostsChanged, refreshToken, optimisticPost })
     Math.max(init.cached?.totalPages ?? 1, 1),
   );
   const [categories, setCategories] = useState([]);
+  const [presetTags, setPresetTags] = useState([]);
 
   // Edit / delete state
   const [editingPostId, setEditingPostId] = useState('');
@@ -331,10 +333,44 @@ const PostList = ({ currentUser, onPostsChanged, refreshToken, optimisticPost })
     listCategories().then(setCategories).catch(() => setCategories([]));
   }, []);
 
+  // Load preset tags once (used by the tag filter with autocomplete)
+  useEffect(() => {
+    listPostTags()
+      .then((data) => {
+        if (!Array.isArray(data) || data.length === 0) {
+          // Fallback to predefined tags if empty or error
+          setPresetTags(PREDEFINED_TAGS.map(tag => ({ tag, count: 0 })));
+          return;
+        }
+        
+        // Validate format: should be [{tag, count}, ...] from new backend
+        const isNewFormat = data.every(item => 
+          item && typeof item === 'object' && typeof item.tag === 'string' && typeof item.count === 'number'
+        );
+        
+        if (isNewFormat) {
+          setPresetTags(data);
+        } else {
+          // Fallback for unexpected format
+          setPresetTags(PREDEFINED_TAGS.map(tag => ({ tag, count: 0 })));
+        }
+      })
+      .catch(() => {
+        // Silently fall back to predefined tags on error
+        setPresetTags(PREDEFINED_TAGS.map(tag => ({ tag, count: 0 })));
+      });
+  }, []);
+
   // ── Filter handlers — always reset to page 1 ────────────────────────────────
   const handleSearchChange = (val) => { setSearch(val); setPage(1); };
   const handleCategoryChange = (val) => { setCategory(val); setPage(1); };
   const handleTagsChange = (newTags) => { setTags(newTags); setPage(1); };
+
+  const handleTagClick = (tag) => {
+    if (!tags.includes(tag)) {
+      handleTagsChange([...tags, tag]);
+    }
+  };
 
   const clearAllFilters = () => {
     setSearch(''); setCategory(''); setTags([]); setPage(1);
@@ -488,7 +524,7 @@ const PostList = ({ currentUser, onPostsChanged, refreshToken, optimisticPost })
           <CategorySelect value={category} onChange={handleCategoryChange} />
         </div>
 
-        <TagFilter tags={tags} onChange={handleTagsChange} />
+        <TagFilter tags={tags} presets={presetTags} onChange={handleTagsChange} />
 
         {hasActiveFilters && (
           <div>
@@ -682,6 +718,7 @@ const PostList = ({ currentUser, onPostsChanged, refreshToken, optimisticPost })
                   isMutating={isMutating}
                   onEdit={startEditingPost}
                   onDelete={handleDeletePost}
+                  onTagClick={handleTagClick}
                 />
               );
             })}

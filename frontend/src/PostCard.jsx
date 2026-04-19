@@ -1,3 +1,6 @@
+import { useNavigate } from "react-router";
+import PostCover from "./PostCover.jsx";
+
 const getPreviewText = (content) => {
   if (typeof content !== 'string') return '';
   const plain = content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
@@ -9,24 +12,23 @@ const getPreviewText = (content) => {
  * The inline edit form lives in PostList so it can share edit state centrally.
  *
  * Props:
- *   post       object    post document from the API
- *   isOwner    bool      whether the current user owns this post
- *   isMutating bool      a delete/save is in flight for this card
- *   onEdit     fn(post)  called when the user clicks Edit
- *   onDelete   fn(id)    called when the user clicks Delete
+ *   post         object    post document from the API
+ *   isOwner      bool      whether the current user owns this post
+ *   isMutating   bool      a delete/save is in flight for this card
+ *   onEdit       fn(post)  called when the user clicks Edit
+ *   onDelete     fn(id)    called when the user clicks Delete
+ *   onTagClick   fn(tag)   called when the user clicks a tag
  */
-const PostCard = ({ post, isOwner, isMutating, onEdit, onDelete }) => (
-  <article className="post-card">
-    {post.cover && (
-      <div
-        className="post-cover"
-        style={{
-          backgroundImage: `linear-gradient(180deg,rgba(3,10,26,.15),rgba(3,10,26,.85)),url(${post.cover})`,
-        }}
-        role="img"
-        aria-label={`Cover image for ${post.title}`}
-      />
-    )}
+const PostCard = ({ post, isOwner, isMutating, onEdit, onDelete, onTagClick }) => {
+  const navigate = useNavigate();
+
+  return (
+  <article
+    className="post-card"
+    onClick={() => navigate(`/post/${post._id}`)}
+    style={{ cursor: "pointer" }}
+  >
+    <PostCover cover={post.cover} title={post.title} category={post.category} />
 
     <div className="post-body">
       <div className="post-title-row">
@@ -39,7 +41,17 @@ const PostCard = ({ post, isOwner, isMutating, onEdit, onDelete }) => (
       {post.tags?.length > 0 && (
         <div className="post-tags" aria-label="Tags">
           {post.tags.map((tag) => (
-            <span key={tag} className="post-tag">#{tag}</span>
+            <button
+              key={tag}
+              type="button"
+              className="post-tag"
+              onClick={(e) => {
+                e.stopPropagation();
+                onTagClick?.(tag);
+              }}
+            >
+              #{tag}
+            </button>
           ))}
         </div>
       )}
@@ -57,7 +69,7 @@ const PostCard = ({ post, isOwner, isMutating, onEdit, onDelete }) => (
             type="button"
             className="btn btn-outline btn-sm"
             disabled={isMutating}
-            onClick={() => onEdit(post)}
+            onClick={(e) => { e.stopPropagation(); onEdit(post); }}
           >
             Edit
           </button>
@@ -65,7 +77,7 @@ const PostCard = ({ post, isOwner, isMutating, onEdit, onDelete }) => (
             type="button"
             className="btn btn-ghost btn-sm"
             disabled={isMutating}
-            onClick={() => onDelete(post._id)}
+            onClick={(e) => { e.stopPropagation(); onDelete(post._id); }}
           >
             {isMutating ? 'Deleting…' : 'Delete'}
           </button>
@@ -73,6 +85,7 @@ const PostCard = ({ post, isOwner, isMutating, onEdit, onDelete }) => (
       )}
     </div>
   </article>
-);
+  );
+};
 
 export default PostCard;

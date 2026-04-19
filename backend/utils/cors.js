@@ -5,13 +5,31 @@ const DEFAULT_FRONTEND_URL = 'http://localhost:5173';
 const VERCEL_PREVIEW_RE = /^https:\/\/[a-z0-9-]+\.vercel\.app$/;
 
 const trimEnv = (value) => (typeof value === 'string' ? value.trim() : '');
+const LOCALHOST_DEV_RE = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i;
+
+const isProductionEnv = () =>
+    process.env.NODE_ENV?.toLowerCase() === 'production' ||
+    process.env.GOOGLE_ENV?.toLowerCase() === 'production';
+
+const resolveFrontendUrl = () => {
+    const explicitFrontendUrl = trimEnv(process.env.FRONTEND_URL);
+    if (explicitFrontendUrl) return explicitFrontendUrl;
+
+    const envFrontendUrl = trimEnv(
+        isProductionEnv()
+            ? process.env.DEPLOYMENT_FRONTEND_URL
+            : process.env.DEVELOPMENT_FRONTEND_URL
+    );
+
+    return envFrontendUrl || DEFAULT_FRONTEND_URL;
+};
 
 export const getAllowedCorsOrigins = () => {
     const configuredOrigins = trimEnv(process.env.CORS_ALLOWED_ORIGINS)
         .split(',')
         .map((origin) => origin.trim())
         .filter(Boolean);
-    const frontendUrl = trimEnv(process.env.FRONTEND_URL) || DEFAULT_FRONTEND_URL;
+    const frontendUrl = resolveFrontendUrl();
 
     return Array.from(new Set([
         frontendUrl,
@@ -24,6 +42,7 @@ export const buildCorsOptions = () => {
     const credentialsSetting = trimEnv(process.env.CORS_ALLOW_CREDENTIALS);
     const allowCredentials = credentialsSetting === '' ? true : credentialsSetting === 'true';
     const allowVercelPreviews = trimEnv(process.env.CORS_ALLOW_VERCEL_PREVIEWS) === 'true';
+    const allowLocalhostDevOrigins = !isProductionEnv();
 
     return {
         allowedHeaders: ['Authorization', 'Content-Type'],
@@ -35,6 +54,7 @@ export const buildCorsOptions = () => {
             const isAllowed =
                 !requestOrigin ||
                 allowedOrigins.includes(requestOrigin) ||
+                (allowLocalhostDevOrigins && LOCALHOST_DEV_RE.test(requestOrigin)) ||
                 (allowVercelPreviews && VERCEL_PREVIEW_RE.test(requestOrigin));
 
             if (isAllowed) {

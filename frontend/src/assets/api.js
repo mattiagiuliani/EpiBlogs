@@ -7,7 +7,8 @@
  * Backend routes served at both legacy and versioned paths (see auth/paths.js),
  * so migrating all calls to /api/v1/auth/* requires no backend changes.
  */
-import client, {
+import {
+    client,
     API_BASE_URL,
     clearStoredAuthToken,
     getStoredAuthToken,
@@ -90,6 +91,19 @@ export const listCategories = () =>
 export const listAuthors = () =>
     client.get('/authors', 'Error fetching authors');
 
+export const getAuthorById = (authorId) =>
+    client.get(`/authors/${authorId}`, 'Error fetching author profile');
+
+export const updateAuthor = (authorId, payload) =>
+    client.put(`/authors/${authorId}`, payload, 'Error updating author profile');
+
+export const uploadAuthorAvatar = (authorId, file) => {
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    return client.patch(`/authors/${authorId}/avatar`, formData, 'Error uploading author avatar');
+};
+
 // ── Post domain functions ─────────────────────────────────────────────────────
 
 /**
@@ -117,6 +131,41 @@ export const updatePost = (postId, payload) =>
 export const deletePost = (postId) =>
     client.del(`/posts/${postId}`, 'Error deleting post');
 
+/**
+ * Fetch available tags for filtering. Returns array of {tag, count} objects sorted by popularity.
+ * Gracefully handles both new format {data: [{tag, count}]} and legacy string arrays.
+ * @returns {Promise<{tag: string, count: number}[]>} Array of tags with usage count
+ */
+export const listPostTags = async () => {
+    try {
+        const response = await client.get('/posts/tags', 'Error fetching post tags');
+        const data = response?.data ?? response;
+        
+        // New format: already {tag, count}
+        if (Array.isArray(data) && data.some(item => item?.tag && typeof item?.count === 'number')) {
+            return data;
+        }
+        
+        // Legacy format: array of strings → convert with count: 0
+        if (Array.isArray(data) && data.every(item => typeof item === 'string')) {
+            return data.map(tag => ({ tag: String(tag).trim(), count: 0 })).filter(item => item.tag);
+        }
+        
+        // Fallback: empty array if format unexpected
+        return [];
+    } catch (err) {
+        // Silently return empty array on error so UI doesn't break
+        console.warn('Failed to fetch tags:', err?.message);
+        return [];
+    }
+};
+
+export const listComments = (postId) =>
+    client.get(`/posts/${postId}/comments`, 'Error fetching comments');
+
+export const createComment = (postId, comment) =>
+    client.post(`/posts/${postId}/comments`, { comment }, 'Error creating comment');
+
 export const updateComment = ({ postId, commentId, comment }) =>
     client.put(
         `/posts/${postId}/comments/${commentId}`,
@@ -129,3 +178,9 @@ export const deleteComment = ({ postId, commentId }) =>
         `/posts/${postId}/comments/${commentId}`,
         'Error deleting comment',
     );
+
+export const getLikes = (postId) =>
+    client.get(`/posts/${postId}/likes`, 'Error fetching likes');
+
+export const toggleLike = (postId) =>
+    client.post(`/posts/${postId}/likes`, undefined, 'Error toggling like');

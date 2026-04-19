@@ -166,7 +166,7 @@ export const exchangeGoogleAuthCode = async (request, response) => {
         const payload = await consumeAuthCode(code);
 
         if (!payload) {
-            return response.status(400).send({ message: 'Invalid or expired code' });
+            return response.status(400).send({ message: 'Google auth code is invalid or expired' });
         }
 
         const { author, token } = payload;
@@ -193,7 +193,7 @@ export const logoutAuthor = async (request, response) => {
 
         clearAuthCookie(response);
 
-        response.send({ message: 'Logged out' });
+        response.send({ message: 'Logged out successfully' });
     } catch (error) {
         logger.error({ err: error });
         response.status(500).send({ message: error.message });

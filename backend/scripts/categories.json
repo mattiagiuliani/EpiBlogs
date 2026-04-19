@@ -133,5 +133,23 @@
     "color": "#6366f1",
     "createdAt": "2024-01-10T09:10:00.000Z",
     "updatedAt": "2024-01-10T09:10:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c10",
+    "name": "Mathematics",
+    "slug": "mathematics",
+    "description": "Mathematical foundations for computing: linear algebra, optimization, probability, statistics, and numerical methods.",
+    "color": "#0f766e",
+    "createdAt": "2024-01-10T09:15:00.000Z",
+    "updatedAt": "2024-01-10T09:15:00.000Z"
+  },
+  {
+    "_id": "665c1a2b3c4d5e6f7a8b9c11",
+    "name": "Computer Science",
+    "slug": "computer-science",
+    "description": "Algorithms, data structures, complexity, distributed systems, databases, and core principles of software systems.",
+    "color": "#1d4ed8",
+    "createdAt": "2024-01-10T09:20:00.000Z",
+    "updatedAt": "2024-01-10T09:20:00.000Z"
   }
 ]

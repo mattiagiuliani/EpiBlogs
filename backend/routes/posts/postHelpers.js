@@ -20,12 +20,14 @@ export const buildPostFilter = (query = {}) => {
         filter.categorySlug = query.category;
     }
 
+    // Backward compatible: supports both ?tag=... and ?tags=...
     // ?tag=ai or ?tag=ai,web-dev  →  OR logic via $in
-    if (query.tag) {
-        const tags = String(query.tag)
+    const rawTags = [query.tag, query.tags].filter(Boolean).join(',');
+    if (rawTags) {
+        const tags = [...new Set(String(rawTags)
             .split(',')
             .map((t) => t.trim())
-            .filter(Boolean);
+            .filter(Boolean))];
         if (tags.length > 0) {
             filter.tags = { $in: tags };
         }

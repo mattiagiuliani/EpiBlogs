@@ -1,10 +1,17 @@
 import { afterEach, describe, expect, it } from 'vitest';
-import { getCallbackUrl, isGoogleOAuthConfigured } from '../../backend/utils/googleOAuth.js';
+import {
+    getCallbackUrl,
+    getFrontendAppUrl,
+    isGoogleOAuthConfigured
+} from '../../backend/utils/googleOAuth.js';
 
 // Snapshot the original env so we can restore it after every test.
 const originalEnv = {
     DEVELOPMENT_GOOGLE_CALLBACK_URL: process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL,
     DEPLOYMENT_GOOGLE_CALLBACK_URL: process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL,
+    DEVELOPMENT_FRONTEND_URL: process.env.DEVELOPMENT_FRONTEND_URL,
+    DEPLOYMENT_FRONTEND_URL: process.env.DEPLOYMENT_FRONTEND_URL,
+    GOOGLE_ENV: process.env.GOOGLE_ENV,
     NODE_ENV: process.env.NODE_ENV
 };
 
@@ -68,5 +75,41 @@ describe('isGoogleOAuthConfigured — callback URL variants', () => {
         delete process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL;
 
         expect(isGoogleOAuthConfigured()).toBe(false);
+    });
+});
+
+describe('getFrontendAppUrl — dynamic environment selection', () => {
+    it('returns DEVELOPMENT_FRONTEND_URL in non-production env', () => {
+        process.env.NODE_ENV = 'development';
+        process.env.DEVELOPMENT_FRONTEND_URL = 'http://localhost:5173';
+        process.env.DEPLOYMENT_FRONTEND_URL = 'https://frontend.example.com';
+
+        expect(getFrontendAppUrl()).toBe('http://localhost:5173');
+    });
+
+    it('returns DEPLOYMENT_FRONTEND_URL in production env', () => {
+        process.env.NODE_ENV = 'production';
+        process.env.DEVELOPMENT_FRONTEND_URL = 'http://localhost:5173';
+        process.env.DEPLOYMENT_FRONTEND_URL = 'https://frontend.example.com';
+
+        expect(getFrontendAppUrl()).toBe('https://frontend.example.com');
+    });
+
+    it('treats GOOGLE_ENV=production as production', () => {
+        process.env.NODE_ENV = 'development';
+        process.env.GOOGLE_ENV = 'production';
+        process.env.DEVELOPMENT_FRONTEND_URL = 'http://localhost:5173';
+        process.env.DEPLOYMENT_FRONTEND_URL = 'https://frontend.example.com';
+
+        expect(getFrontendAppUrl()).toBe('https://frontend.example.com');
+    });
+
+    it('falls back to localhost when frontend env vars are missing', () => {
+        process.env.NODE_ENV = 'development';
+        delete process.env.GOOGLE_ENV;
+        delete process.env.DEVELOPMENT_FRONTEND_URL;
+        delete process.env.DEPLOYMENT_FRONTEND_URL;
+
+        expect(getFrontendAppUrl()).toBe('http://localhost:5173');
     });
 });

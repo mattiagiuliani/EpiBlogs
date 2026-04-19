@@ -8,11 +8,11 @@ let isGoogleStrategyInitialized = false;
 const trimEnv = (value) =>
     typeof value === 'string' ? value.trim() : '';
 
-const isProduction =
-  process.env.NODE_ENV?.toLowerCase() === 'production' ||
-  process.env.GOOGLE_ENV?.toLowerCase() === 'production';
-
 export const getCallbackUrl = () => {
+    const isProduction =
+        process.env.NODE_ENV?.toLowerCase() === 'production' ||
+        process.env.GOOGLE_ENV?.toLowerCase() === 'production';
+
     const url = isProduction
         ? process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL
         : process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL;
@@ -136,6 +136,10 @@ export const ensureGoogleOAuthStrategy = () => {
 export const getGoogleStrategyName = () => GOOGLE_STRATEGY_NAME;
 
 export const getFrontendAppUrl = () => {
+    const isProduction =
+        process.env.NODE_ENV?.toLowerCase() === 'production' ||
+        process.env.GOOGLE_ENV?.toLowerCase() === 'production';
+
     const url = isProduction
         ? process.env.DEPLOYMENT_FRONTEND_URL
         : process.env.DEVELOPMENT_FRONTEND_URL;

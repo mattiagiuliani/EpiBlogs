@@ -97,9 +97,7 @@ describe('google oauth handlers', () => {
         vi.spyOn(googleOAuth, 'isGoogleOAuthConfigured').mockReturnValue(true);
         vi.spyOn(googleOAuth, 'ensureGoogleOAuthStrategy').mockImplementation(() => {});
         vi.spyOn(googleOAuth, 'getGoogleStrategyName').mockReturnValue('google');
-        vi.spyOn(googleOAuth, 'getFrontendAppUrl').mockImplementation(
-            ({ code }) => `http://localhost:5173/auth/callback?code=${code}`
-        );
+        vi.spyOn(googleOAuth, 'getFrontendAppUrl').mockReturnValue('http://localhost:5173');
         vi.spyOn(oauthState, 'isValidOAuthState').mockReturnValue(true);
         vi.spyOn(oauthState, 'clearOAuthStateCookie').mockImplementation(() => {});
         vi.spyOn(jwtUtils, 'generateAccessToken').mockReturnValue('jwt-token');

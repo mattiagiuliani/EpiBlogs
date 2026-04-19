@@ -3,20 +3,6 @@ import { readAuthCookie } from '../utils/authCookie.js';
 import { toAuthenticatedAuthor } from '../utils/authenticatedAuthor.js';
 import { verifyAccessToken } from '../utils/jwt.js';
 
-const extractBearerToken = (authorizationHeader) => {
-    if (typeof authorizationHeader !== 'string') {
-        return null;
-    }
-
-    const [scheme, token] = authorizationHeader.trim().split(/\s+/, 2);
-
-    if (scheme?.toLowerCase() !== 'bearer' || !token) {
-        return null;
-    }
-
-    return token;
-};
-
 // ONLY use HttpOnly cookie as single source of truth
 const resolveToken = (request) => {
     return readAuthCookie(request);

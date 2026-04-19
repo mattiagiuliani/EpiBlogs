@@ -3,18 +3,26 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
     UNAUTHORIZED_EVENT,
     clearStoredAuthToken,
+    createComment,
     deleteComment,
     deletePost,
     exchangeGoogleAuthCode,
     fetchJson,
+    getAuthorById,
+    getLikes,
     getGoogleLoginUrl,
     getStoredAuthToken,
+    listPostTags,
+    listComments,
     login,
     logoutApi,
     normalizeAuthenticatedUser,
     register,
+    toggleLike,
+    updateAuthor,
     updateComment,
     updatePost,
+    uploadAuthorAvatar,
 } from '../../frontend/src/assets/api.js';
 
 describe('frontend api helpers', () => {
@@ -145,5 +153,148 @@ describe('frontend api helpers', () => {
         expect(listener).toHaveBeenCalledTimes(1);
 
         window.removeEventListener(UNAUTHORIZED_EVENT, listener);
+    });
+
+    it('listComments sends GET to /api/v1/posts/:id/comments with credentials', async () => {
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => [{ _id: 'c1', comment: 'Hello', author: { _id: 'a1', email: 'user@example.com' } }]
+        });
+        vi.stubGlobal('fetch', fetchMock);
+
+        const result = await listComments('post-42');
+
+        const [url, options] = fetchMock.mock.calls[0];
+        expect(url).toBe('http://localhost:3000/api/v1/posts/post-42/comments');
+        expect(options.method).toBe('GET');
+        expect(options.credentials).toBe('include');
+        expect(result).toEqual([{ _id: 'c1', comment: 'Hello', author: { _id: 'a1', email: 'user@example.com' } }]);
+    });
+
+    it('createComment sends POST with JSON body { comment } to /api/v1/posts/:id/comments', async () => {
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ _id: 'c2', comment: 'New comment', author: { _id: 'a1', email: 'user@example.com' } })
+        });
+        vi.stubGlobal('fetch', fetchMock);
+
+        const result = await createComment('post-42', 'New comment');
+
+        const [url, options] = fetchMock.mock.calls[0];
+        expect(url).toBe('http://localhost:3000/api/v1/posts/post-42/comments');
+        expect(options.method).toBe('POST');
+        expect(options.credentials).toBe('include');
+        expect(options.headers.get('Content-Type')).toBe('application/json');
+        expect(JSON.parse(options.body)).toEqual({ comment: 'New comment' });
+        expect(result).toEqual({ _id: 'c2', comment: 'New comment', author: { _id: 'a1', email: 'user@example.com' } });
+    });
+
+    it('getLikes sends GET to /api/v1/posts/:id/likes with credentials', async () => {
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ count: 7, likedByMe: true })
+        });
+        vi.stubGlobal('fetch', fetchMock);
+
+        const result = await getLikes('post-99');
+
+        const [url, options] = fetchMock.mock.calls[0];
+        expect(url).toBe('http://localhost:3000/api/v1/posts/post-99/likes');
+        expect(options.method).toBe('GET');
+        expect(options.credentials).toBe('include');
+        expect(result).toEqual({ count: 7, likedByMe: true });
+    });
+
+    it('toggleLike sends POST (no body) to /api/v1/posts/:id/likes with credentials', async () => {
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ count: 8, likedByMe: false })
+        });
+        vi.stubGlobal('fetch', fetchMock);
+
+        const result = await toggleLike('post-99');
+
+        const [url, options] = fetchMock.mock.calls[0];
+        expect(url).toBe('http://localhost:3000/api/v1/posts/post-99/likes');
+        expect(options.method).toBe('POST');
+        expect(options.credentials).toBe('include');
+        // body should be undefined / empty since we pass no payload
+        expect(options.body).toBeUndefined();
+        expect(result).toEqual({ count: 8, likedByMe: false });
+    });
+
+    it('getAuthorById sends GET to /api/v1/authors/:id with credentials', async () => {
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ _id: 'author-1', profile: 'Bio' })
+        });
+        vi.stubGlobal('fetch', fetchMock);
+
+        const result = await getAuthorById('author-1');
+
+        const [url, options] = fetchMock.mock.calls[0];
+        expect(url).toBe('http://localhost:3000/api/v1/authors/author-1');
+        expect(options.method).toBe('GET');
+        expect(options.credentials).toBe('include');
+        expect(result).toEqual({ _id: 'author-1', profile: 'Bio' });
+    });
+
+    it('updateAuthor sends PUT to /api/v1/authors/:id with JSON payload', async () => {
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ _id: 'author-1', profile: 'Updated bio' })
+        });
+        vi.stubGlobal('fetch', fetchMock);
+
+        const result = await updateAuthor('author-1', { profile: 'Updated bio', birthDate: null });
+
+        const [url, options] = fetchMock.mock.calls[0];
+        expect(url).toBe('http://localhost:3000/api/v1/authors/author-1');
+        expect(options.method).toBe('PUT');
+        expect(options.credentials).toBe('include');
+        expect(options.headers.get('Content-Type')).toBe('application/json');
+        expect(JSON.parse(options.body)).toEqual({ profile: 'Updated bio', birthDate: null });
+        expect(result).toEqual({ _id: 'author-1', profile: 'Updated bio' });
+    });
+
+    it('uploadAuthorAvatar sends PATCH multipart/form-data to /api/v1/authors/:id/avatar', async () => {
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => ({ _id: 'author-1', avatar: 'https://cdn.example/avatar.jpg' })
+        });
+        vi.stubGlobal('fetch', fetchMock);
+
+        const file = new File(['avatar'], 'avatar.png', { type: 'image/png' });
+        const result = await uploadAuthorAvatar('author-1', file);
+
+        const [url, options] = fetchMock.mock.calls[0];
+        expect(url).toBe('http://localhost:3000/api/v1/authors/author-1/avatar');
+        expect(options.method).toBe('PATCH');
+        expect(options.credentials).toBe('include');
+        expect(options.body).toBeInstanceOf(FormData);
+        expect(options.body.get('avatar')).toBe(file);
+        expect(result).toEqual({ _id: 'author-1', avatar: 'https://cdn.example/avatar.jpg' });
+    });
+
+    it('listPostTags sends GET to /api/v1/posts/tags with credentials', async () => {
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => [
+                { tag: 'ai', count: 5 },
+                { tag: 'web-dev', count: 3 }
+            ]
+        });
+        vi.stubGlobal('fetch', fetchMock);
+
+        const result = await listPostTags();
+
+        const [url, options] = fetchMock.mock.calls[0];
+        expect(url).toBe('http://localhost:3000/api/v1/posts/tags');
+        expect(options.method).toBe('GET');
+        expect(options.credentials).toBe('include');
+        expect(result).toEqual([
+            { tag: 'ai', count: 5 },
+            { tag: 'web-dev', count: 3 }
+        ]);
     });
 });

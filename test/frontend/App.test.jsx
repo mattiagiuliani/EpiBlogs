@@ -2,11 +2,13 @@
 import * as React from '../../frontend/node_modules/react/index.js';
 import { act } from '../../frontend/node_modules/react/index.js';
 import { createRoot } from '../../frontend/node_modules/react-dom/client.js';
+import { MemoryRouter } from '../../frontend/node_modules/react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const apiMocks = vi.hoisted(() => ({
     // REMOVED: clearStoredAuthToken - no longer used with HttpOnly cookie auth
     exchangeGoogleAuthCode: vi.fn(),
+    getAuthorById: vi.fn(),
     getGoogleLoginUrl: vi.fn().mockReturnValue('http://localhost:3000/auth/google'),
     getMe: vi.fn(),
     login: vi.fn(),
@@ -26,6 +28,12 @@ vi.mock('../../frontend/src/List.jsx', () => ({
 vi.mock('../../frontend/src/AuthPage.jsx', () => ({
     default: ({ mode }) => `${mode === 'login' ? 'Login page' : 'Register page'}`
 }));
+vi.mock('../../frontend/src/PostDetail.jsx', () => ({
+    default: () => 'PostDetail mock'
+}));
+vi.mock('../../frontend/src/ProfilePage.jsx', () => ({
+    default: () => 'ProfilePage mock'
+}));
 
 const { default: App } = await import('../../frontend/src/App.jsx');
 
@@ -37,7 +45,11 @@ const renderApp = async () => {
     const root = createRoot(container);
 
     await act(async () => {
-        root.render(React.createElement(App));
+        root.render(
+            React.createElement(MemoryRouter, null,
+                React.createElement(App)
+            )
+        );
     });
 
     return {
@@ -56,6 +68,12 @@ describe('App', () => {
         vi.clearAllMocks();
         document.body.innerHTML = '';
         window.history.replaceState({}, '', '/');
+        apiMocks.getAuthorById.mockResolvedValue({
+            _id: '507f1f77bcf86cd799439011',
+            firstName: 'Mario',
+            lastName: 'Rossi',
+            avatar: ''
+        });
     });
 
     it('redirects unauthenticated users to the login page', async () => {

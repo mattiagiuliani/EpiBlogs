@@ -96,9 +96,14 @@ export const updateAuthorAvatar = async (request, response) => {
             return response.status(400).send({ message: 'Avatar file is required' });
         }
 
+        const avatarUrl = request.file.secure_url || request.file.url || request.file.path;
+        if (!avatarUrl) {
+            return response.status(500).send({ message: 'Unable to resolve uploaded avatar URL' });
+        }
+
         const authorModified = await Author.findByIdAndUpdate(
             request.params.authorId,
-            { avatar: request.file.path },
+            { avatar: avatarUrl },
             { returnDocument: 'after', runValidators: true }
         );
 

@@ -8,10 +8,12 @@ import {
     listComments,
     updateComment
 } from './posts/commentHandlers.js';
+import { getLikes, toggleLike } from './posts/likeHandlers.js';
 import {
     createPost,
     deletePost,
     getPostById,
+    listPostTags,
     listPosts,
     searchPosts,
     updatePost,
@@ -21,6 +23,7 @@ import {
 const postRouter = Router();
 
 postRouter.get('/', listPosts);
+postRouter.get('/tags', listPostTags);
 // /search must be declared before /:postId so Express doesn't treat
 // the literal string "search" as a postId parameter.
 postRouter.post('/search', searchPosts);
@@ -38,5 +41,8 @@ postRouter.get(commentItem, getSingleComment);
 postRouter.post(commentsBase, requireAuthentication, createComment);
 postRouter.put(commentItem, requireAuthentication, updateComment);
 postRouter.delete(commentItem, requireAuthentication, deleteComment);
+
+postRouter.get('/:postId/likes', getLikes);
+postRouter.post('/:postId/likes', requireAuthentication, toggleLike);
 
 export default postRouter;

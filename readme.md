@@ -1,154 +1,158 @@
 # EpiBlogs
 
-Full-stack MERN blogging platform with:
+Full-stack MERN blogging platform built as a portfolio project focused on production-style backend architecture, auth security, API design, and modern React UX.
 
-- Express + MongoDB backend
-- React + Vite frontend
-- JWT authentication with HttpOnly cookie support and Bearer fallback
-- Google OAuth login with one-time code exchange
-- Ownership-based authorization for authors, posts, and comments
+This repository is a monorepo with:
 
-## Stack
+- backend: Express 5 + MongoDB (Mongoose) API
+- frontend: React 19 + Vite client
+- test: backend and frontend Vitest suites
+- seed/scripts: data maintenance and normalization utilities
 
-- Backend: Node.js, Express, Mongoose, Passport, JWT, Helmet
-- Frontend: React, Vite
-- Storage/Services: MongoDB, Cloudinary, Nodemailer/SendGrid
-- Testing: Vitest, Supertest, jsdom
-- Tooling: ESLint, Postman, GitHub Actions
+## Tech Badges
 
-## Architecture
+![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=for-the-badge&logo=mongoose&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/Vite-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
+![Passport](https://img.shields.io/badge/Passport-34E27A?style=for-the-badge&logo=passport&logoColor=black)
+![Cloudinary](https://img.shields.io/badge/Cloudinary-3448C5?style=for-the-badge&logo=cloudinary&logoColor=white)
+![Vitest](https://img.shields.io/badge/Vitest-729B1B?style=for-the-badge&logo=vitest&logoColor=white)
+![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
 
-### Auth Flow
+## Italiano
 
-1. Local login: `POST /login`
-2. Google login start: `GET /auth/google`
-3. Google callback redirects the browser to the frontend with a short-lived `code`
-4. Frontend exchanges the code at `POST /auth/google/exchange-code`
-5. Backend sets the HttpOnly auth cookie and returns `{ token, author }`
-6. Frontend stores the JWT for Bearer fallback and hydrates the authenticated user
+### Panoramica
 
-### Identity Rules
+EpiBlogs e una piattaforma blogging full-stack con backend Express/MongoDB e frontend React/Vite. Il progetto dimostra competenze pratiche su autenticazione sicura, API REST versionate, ownership checks lato server, upload media su Cloudinary e testing automatico.
 
-- JWT `authorId` is the single source of truth
-- `req.author` is normalized to `{ _id, email }`
-- Google OAuth matches existing accounts by email first
-- `googleId` is linked once and not treated as a mutable identity field
+### Funzionalita principali
 
-### Ownership Rules
+- Autenticazione cookie-first con cookie HttpOnly.
+- Login locale + Google OAuth con code exchange.
+- CRUD completo per authors, posts, comments.
+- Likes sui post con endpoint dedicati.
+- Upload avatar e cover con Cloudinary.
+- Ricerca post, filtro category/tag e lista tag aggregata.
+- CORS e Helmet configurati per ambienti reali (dev/prod).
 
-- Authors can update/delete only their own author profile
-- Posts can be created only for the authenticated author id
-- Posts can be updated/deleted only by their owner
-- Comments can be updated/deleted only by their owner
+### Note tecniche specifiche
 
-## API Summary
+- API versionata su /api/v1.
+- Health check dedicato su /health.
+- Cookie di sessione auth: epiblogs.accessToken (HttpOnly, maxAge 1h).
+- Google code exchange con codice monouso TTL 60 secondi.
+- Backend body limit JSON: 100kb.
+- Server port default: 3000.
 
-### Authentication
+### Competenze dimostrate
 
-- `POST /login`
-- `POST /logout`
-- `GET /auth/logout`
-- `POST /authors`
-- `GET /me`
-- `GET /auth/me`
-- `GET /auth/google`
-- `GET /auth/google/callback`
-- `POST /auth/google/exchange-code`
+- Progettazione API REST versionata (/api/v1).
+- Sicurezza applicativa (auth middleware, ownership enforcement, rate limits).
+- Data modeling MongoDB/Mongoose.
+- Gestione stato frontend e UX orientata al prodotto.
+- Test backend/frontend con Vitest.
+- Coerenza documentazione tecnica (README + Postman).
 
-Versioned aliases also exist under `/api/v1/auth/...` where implemented.
+## English
 
-### Public Read Endpoints
+### Overview
 
-- `GET /api/v1/authors`
-- `GET /api/v1/authors/:authorId`
-- `GET /api/v1/posts`
-- `GET /api/v1/posts/:postId`
-- `GET /api/v1/authors/:authorId/posts`
-- `GET /api/v1/posts/:postId/comments`
-- `GET /api/v1/posts/:postId/comments/:commentId`
+EpiBlogs is a full-stack blogging platform designed as a job-ready portfolio project. It focuses on production-minded backend architecture, secure auth flows, structured API design, and maintainable frontend patterns.
 
-### Protected Mutation Endpoints
+### Key Features
 
-- `PUT /api/v1/authors/:authorId`
-- `PATCH /api/v1/authors/:authorId/avatar`
-- `DELETE /api/v1/authors/:authorId`
-- `POST /api/v1/posts`
-- `PUT /api/v1/posts/:postId`
-- `PATCH /api/v1/posts/:postId/cover`
-- `DELETE /api/v1/posts/:postId`
-- `POST /api/v1/posts/:postId/comments`
-- `PUT /api/v1/posts/:postId/comments/:commentId`
-- `DELETE /api/v1/posts/:postId/comments/:commentId`
+- Cookie-first authentication with HttpOnly session cookies.
+- Local login + Google OAuth one-time code exchange.
+- Full CRUD for authors, posts, and comments.
+- Post likes endpoints (read + toggle).
+- Cloudinary media upload for avatars and covers.
+- Post search, category/tag filtering, aggregated tag endpoint.
+- CORS and Helmet hardening for real deployment scenarios.
 
-Protected endpoints accept:
+### Engineering Highlights
 
-- HttpOnly cookie authentication
-- `Authorization: Bearer <jwt>` fallback
+- Versioned REST API under /api/v1.
+- Server-side authorization and ownership checks.
+- Clear backend/frontend domain separation.
+- Automated test coverage with Vitest.
+- API collection aligned with runtime behavior (Postman).
 
-## Environment Variables
+### Concrete Runtime Details
 
-The repo now uses `.env.example` files as the source of truth:
+- Auth cookie name: epiblogs.accessToken.
+- Auth cookie max age: 60 minutes.
+- One-time Google auth exchange code TTL: 60 seconds.
+- Default backend port: 3000.
+- CSP and CORS are configured for local and production environments.
 
-- [backend/.env.example](backend/.env.example)
-- [frontend/.env.example](frontend/.env.example)
+## Screenshots
 
-### Backend Required
+### Core Views
 
-- `MONGODB_CONNECTION_URI`
-- `JWT_SECRET_KEY`
+![Login Section](screenshots/LoginSection.png)
+![Dashboard](screenshots/Dashboard.png)
+![Authors Section](screenshots/AuthorsSection.png)
+![Post Details](screenshots/PostDetails.png)
+![Comment Section](screenshots/CommentSection.png)
+![Your Profile](screenshots/YourProfile.png)
 
-### Backend Common
+## Repository Layout
 
-- `NODE_ENV`
-- `PORT`
-- `FRONTEND_URL`
-- `CORS_ALLOWED_ORIGINS`
-- `CORS_ALLOW_CREDENTIALS`
-- `TRUST_PROXY`
-- `AUTH_COOKIE_SECURE`
-- `AUTH_COOKIE_SAME_SITE`
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
-- `DEVELOPMENT_GOOGLE_CALLBACK_URL`
-- `DEPLOYMENT_GOOGLE_CALLBACK_URL`
-- `MAIL_HOST`
-- `MAIL_PORT`
-- `MAIL_USER`
-- `MAIL_PASSWORD`
-- `MAIL_FROM`
-- `SENDGRID_API_KEY`
-- `CLOUDINARY_CLOUD_NAME`
-- `CLOUDINARY_API_KEY`
-- `CLOUDINARY_API_SECRET`
-- `LOG_LEVEL`
+- backend/app.js: Express app setup (CORS, Helmet, auth middleware, routers)
+- backend/server.js: DB connection + HTTP bootstrap + graceful shutdown
+- backend/routes: domain routers and handlers
+- backend/models: Mongoose models (authors, posts, categories, auth code, blacklist, rate limit)
+- backend/middlewares: authentication, upload, rate limit, mail
+- frontend/src: pages, components, hooks, API client
+- test/backend: API and backend domain tests
+- test/frontend: UI/component/API tests
+- backend/postman: Postman collection
 
-### Backend Optional Advanced OAuth Cookie Overrides
+## Architecture and API
 
-- `OAUTH_COOKIE_DOMAIN`
-- `OAUTH_COOKIE_SAME_SITE`
+- API base: /api/v1
+- Health endpoint: GET /health
+- Main route groups:
+  - /api/v1/auth
+  - /api/v1/authors
+  - /api/v1/categories
+  - /api/v1/posts
 
-### Frontend Public Variables
+Core auth endpoints:
 
-- `VITE_API_BASE_URL`
-- `VITE_FRONTEND_BASE_URL` (optional)
+- POST /api/v1/auth/register
+- POST /api/v1/auth/login
+- POST /api/v1/auth/logout
+- GET /api/v1/auth/me
+- GET /api/v1/auth/google
+- GET /api/v1/auth/google/callback
+- POST /api/v1/auth/google/exchange-code
 
-Frontend env must never contain backend secrets.
+Posts and comments endpoints (selected):
 
-## Deprecated / Backward-Compatible Variables
+- GET /api/v1/posts
+- GET /api/v1/posts/:postId
+- POST /api/v1/posts
+- PATCH /api/v1/posts/:postId/cover
+- GET /api/v1/posts/:postId/likes
+- POST /api/v1/posts/:postId/likes
+- GET /api/v1/posts/:postId/comments
+- POST /api/v1/posts/:postId/comments
 
-These still work for compatibility, but should not be used for new deployments:
+Authors endpoints (selected):
 
-- `JWT_SECRET` -> use `JWT_SECRET_KEY`
-- `GOOGLE_CALLBACK_URL` -> use `DEVELOPMENT_GOOGLE_CALLBACK_URL` and `DEPLOYMENT_GOOGLE_CALLBACK_URL`
-- `OAUTH_COOKIE_SECURE` -> use `AUTH_COOKIE_SECURE`
+- GET /api/v1/authors
+- GET /api/v1/authors/:authorId
+- PUT /api/v1/authors/:authorId
+- PATCH /api/v1/authors/:authorId/avatar
 
-Removed from docs because they are not used by the runtime:
+## Local Setup
 
-- `BACKEND_HOST`
-
-## Local Development
-
-### Install
+Install dependencies:
 
 ```bash
 npm install
@@ -156,91 +160,133 @@ npm --prefix backend install
 npm --prefix frontend install
 ```
 
-### Start
+Run backend and frontend (two terminals):
 
 ```bash
 npm run dev:backend
 npm run dev:frontend
 ```
 
-### Verify
+Alternative shortcuts:
+
+```bash
+npm run dev
+```
+
+Starts backend only (root shortcut):
+
+```bash
+npm start
+```
+
+Expected local URLs:
+
+- frontend: http://localhost:5173
+- backend: http://localhost:3000
+
+Run checks:
 
 ```bash
 npm run check
-npm run test:backend
-npm run test:frontend
-npm run lint
-npm run build
+npx vitest --run
 ```
 
-## Deployment
+Full CI-style verification:
 
-### Render (Backend)
+```bash
+npm run verify
+```
 
-Set these in Render:
+This runs tests + backend syntax check + frontend lint + frontend build.
 
-- `NODE_ENV=production`
-- `MONGODB_CONNECTION_URI`
-- `JWT_SECRET_KEY`
-- `FRONTEND_URL=https://your-frontend.vercel.app`
-- `CORS_ALLOWED_ORIGINS=https://your-frontend.vercel.app`
-- `AUTH_COOKIE_SECURE=true`
-- `AUTH_COOKIE_SAME_SITE=none` if the frontend is on a different site
-- `TRUST_PROXY=1`
-- `GOOGLE_CLIENT_ID`
-- `GOOGLE_CLIENT_SECRET`
-- `DEPLOYMENT_GOOGLE_CALLBACK_URL=https://your-render-service.onrender.com/auth/google/callback`
-- Optional service vars for email and Cloudinary
+## Environment Variables
 
-### Vercel (Frontend)
+Use these templates:
 
-Set these in Vercel:
+- backend/.env.example
+- frontend/.env.example
 
-- `VITE_API_BASE_URL=https://your-render-service.onrender.com`
-- Optional: `VITE_FRONTEND_BASE_URL=https://your-frontend.vercel.app`
+Backend required:
 
-Do not store backend secrets in Vercel env.
+- MONGODB_CONNECTION_URI
+- JWT_SECRET_KEY
 
-## Postman
+Backend commonly configured:
 
-Collection:
+- NODE_ENV
+- PORT
+- DEVELOPMENT_FRONTEND_URL
+- DEPLOYMENT_FRONTEND_URL
+- CORS_ALLOWED_ORIGINS
+- CORS_ALLOW_CREDENTIALS
+- CORS_ALLOW_VERCEL_PREVIEWS
+- TRUST_PROXY
+- AUTH_COOKIE_SECURE
+- AUTH_COOKIE_SAME_SITE
+- GOOGLE_CLIENT_ID
+- GOOGLE_CLIENT_SECRET
+- DEVELOPMENT_GOOGLE_CALLBACK_URL
+- DEPLOYMENT_GOOGLE_CALLBACK_URL
+- CLOUDINARY_CLOUD_NAME
+- CLOUDINARY_API_KEY
+- CLOUDINARY_API_SECRET
 
-- [backend/postman/EpiBlogs.postman_collection.json](backend/postman/EpiBlogs.postman_collection.json)
+Frontend public vars:
 
-Notes:
+- VITE_API_URL_DEVELOPMENT
+- VITE_API_URL_PRODUCTION
+- Optional fallback: VITE_API_URL
 
-- Public GET requests intentionally omit `Authorization`
-- `/me` and all mutations require a valid cookie or Bearer token
-- `Login` and Google code exchange save `accessToken` and `authorId`
-- Create post/comment requests save `postId` and `commentId`
+Recommended local setup:
 
-## CI
+- Copy backend/.env.example to backend/.env
+- Copy frontend/.env.example to frontend/.env
+- Keep VITE_API_URL_DEVELOPMENT=http://localhost:3000
 
-GitHub Actions workflow:
+## Testing and QA
 
-- installs root/backend/frontend dependencies
-- runs backend syntax checks
-- runs backend tests
-- runs frontend tests
-- runs frontend lint
-- runs frontend build
+- Backend + frontend tests via Vitest.
+- Focused suites for auth, routing, handlers, domain components.
+- Postman collection for manual API validation:
+  - backend/postman/EpiBlogs.postman_collection.json
 
-Workflow file:
+Useful test commands:
 
-- [`.github/workflows/ci.yml`](.github/workflows/ci.yml)
+```bash
+npm run test
+npm run test:backend
+npm run test:frontend
+npm run test:watch
+```
+
+## Project Utilities
+
+- Seed sync script:
+  - backend/scripts/syncSeedToMongo.js
+
+Backend seed and maintenance scripts:
+
+```bash
+npm --prefix backend run seed:categories
+npm --prefix backend run seed:sync-mongo
+npm --prefix backend run seed:fix-posts
+npm --prefix backend run seed:fix-category-slugs
+npm --prefix backend run seed:all
+```
+
+It upserts data from seed/authors.json and seed/posts.json with normalization rules.
 
 ## Security Notes
 
-- Auth cookies are `HttpOnly`
-- Bearer fallback exists for API clients and Postman
-- Ownership is enforced server-side
-- Sensitive author fields are stripped from serialized responses
-- Login and Google exchange are rate-limited
-- Helmet and CORS are enabled
+- HttpOnly auth cookie.
+- Server-side ownership enforcement.
+- Rate limiting on sensitive auth endpoints.
+- Helmet + CORS protection.
+- Sensitive author fields removed from serialized output.
 
-## Repo Notes
+## Troubleshooting
 
-- Backend entrypoint: [backend/server.js](backend/server.js)
-- Backend app wiring: [backend/app.js](backend/app.js)
-- Frontend auth client: [frontend/src/assets/api.js](frontend/src/assets/api.js)
-- Frontend auth state: [frontend/src/hooks/useAuthSession.js](frontend/src/hooks/useAuthSession.js)
+- If node server.js fails from repository root, run backend from backend folder or use npm run dev:backend from root.
+- If frontend cannot call API, verify VITE_API_URL_DEVELOPMENT in frontend/.env and backend CORS env values.
+- If uploads fail, verify Cloudinary env variables and ensure multipart/form-data requests are used.
+- If Google login fails locally, verify DEVELOPMENT_GOOGLE_CALLBACK_URL and Google OAuth console redirect URL.

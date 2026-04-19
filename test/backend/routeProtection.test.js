@@ -18,6 +18,7 @@ vi.mock('../../backend/routes/posts/postHandlers.js', () => ({
     getPostById: vi.fn((_req, res) => res.send([])),
     listPosts: vi.fn((_req, res) => res.send([])),
     listPostsByAuthor: vi.fn((_req, res) => res.send([])),
+    listPostTags: vi.fn((_req, res) => res.send([])),
     searchPosts: vi.fn((_req, res) => res.send({ data: [], total: 0 })),
     updatePost: vi.fn(),
     updatePostCover: vi.fn()

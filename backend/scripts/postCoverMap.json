@@ -1,0 +1,472 @@
+{
+  "Understanding Gradient Descent: The Engine Behind Neural Networks": {
+    "category": "Artificial Intelligence",
+    "cover": "https://source.unsplash.com/featured/1200x800/?artificial-intelligence%2Cneural-network%2Cmachine-learning%2Cunderstanding%2Cgradient%2Cdescent&sig=841760",
+    "status": "failed-no-photo-id"
+  },
+  "Feature Engineering Strategies for High-Dimensional Data": {
+    "category": "Data Science",
+    "cover": "https://source.unsplash.com/featured/1200x800/?data-science%2Canalytics%2Cstatistics%2Cfeature%2Cengineering%2Cstrategies&sig=466424",
+    "status": "failed-no-photo-id"
+  },
+  "The Bias-Variance Tradeoff Explained with Python Examples": {
+    "category": "Data Science",
+    "cover": "https://source.unsplash.com/featured/1200x800/?data-science%2Canalytics%2Cstatistics%2Cbias%2Cvariance%2Ctradeoff&sig=717232",
+    "status": "failed-no-photo-id"
+  },
+  "Building a Recommendation Engine with Collaborative Filtering": {
+    "category": "Data Science",
+    "cover": "https://source.unsplash.com/featured/1200x800/?data-science%2Canalytics%2Cstatistics%2Crecommendation%2Cengine%2Ccollaborative&sig=315248",
+    "status": "failed-no-photo-id"
+  },
+  "Building RESTful APIs with Express.js and MongoDB": {
+    "category": "Web Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?web-development%2Ccoding%2Cjavascript%2Crestful%2Capis%2Cexpress&sig=408111",
+    "status": "failed-no-photo-id"
+  },
+  "State Management in React: Redux vs. Context API": {
+    "category": "Web Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?web-development%2Ccoding%2Cjavascript%2Cstate%2Cmanagement%2Creact&sig=179556",
+    "status": "failed-no-photo-id"
+  },
+  "JWT Authentication in a MERN Stack Application": {
+    "category": "Web Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?web-development%2Ccoding%2Cjavascript%2Cjwt%2Cauthentication%2Cmern&sig=413918",
+    "status": "failed-no-photo-id"
+  },
+  "CI/CD Pipelines with GitHub Actions: A Practical Guide": {
+    "category": "DevOps",
+    "cover": "https://source.unsplash.com/featured/1200x800/?devops%2Cci-cd%2Cautomation%2Cpipelines%2Cgithub%2Cactions&sig=409297",
+    "status": "failed-no-photo-id"
+  },
+  "Kubernetes Deployment Strategies: Rolling, Blue-Green, and Canary": {
+    "category": "Cloud Computing",
+    "cover": "https://source.unsplash.com/featured/1200x800/?cloud-computing%2Ccloud-infrastructure%2Cdevops%2Ckubernetes%2Cdeployment%2Cstrategies&sig=676049",
+    "status": "failed-no-photo-id"
+  },
+  "Infrastructure as Code with Terraform on AWS": {
+    "category": "Cloud Computing",
+    "cover": "https://source.unsplash.com/featured/1200x800/?cloud-computing%2Ccloud-infrastructure%2Cdevops%2Cinfrastructure%2Ccode%2Cterraform&sig=707760",
+    "status": "failed-no-photo-id"
+  },
+  "OWASP Top 10: Understanding and Mitigating Web Vulnerabilities": {
+    "category": "Cybersecurity",
+    "cover": "https://source.unsplash.com/featured/1200x800/?cybersecurity%2Cnetwork-security%2Cencryption%2Cowasp%2Ctop%2Cunderstanding&sig=571950",
+    "status": "failed-no-photo-id"
+  },
+  "Zero Trust Architecture: Principles and Implementation": {
+    "category": "Cybersecurity",
+    "cover": "https://source.unsplash.com/featured/1200x800/?cybersecurity%2Cnetwork-security%2Cencryption%2Czero%2Ctrust%2Carchitecture&sig=133586",
+    "status": "failed-no-photo-id"
+  },
+  "Penetration Testing Fundamentals for Web Applications": {
+    "category": "Cybersecurity",
+    "cover": "https://source.unsplash.com/featured/1200x800/?cybersecurity%2Cnetwork-security%2Cencryption%2Cpenetration%2Ctesting%2Cfundamentals&sig=932275",
+    "status": "failed-no-photo-id"
+  },
+  "Linear Algebra for Machine Learning: Vectors, Matrices, and Transformations": {
+    "category": "Mathematics",
+    "cover": "https://source.unsplash.com/featured/1200x800/?mathematics%2Cequations%2Ccalculus%2Clinear%2Calgebra%2Cmachine&sig=964590",
+    "status": "failed-no-photo-id"
+  },
+  "Fourier Analysis and Its Applications in Signal Processing": {
+    "category": "Mathematics",
+    "cover": "https://source.unsplash.com/featured/1200x800/?mathematics%2Cequations%2Ccalculus%2Cfourier%2Canalysis%2Cits&sig=213057",
+    "status": "failed-no-photo-id"
+  },
+  "Quantum Entanglement: From Einstein's Spooky Action to Modern Qubits": {
+    "category": "Quantum Computing",
+    "cover": "https://source.unsplash.com/featured/1200x800/?quantum-computing%2Cqubits%2Cphysics%2Cquantum%2Centanglement%2Ceinstein&sig=580952",
+    "status": "failed-no-photo-id"
+  },
+  "Quantum Supremacy: What It Means and Why It Matters": {
+    "category": "Quantum Computing",
+    "cover": "https://source.unsplash.com/featured/1200x800/?quantum-computing%2Cqubits%2Cphysics%2Cquantum%2Csupremacy%2Cmeans&sig=874759",
+    "status": "failed-no-photo-id"
+  },
+  "The Variational Quantum Eigensolver Algorithm Explained": {
+    "category": "Quantum Computing",
+    "cover": "https://source.unsplash.com/featured/1200x800/?quantum-computing%2Cqubits%2Cphysics%2Cvariational%2Cquantum%2Ceigensolver&sig=790559",
+    "status": "failed-no-photo-id"
+  },
+  "Mastering CSS Grid and Flexbox for Responsive Layouts": {
+    "category": "Web Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?web-development%2Ccoding%2Cjavascript%2Cmastering%2Ccss%2Cgrid&sig=110856",
+    "status": "failed-no-photo-id"
+  },
+  "Web Accessibility: Building Inclusive Digital Experiences": {
+    "category": "Web Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?web-development%2Ccoding%2Cjavascript%2Cweb%2Caccessibility%2Cinclusive&sig=446280",
+    "status": "failed-no-photo-id"
+  },
+  "Transformer Architecture: How Self-Attention Revolutionized NLP": {
+    "category": "Artificial Intelligence",
+    "cover": "https://source.unsplash.com/featured/1200x800/?artificial-intelligence%2Cneural-network%2Cmachine-learning%2Ctransformer%2Carchitecture%2Cself&sig=394093",
+    "status": "failed-no-photo-id"
+  },
+  "Reinforcement Learning: From Q-Learning to Proximal Policy Optimization": {
+    "category": "Artificial Intelligence",
+    "cover": "https://source.unsplash.com/featured/1200x800/?artificial-intelligence%2Cneural-network%2Cmachine-learning%2Creinforcement%2Clearning%2Cproximal&sig=908667",
+    "status": "failed-no-photo-id"
+  },
+  "Large Language Models: How GPT Works Under the Hood": {
+    "category": "Artificial Intelligence",
+    "cover": "https://source.unsplash.com/featured/1200x800/?artificial-intelligence%2Cneural-network%2Cmachine-learning%2Clarge%2Clanguage%2Cmodels&sig=573526",
+    "status": "failed-no-photo-id"
+  },
+  "Convolutional Neural Networks for Visual Recognition": {
+    "category": "Artificial Intelligence",
+    "cover": "https://source.unsplash.com/featured/1200x800/?artificial-intelligence%2Cneural-network%2Cmachine-learning%2Cconvolutional%2Cneural%2Cnetworks&sig=788959",
+    "status": "failed-no-photo-id"
+  },
+  "Serverless Computing with AWS Lambda: Patterns and Best Practices": {
+    "category": "Cloud Computing",
+    "cover": "https://source.unsplash.com/featured/1200x800/?cloud-computing%2Ccloud-infrastructure%2Cdevops%2Cserverless%2Ccomputing%2Caws&sig=272361",
+    "status": "failed-no-photo-id"
+  },
+  "Microservices vs. Monoliths: Making the Right Architectural Choice": {
+    "category": "Cloud Computing",
+    "cover": "https://source.unsplash.com/featured/1200x800/?cloud-computing%2Ccloud-infrastructure%2Cdevops%2Cmicroservices%2Cmonoliths%2Cmaking&sig=602968",
+    "status": "failed-no-photo-id"
+  },
+  "Data Pipelines with Apache Kafka: Building Real-Time Stream Processing Systems": {
+    "category": "Data Science",
+    "cover": "https://source.unsplash.com/featured/1200x800/?data-science%2Canalytics%2Cstatistics%2Cdata%2Cpipelines%2Capache&sig=213028",
+    "status": "failed-no-photo-id"
+  },
+  "Graph Databases and Neo4j: Modeling Connected Data": {
+    "category": "Computer Science",
+    "cover": "https://source.unsplash.com/featured/1200x800/?computer-science%2Calgorithms%2Cprogramming%2Cgraph%2Cdatabases%2Cneo4j&sig=503885",
+    "status": "failed-no-photo-id"
+  },
+  "Statistical Hypothesis Testing: From p-Values to Effect Sizes": {
+    "category": "Mathematics",
+    "cover": "https://source.unsplash.com/featured/1200x800/?mathematics%2Cequations%2Ccalculus%2Cstatistical%2Chypothesis%2Ctesting&sig=329346",
+    "status": "failed-no-photo-id"
+  },
+  "The Rise of Generative AI: Transforming Creativity and Industry": {
+    "category": "Artificial Intelligence",
+    "cover": "https://source.unsplash.com/featured/1200x800/?artificial-intelligence%2Cneural-network%2Cmachine-learning%2Crise%2Cgenerative%2Ctransforming&sig=618608",
+    "status": "failed-no-photo-id"
+  },
+  "Supervised vs Unsupervised Learning: A Practical Guide": {
+    "category": "Machine Learning",
+    "cover": "https://source.unsplash.com/featured/1200x800/?machine-learning%2Cmodel-training%2Cdata-science%2Csupervised%2Cunsupervised%2Clearning&sig=793214",
+    "status": "failed-no-photo-id"
+  },
+  "Building Scalable Applications with React and Node.js": {
+    "category": "Web Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?web-development%2Ccoding%2Cjavascript%2Cscalable%2Capplications%2Creact&sig=512840",
+    "status": "failed-no-photo-id"
+  },
+  "Introduction to Cloud Computing: AWS, Azure, and Google Cloud": {
+    "category": "Cloud Computing",
+    "cover": "https://source.unsplash.com/featured/1200x800/?cloud-computing%2Ccloud-infrastructure%2Cdevops%2Ccloud%2Ccomputing%2Caws&sig=115253",
+    "status": "failed-no-photo-id"
+  },
+  "Understanding Zero Trust Security Architecture": {
+    "category": "Cybersecurity",
+    "cover": "https://source.unsplash.com/featured/1200x800/?cybersecurity%2Cnetwork-security%2Cencryption%2Cunderstanding%2Czero%2Ctrust&sig=196074",
+    "status": "failed-no-photo-id"
+  },
+  "CI/CD Pipelines Explained: From Code to Production": {
+    "category": "DevOps",
+    "cover": "https://source.unsplash.com/featured/1200x800/?devops%2Cci-cd%2Cautomation%2Cpipelines%2Ccode%2Cproduction&sig=181356",
+    "status": "failed-no-photo-id"
+  },
+  "Blockchain Beyond Cryptocurrency": {
+    "category": "Blockchain",
+    "cover": "https://source.unsplash.com/featured/1200x800/?blockchain%2Cdistributed-ledger%2Ccryptography%2Cbeyond%2Ccryptocurrency&sig=571519",
+    "status": "failed-no-photo-id"
+  },
+  "Quantum Computing Fundamentals for Developers": {
+    "category": "Quantum Computing",
+    "cover": "https://source.unsplash.com/featured/1200x800/?quantum-computing%2Cqubits%2Cphysics%2Cquantum%2Ccomputing%2Cfundamentals&sig=834197",
+    "status": "failed-no-photo-id"
+  },
+  "Introduction to Game Development with Unity": {
+    "category": "Game Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?game-development%2Cgame-engine%2C3d-graphics%2Cgame%2Cdevelopment%2Cunity&sig=223424",
+    "status": "failed-no-photo-id"
+  },
+  "Mastering TypeScript for Large-Scale Applications": {
+    "category": "Web Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?web-development%2Ccoding%2Cjavascript%2Cmastering%2Ctypescript%2Clarge&sig=145457",
+    "status": "failed-no-photo-id"
+  },
+  "Data Visualization Best Practices with Python": {
+    "category": "Data Science",
+    "cover": "https://source.unsplash.com/featured/1200x800/?data-science%2Canalytics%2Cstatistics%2Cdata%2Cvisualization%2Cbest&sig=100692",
+    "status": "failed-no-photo-id"
+  },
+  "Containerization with Docker: A Practical Guide": {
+    "category": "DevOps",
+    "cover": "https://source.unsplash.com/featured/1200x800/?devops%2Cci-cd%2Cautomation%2Ccontainerization%2Cdocker&sig=235592",
+    "status": "failed-no-photo-id"
+  },
+  "Kubernetes Orchestration for Modern Applications": {
+    "category": "Cloud Computing",
+    "cover": "https://source.unsplash.com/featured/1200x800/?cloud-computing%2Ccloud-infrastructure%2Cdevops%2Ckubernetes%2Corchestration%2Cmodern&sig=270030",
+    "status": "failed-no-photo-id"
+  },
+  "Natural Language Processing with Transformers": {
+    "category": "Artificial Intelligence",
+    "cover": "https://source.unsplash.com/featured/1200x800/?artificial-intelligence%2Cneural-network%2Cmachine-learning%2Cnatural%2Clanguage%2Cprocessing&sig=766759",
+    "status": "failed-no-photo-id"
+  },
+  "Ethical Hacking and Penetration Testing Essentials": {
+    "category": "Cybersecurity",
+    "cover": "https://source.unsplash.com/featured/1200x800/?cybersecurity%2Cnetwork-security%2Cencryption%2Cethical%2Chacking%2Cpenetration&sig=154716",
+    "status": "failed-no-photo-id"
+  },
+  "Smart Contracts with Solidity and Ethereum": {
+    "category": "Blockchain",
+    "cover": "https://source.unsplash.com/featured/1200x800/?blockchain%2Cdistributed-ledger%2Ccryptography%2Csmart%2Ccontracts%2Csolidity&sig=665179",
+    "status": "failed-no-photo-id"
+  },
+  "Building Real-Time Multiplayer Games with Unreal Engine": {
+    "category": "Game Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?game-development%2Cgame-engine%2C3d-graphics%2Creal%2Ctime%2Cmultiplayer&sig=769510",
+    "status": "failed-no-photo-id"
+  },
+  "Introduction to Big Data with Apache Spark": {
+    "category": "Data Science",
+    "cover": "https://source.unsplash.com/featured/1200x800/?data-science%2Canalytics%2Cstatistics%2Cbig%2Cdata%2Capache&sig=505538",
+    "status": "failed-no-photo-id"
+  },
+  "Next.js and Server-Side Rendering Explained": {
+    "category": "Web Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?web-development%2Ccoding%2Cjavascript%2Cnext%2Cserver%2Cside&sig=615090",
+    "status": "failed-no-photo-id"
+  },
+  "Serverless Architectures with AWS Lambda": {
+    "category": "Cloud Computing",
+    "cover": "https://source.unsplash.com/featured/1200x800/?cloud-computing%2Ccloud-infrastructure%2Cdevops%2Cserverless%2Carchitectures%2Caws&sig=838477",
+    "status": "failed-no-photo-id"
+  },
+  "Computer Vision with Convolutional Neural Networks": {
+    "category": "Artificial Intelligence",
+    "cover": "https://source.unsplash.com/featured/1200x800/?artificial-intelligence%2Cneural-network%2Cmachine-learning%2Ccomputer%2Cvision%2Cconvolutional&sig=408088",
+    "status": "failed-no-photo-id"
+  },
+  "Data Leakage in Cross-Validation: Detection and Prevention": {
+    "category": "Machine Learning",
+    "cover": "https://source.unsplash.com/featured/1200x800/?machine-learning%2Cmodel-training%2Cdata-science%2Cdata%2Cleakage%2Ccross&sig=864879",
+    "status": "failed-no-photo-id"
+  },
+  "Handling Class Imbalance with Cost-Sensitive Learning": {
+    "category": "Machine Learning",
+    "cover": "https://source.unsplash.com/featured/1200x800/?machine-learning%2Cmodel-training%2Cdata-science%2Chandling%2Cclass%2Cimbalance&sig=633732",
+    "status": "failed-no-photo-id"
+  },
+  "Feature Stores: Reproducibility for Training and Serving": {
+    "category": "Machine Learning",
+    "cover": "https://source.unsplash.com/featured/1200x800/?machine-learning%2Cmodel-training%2Cdata-science%2Cfeature%2Cstores%2Creproducibility&sig=584824",
+    "status": "failed-no-photo-id"
+  },
+  "Model Drift Monitoring with Population and Concept Metrics": {
+    "category": "Machine Learning",
+    "cover": "https://source.unsplash.com/featured/1200x800/?machine-learning%2Cmodel-training%2Cdata-science%2Cmodel%2Cdrift%2Cmonitoring&sig=661674",
+    "status": "failed-no-photo-id"
+  },
+  "Rendering Performance in React: Avoiding Unnecessary Re-renders": {
+    "category": "Frontend Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?frontend%2Cui-design%2Creact%2Crendering%2Cperformance&sig=900232",
+    "status": "failed-no-photo-id"
+  },
+  "Accessible Form Design Patterns for Production Apps": {
+    "category": "Frontend Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?frontend%2Cui-design%2Creact%2Caccessible%2Cform%2Cdesign&sig=362250",
+    "status": "failed-no-photo-id"
+  },
+  "Design Tokens and CSS Variables for Scalable UI Systems": {
+    "category": "Frontend Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?frontend%2Cui-design%2Creact%2Cdesign%2Ctokens%2Ccss&sig=324147",
+    "status": "failed-no-photo-id"
+  },
+  "Core Web Vitals: Practical Frontend Optimization Workflow": {
+    "category": "Frontend Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?frontend%2Cui-design%2Creact%2Ccore%2Cweb%2Cvitals&sig=439268",
+    "status": "failed-no-photo-id"
+  },
+  "State Management Boundaries: Local, Server, and Global State": {
+    "category": "Frontend Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?frontend%2Cui-design%2Creact%2Cstate%2Cmanagement%2Cboundaries&sig=421703",
+    "status": "failed-no-photo-id"
+  },
+  "Idempotency Keys for Reliable POST Endpoints": {
+    "category": "Backend Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?backend%2Cserver%2Capi%2Cidempotency%2Ckeys%2Creliable&sig=570387",
+    "status": "failed-no-photo-id"
+  },
+  "API Versioning Strategies Without Breaking Clients": {
+    "category": "Backend Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?backend%2Cserver%2Capi%2Cversioning%2Cstrategies&sig=940231",
+    "status": "failed-no-photo-id"
+  },
+  "Queue-Based Background Jobs for Long-Running Tasks": {
+    "category": "Backend Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?backend%2Cserver%2Capi%2Cqueue%2Cbased%2Cbackground&sig=109674",
+    "status": "failed-no-photo-id"
+  },
+  "Database Transaction Patterns in Distributed Services": {
+    "category": "Backend Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?backend%2Cserver%2Capi%2Cdatabase%2Ctransaction%2Cpatterns&sig=471365",
+    "status": "failed-no-photo-id"
+  },
+  "Caching Layers: In-Memory, Redis, and HTTP Cache Semantics": {
+    "category": "Backend Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?backend%2Cserver%2Capi%2Ccaching%2Clayers%2Cmemory&sig=887473",
+    "status": "failed-no-photo-id"
+  },
+  "SLOs, SLIs, and Error Budgets for Reliable Releases": {
+    "category": "DevOps",
+    "cover": "https://source.unsplash.com/featured/1200x800/?devops%2Cci-cd%2Cautomation%2Cslos%2Cslis%2Cerror&sig=843689",
+    "status": "failed-no-photo-id"
+  },
+  "Secrets Management in CI Pipelines: Rotation and Least Privilege": {
+    "category": "DevOps",
+    "cover": "https://source.unsplash.com/featured/1200x800/?devops%2Cci-cd%2Cautomation%2Csecrets%2Cmanagement%2Cpipelines&sig=868907",
+    "status": "failed-no-photo-id"
+  },
+  "Medallion Architecture: Bronze, Silver, Gold Data Layers": {
+    "category": "Data Engineering",
+    "cover": "https://source.unsplash.com/featured/1200x800/?data-engineering%2Cdata-pipeline%2Cbig-data%2Cmedallion%2Carchitecture%2Cbronze&sig=302096",
+    "status": "failed-no-photo-id"
+  },
+  "Change Data Capture Pipelines with Exactly-Once Semantics": {
+    "category": "Data Engineering",
+    "cover": "https://source.unsplash.com/featured/1200x800/?data-engineering%2Cdata-pipeline%2Cbig-data%2Cchange%2Cdata%2Ccapture&sig=647262",
+    "status": "failed-no-photo-id"
+  },
+  "Schema Evolution in Event Streams Without Downtime": {
+    "category": "Data Engineering",
+    "cover": "https://source.unsplash.com/featured/1200x800/?data-engineering%2Cdata-pipeline%2Cbig-data%2Cschema%2Cevolution%2Cevent&sig=659278",
+    "status": "failed-no-photo-id"
+  },
+  "Data Quality Contracts and Automated Validation Gates": {
+    "category": "Data Engineering",
+    "cover": "https://source.unsplash.com/featured/1200x800/?data-engineering%2Cdata-pipeline%2Cbig-data%2Cdata%2Cquality%2Ccontracts&sig=489906",
+    "status": "failed-no-photo-id"
+  },
+  "Lakehouse Patterns for Mixed Batch and Streaming Analytics": {
+    "category": "Data Engineering",
+    "cover": "https://source.unsplash.com/featured/1200x800/?data-engineering%2Cdata-pipeline%2Cbig-data%2Clakehouse%2Cpatterns%2Cmixed&sig=715655",
+    "status": "failed-no-photo-id"
+  },
+  "Surface Codes and Fault Tolerance Thresholds": {
+    "category": "Quantum Computing",
+    "cover": "https://source.unsplash.com/featured/1200x800/?quantum-computing%2Cqubits%2Cphysics%2Csurface%2Ccodes%2Cfault&sig=906918",
+    "status": "failed-no-photo-id"
+  },
+  "Smart Contract Security Reviews: Common Vulnerability Classes": {
+    "category": "Blockchain",
+    "cover": "https://source.unsplash.com/featured/1200x800/?blockchain%2Cdistributed-ledger%2Ccryptography%2Csmart%2Ccontract%2Csecurity&sig=920742",
+    "status": "failed-no-photo-id"
+  },
+  "Layer 2 Rollups: Throughput, Finality, and Cost Trade-offs": {
+    "category": "Blockchain",
+    "cover": "https://source.unsplash.com/featured/1200x800/?blockchain%2Cdistributed-ledger%2Ccryptography%2Clayer%2Crollups%2Cthroughput&sig=528761",
+    "status": "failed-no-photo-id"
+  },
+  "Proof of Stake Economics and Validator Incentives": {
+    "category": "Blockchain",
+    "cover": "https://source.unsplash.com/featured/1200x800/?blockchain%2Cdistributed-ledger%2Ccryptography%2Cproof%2Cstake%2Ceconomics&sig=993165",
+    "status": "failed-no-photo-id"
+  },
+  "MQTT QoS Levels and Reliable Telemetry Delivery": {
+    "category": "Internet of Things",
+    "cover": "https://source.unsplash.com/featured/1200x800/?iot%2Csmart-devices%2Cembedded-systems%2Cmqtt%2Cqos%2Clevels&sig=633897",
+    "status": "failed-no-photo-id"
+  },
+  "Edge Computing for Low-Latency Device Decisions": {
+    "category": "Internet of Things",
+    "cover": "https://source.unsplash.com/featured/1200x800/?iot%2Csmart-devices%2Cembedded-systems%2Cedge%2Ccomputing%2Clow&sig=239962",
+    "status": "failed-no-photo-id"
+  },
+  "Secure Device Provisioning with Hardware Root of Trust": {
+    "category": "Internet of Things",
+    "cover": "https://source.unsplash.com/featured/1200x800/?iot%2Csmart-devices%2Cembedded-systems%2Csecure%2Cdevice%2Cprovisioning&sig=895566",
+    "status": "failed-no-photo-id"
+  },
+  "OTA Firmware Rollouts with Progressive Safety Gates": {
+    "category": "Internet of Things",
+    "cover": "https://source.unsplash.com/featured/1200x800/?iot%2Csmart-devices%2Cembedded-systems%2Cota%2Cfirmware%2Crollouts&sig=771458",
+    "status": "failed-no-photo-id"
+  },
+  "Industrial IoT Observability: Metrics, Logs, and Alerts": {
+    "category": "Internet of Things",
+    "cover": "https://source.unsplash.com/featured/1200x800/?iot%2Csmart-devices%2Cembedded-systems%2Cindustrial%2Cobservability&sig=885119",
+    "status": "failed-no-photo-id"
+  },
+  "Fixed Timestep Game Loops and Deterministic Simulation": {
+    "category": "Game Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?game-development%2Cgame-engine%2C3d-graphics%2Cfixed%2Ctimestep%2Cgame&sig=977085",
+    "status": "failed-no-photo-id"
+  },
+  "Rollback Netcode for Competitive Multiplayer Games": {
+    "category": "Game Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?game-development%2Cgame-engine%2C3d-graphics%2Crollback%2Cnetcode%2Ccompetitive&sig=874181",
+    "status": "failed-no-photo-id"
+  },
+  "Game Economy Design: Sinks, Faucets, and Inflation Control": {
+    "category": "Game Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?game-development%2Cgame-engine%2C3d-graphics%2Cgame%2Ceconomy%2Cdesign&sig=334824",
+    "status": "failed-no-photo-id"
+  },
+  "Offline-First Sync Strategies for Mobile Apps": {
+    "category": "Mobile Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?mobile-development%2Csmartphone-app%2Cios-android%2Coffline%2Cfirst%2Csync&sig=936129",
+    "status": "failed-no-photo-id"
+  },
+  "Battery-Aware Networking and Background Tasks": {
+    "category": "Mobile Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?mobile-development%2Csmartphone-app%2Cios-android%2Cbattery%2Caware%2Cnetworking&sig=650232",
+    "status": "failed-no-photo-id"
+  },
+  "Push Notification Architecture with Delivery Guarantees": {
+    "category": "Mobile Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?mobile-development%2Csmartphone-app%2Cios-android%2Cpush%2Cnotification%2Carchitecture&sig=866877",
+    "status": "failed-no-photo-id"
+  },
+  "Secure Storage of Tokens and Sensitive User Data": {
+    "category": "Mobile Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?mobile-development%2Csmartphone-app%2Cios-android%2Csecure%2Cstorage%2Ctokens&sig=464122",
+    "status": "failed-no-photo-id"
+  },
+  "Crash Analytics and Release Channel Strategy": {
+    "category": "Mobile Development",
+    "cover": "https://source.unsplash.com/featured/1200x800/?mobile-development%2Csmartphone-app%2Cios-android%2Ccrash%2Canalytics%2Crelease&sig=595465",
+    "status": "failed-no-photo-id"
+  },
+  "Eigenvalues, Stability, and Dynamical Systems": {
+    "category": "Mathematics",
+    "cover": "https://source.unsplash.com/featured/1200x800/?mathematics%2Cequations%2Ccalculus%2Ceigenvalues%2Cstability%2Cdynamical&sig=440568",
+    "status": "failed-no-photo-id"
+  },
+  "Convex Optimization in Machine Learning Practice": {
+    "category": "Mathematics",
+    "cover": "https://source.unsplash.com/featured/1200x800/?mathematics%2Cequations%2Ccalculus%2Cconvex%2Coptimization%2Cmachine&sig=637460",
+    "status": "failed-no-photo-id"
+  },
+  "CAP Theorem in Real Distributed Databases": {
+    "category": "Computer Science",
+    "cover": "https://source.unsplash.com/featured/1200x800/?computer-science%2Calgorithms%2Cprogramming%2Ccap%2Ctheorem%2Creal&sig=749742",
+    "status": "failed-no-photo-id"
+  },
+  "Bloom Filters: Space-Efficient Membership Queries": {
+    "category": "Computer Science",
+    "cover": "https://source.unsplash.com/featured/1200x800/?computer-science%2Calgorithms%2Cprogramming%2Cbloom%2Cfilters%2Cspace&sig=528619",
+    "status": "failed-no-photo-id"
+  },
+  "Consensus Algorithms: Raft Versus Paxos in Practice": {
+    "category": "Computer Science",
+    "cover": "https://source.unsplash.com/featured/1200x800/?computer-science%2Calgorithms%2Cprogramming%2Cconsensus%2Craft&sig=952243",
+    "status": "failed-no-photo-id"
+  },
+  "External Merge Sort for Large-Scale Data Processing": {
+    "category": "Computer Science",
+    "cover": "https://source.unsplash.com/featured/1200x800/?computer-science%2Calgorithms%2Cprogramming%2Cexternal%2Cmerge%2Csort&sig=233454",
+    "status": "failed-no-photo-id"
+  }
+}

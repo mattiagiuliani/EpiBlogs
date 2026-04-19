@@ -675,6 +675,33 @@ a:hover {
   flex-shrink: 0;
 }
 
+.account-avatar {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: 0 0 2.75rem;
+  border-radius: 14px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-mid);
+  background: linear-gradient(135deg, rgba(0, 100, 200, 0.5), rgba(120, 30, 220, 0.4));
+  color: var(--blue-bright);
+  font-size: 0.9rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+
+.account-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.account-summary {
+  min-width: 0;
+  flex: 1;
+}
+
 .account-badge strong {
   display: block;
   color: var(--text-bright);
@@ -687,6 +714,12 @@ a:hover {
   color: var(--text-muted);
   font-family: var(--font-mono);
   margin-top: 0.1rem;
+}
+
+.account-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
 }
 
 .dashboard-note {
@@ -798,10 +831,15 @@ a:hover {
 
 .post-cover {
   height: 9rem;
-  background-size: cover;
-  background-position: center;
   flex-shrink: 0;
   position: relative;
+}
+
+.post-cover-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .post-cover::after {
@@ -939,6 +977,122 @@ a:hover {
 }
 
 /* ============================================================
+   PROFILE PAGE
+   ============================================================ */
+.profile-grid {
+  display: grid;
+  grid-template-columns: minmax(18rem, 24rem) 1fr;
+  gap: 1.25rem;
+}
+
+.profile-sidebar,
+.profile-editor {
+  background: rgba(4, 10, 28, 0.65);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 1.2rem;
+}
+
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.profile-avatar-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  align-items: center;
+}
+
+.profile-avatar {
+  width: 7rem;
+  height: 7rem;
+  border-radius: 20px;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-mid);
+  background: linear-gradient(135deg, rgba(0, 100, 200, 0.5), rgba(120, 30, 220, 0.4));
+  color: var(--blue-bright);
+  font-size: 1.6rem;
+  font-weight: 800;
+  font-family: var(--font-mono);
+}
+
+.profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-avatar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.6rem;
+}
+
+.profile-meta {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.profile-identity {
+  text-align: center;
+}
+
+.profile-name {
+  margin: 0;
+  font-size: 1.1rem;
+  color: var(--text-bright);
+}
+
+.profile-email {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+  font-family: var(--font-mono);
+}
+
+.profile-hint {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.78rem;
+}
+
+.profile-editor form {
+  display: grid;
+  gap: 1rem;
+}
+
+.profile-editor textarea.form-control {
+  min-height: 8rem;
+  resize: vertical;
+}
+
+.profile-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-actions__group {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.profile-note {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* ============================================================
    PAGINATION
    ============================================================ */
 .pagination {
@@ -998,6 +1152,10 @@ a:hover {
     grid-template-columns: 1fr;
   }
 
+  .profile-grid {
+    grid-template-columns: 1fr;
+  }
+
   .create-post-card {
     position: static;
   }
@@ -1009,6 +1167,20 @@ a:hover {
   .account-badge {
     min-width: 0;
     width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .account-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .account-summary {
+    min-width: 10rem;
+  }
+
+  .account-actions .btn {
+    flex: 1;
   }
 }
 
@@ -1123,12 +1295,59 @@ a:hover {
 }
 
 /* ============================================================
-   TAG FILTER  (filter chips + inline input)
+   POST TAG BUTTONS (clickable tags in post cards)
+   ============================================================ */
+.post-tag {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.post-tag:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+.post-tag:active {
+  color: var(--primary-dark, var(--primary));
+}
+
+/* ============================================================
+   TAG FILTER  (filter chips + inline input + autocomplete)
    ============================================================ */
 .tag-filter {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Section wrapper for grouping preset and active tags */
+.tag-filter__section {
+  display: flex;
+  flex-direction: column;
   gap: 0.5rem;
+}
+
+/* Label for tag sections (e.g., "Most Popular") */
+.tag-filter__label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(100, 140, 190, 0.6);
+  padding: 0 0 0.25rem 0;
+}
+
+/* Popular tags chips container */
+.tag-chips--popular {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
 /* The pill-shaped container that holds chips and the raw input */
@@ -1145,6 +1364,7 @@ a:hover {
   border-radius: var(--r);
   cursor: text;
   transition: border-color var(--ease), box-shadow var(--ease);
+  position: relative;
 }
 
 .tag-filter__inner:focus-within {
@@ -1165,6 +1385,76 @@ a:hover {
 
 .tag-filter__input::placeholder {
   color: rgba(100, 140, 190, 0.3);
+}
+
+/* Autocomplete dropdown */
+.tag-filter__dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  margin-top: 0.25rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  max-height: 12rem;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), var(--glow-sm);
+}
+
+/* Individual suggestion item */
+.tag-filter__suggestion {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: none;
+  border: none;
+  text-align: left;
+  color: var(--text);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color var(--ease);
+}
+
+.tag-filter__suggestion:hover {
+  background-color: rgba(0, 170, 255, 0.1);
+  color: rgba(0, 170, 255, 0.9);
+}
+
+.tag-filter__suggestion:active {
+  background-color: rgba(0, 170, 255, 0.2);
+}
+
+/* Preset chip variant with count badge */
+.tag-chip--preset {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.6rem;
+  background: rgba(0, 170, 255, 0.08);
+  border: 1px solid rgba(0, 170, 255, 0.2);
+  border-radius: 0.4rem;
+  color: rgba(0, 170, 255, 0.8);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--ease);
+}
+
+.tag-chip--preset:hover {
+  background: rgba(0, 170, 255, 0.15);
+  border-color: rgba(0, 170, 255, 0.4);
+  color: rgba(0, 170, 255, 0.95);
+}
+
+.tag-chip--preset:active {
+  transform: scale(0.98);
+}
+
+/* Count badge next to tag */
+.tag-chip-count {
+  font-size: 0.7rem;
+  opacity: 0.7;
+  font-weight: 500;
 }
 
 /* ============================================================
