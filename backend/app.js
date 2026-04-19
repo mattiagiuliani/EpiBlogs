@@ -4,7 +4,12 @@ import helmet from 'helmet';
 import passport from 'passport';
 import apiRouter from './routes/apiRouter.js';
 import authentication from './middlewares/authentication.js';
-import { buildCorsOptions, getAllowedCorsOrigins, resolveFrontendUrl } from './utils/cors.js';
+import {
+    buildCorsOptions,
+    DEFAULT_FRONTEND_URL,
+    getAllowedCorsOrigins,
+    resolveFrontendUrl,
+} from './utils/cors.js';
 
 const app = express();
 
@@ -35,7 +40,7 @@ const isDevelopment = !isProduction;
 const frontendUrl = resolveFrontendUrl();
 const connectOrigins = Array.from(new Set([
     ...getAllowedCorsOrigins().filter((origin) =>
-        isDevelopment || origin !== 'http://localhost:5173'
+        isDevelopment || origin !== DEFAULT_FRONTEND_URL
     ),
     frontendUrl,
 ].filter(Boolean)));

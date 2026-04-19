@@ -1,4 +1,4 @@
-const DEFAULT_FRONTEND_URL = 'http://localhost:5173';
+export const DEFAULT_FRONTEND_URL = 'http://localhost:5173';
 
 // Matches any *.vercel.app origin (e.g. branch preview deployments).
 // Enabled only when CORS_ALLOW_VERCEL_PREVIEWS=true is set in the environment.
