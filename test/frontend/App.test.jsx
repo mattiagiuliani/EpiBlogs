@@ -5,7 +5,7 @@ import { createRoot } from '../../frontend/node_modules/react-dom/client.js';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const apiMocks = vi.hoisted(() => ({
-    clearStoredAuthToken: vi.fn(),
+    // REMOVED: clearStoredAuthToken - no longer used with HttpOnly cookie auth
     exchangeGoogleAuthCode: vi.fn(),
     getGoogleLoginUrl: vi.fn().mockReturnValue('http://localhost:3000/auth/google'),
     getMe: vi.fn(),

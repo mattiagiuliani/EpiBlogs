@@ -12,7 +12,8 @@ import {
 const createResponse = () => ({
     redirect: vi.fn(),
     send: vi.fn(),
-    status: vi.fn().mockReturnThis()
+    status: vi.fn().mockReturnThis(),
+    clearCookie: vi.fn()
 });
 
 describe('google oauth handlers', () => {
@@ -31,15 +32,18 @@ describe('google oauth handlers', () => {
         vi.spyOn(googleOAuth, 'getGoogleStrategyName').mockReturnValue('google');
         vi.spyOn(oauthState, 'createOAuthState').mockReturnValue('oauth-state');
         vi.spyOn(oauthState, 'setOAuthStateCookie').mockImplementation(() => {});
+        vi.spyOn(oauthState, 'clearOAuthStateCookie').mockImplementation(() => {});
         vi.spyOn(passport, 'authenticate').mockReturnValue(passportMiddleware);
 
         startGoogleAuthentication(request, response, next);
 
+        expect(oauthState.clearOAuthStateCookie).toHaveBeenCalledWith(response);
         expect(oauthState.setOAuthStateCookie).toHaveBeenCalledWith(response, 'oauth-state');
         expect(passport.authenticate).toHaveBeenCalledWith('google', {
             scope: ['email', 'profile'],
             session: false,
-            state: 'oauth-state'
+            state: 'oauth-state',
+            prompt: 'consent'
         });
         expect(passportMiddleware).toHaveBeenCalledWith(request, response, next);
     });
@@ -56,8 +60,8 @@ describe('google oauth handlers', () => {
         vi.spyOn(googleOAuth, 'isGoogleOAuthConfigured').mockReturnValue(true);
         vi.spyOn(googleOAuth, 'ensureGoogleOAuthStrategy').mockImplementation(() => {});
         vi.spyOn(googleOAuth, 'getGoogleStrategyName').mockReturnValue('google');
-        vi.spyOn(googleOAuth, 'buildFrontendAuthCallbackUrl').mockImplementation(
-            ({ error }) => `http://localhost:5173/auth/callback?error=${error}`
+        vi.spyOn(googleOAuth, 'getFrontendAppUrl').mockImplementation(
+            () => `http://localhost:5173`
         );
         vi.spyOn(oauthState, 'isValidOAuthState').mockReturnValue(true);
         vi.spyOn(oauthState, 'clearOAuthStateCookie').mockImplementation(() => {});
@@ -93,7 +97,7 @@ describe('google oauth handlers', () => {
         vi.spyOn(googleOAuth, 'isGoogleOAuthConfigured').mockReturnValue(true);
         vi.spyOn(googleOAuth, 'ensureGoogleOAuthStrategy').mockImplementation(() => {});
         vi.spyOn(googleOAuth, 'getGoogleStrategyName').mockReturnValue('google');
-        vi.spyOn(googleOAuth, 'buildFrontendAuthCallbackUrl').mockImplementation(
+        vi.spyOn(googleOAuth, 'getFrontendAppUrl').mockImplementation(
             ({ code }) => `http://localhost:5173/auth/callback?code=${code}`
         );
         vi.spyOn(oauthState, 'isValidOAuthState').mockReturnValue(true);

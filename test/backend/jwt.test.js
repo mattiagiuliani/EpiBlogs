@@ -7,7 +7,7 @@ describe('jwt helpers', () => {
         delete process.env.JWT_SECRET;
     });
 
-    it('generates and verifies a token for an author', () => {
+    it('generates and verifies a token for an author', async () => {
         process.env.JWT_SECRET_KEY = 'test-secret';
 
         const token = generateAccessToken({
@@ -15,13 +15,13 @@ describe('jwt helpers', () => {
             email: 'author@example.com'
         });
 
-        const payload = verifyAccessToken(token);
+        const payload = await verifyAccessToken(token);
 
         expect(payload.authorId).toBe('507f1f77bcf86cd799439011');
         expect(payload.email).toBe('author@example.com');
     });
 
-    it('accepts JWT_SECRET as an alias for JWT_SECRET_KEY', () => {
+    it('accepts JWT_SECRET as an alias for JWT_SECRET_KEY', async () => {
         process.env.JWT_SECRET = 'alias-secret';
 
         const token = generateAccessToken({
@@ -29,7 +29,7 @@ describe('jwt helpers', () => {
             email: 'author@example.com'
         });
 
-        const payload = verifyAccessToken(token);
+        const payload = await verifyAccessToken(token);
 
         expect(payload.authorId).toBe('507f1f77bcf86cd799439011');
         expect(payload.email).toBe('author@example.com');

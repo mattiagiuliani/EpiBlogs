@@ -86,7 +86,7 @@ describe('oauth state helpers', () => {
         expect(getOAuthCookieOptions()).toEqual(expect.objectContaining({
             domain: '.example.com',
             httpOnly: true,
-            path: '/auth/google',
+            path: '/',
             sameSite: 'strict',
             secure: true
         }));

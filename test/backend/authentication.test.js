@@ -47,7 +47,7 @@ describe('authentication middleware', () => {
 
     it('attaches the author and token on valid protected requests', async () => {
         const author = { _id: '507f1f77bcf86cd799439011', email: 'AUTHOR@example.com ' };
-        verifyAccessTokenMock.mockReturnValue({ authorId: author._id });
+        verifyAccessTokenMock.mockResolvedValue({ authorId: author._id });
         findByIdMock.mockReturnValue({
             select: vi.fn().mockResolvedValue(author)
         });
@@ -56,7 +56,7 @@ describe('authentication middleware', () => {
             method: 'GET',
             path: '/me/',
             headers: {
-                authorization: 'Bearer valid-token'
+                cookie: 'epiblogs.accessToken=valid-token'
             }
         };
         const response = createResponse();
@@ -75,8 +75,8 @@ describe('authentication middleware', () => {
         expect(next).toHaveBeenCalledOnce();
     });
 
-    it('prefers the auth cookie over the bearer token', async () => {
-        verifyAccessTokenMock.mockReturnValue({ authorId: '507f1f77bcf86cd799439011' });
+    it('uses the auth cookie for authentication', async () => {
+        verifyAccessTokenMock.mockResolvedValue({ authorId: '507f1f77bcf86cd799439011' });
         findByIdMock.mockReturnValue({
             select: vi.fn().mockResolvedValue({
                 _id: '507f1f77bcf86cd799439011',
@@ -86,7 +86,6 @@ describe('authentication middleware', () => {
 
         const request = {
             headers: {
-                authorization: 'Bearer bearer-token',
                 cookie: 'epiblogs.accessToken=cookie-token'
             }
         };
@@ -98,15 +97,13 @@ describe('authentication middleware', () => {
     });
 
     it('records invalid tokens without blocking optional auth middleware', async () => {
-        verifyAccessTokenMock.mockImplementation(() => {
-            throw new Error('bad token');
-        });
+        verifyAccessTokenMock.mockRejectedValue(new Error('bad token'));
 
         const request = {
             method: 'GET',
             path: '/api/v1/posts',
             headers: {
-                authorization: 'Bearer bad-token'
+                cookie: 'epiblogs.accessToken=bad-token'
             }
         };
         const response = createResponse();
@@ -144,7 +141,7 @@ describe('authentication middleware', () => {
             method: 'GET',
             path: '/me',
             headers: {
-                authorization: 'Bearer bad-token'
+                cookie: 'epiblogs.accessToken=bad-token'
             }
         };
         const response = createResponse();

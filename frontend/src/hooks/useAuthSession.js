@@ -36,7 +36,7 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
 
   useEffect(() => {
     const handleUnauthorized = () => {
-      clearStoredAuthToken();
+      // REMOVED: No longer clear sessionStorage - rely on HttpOnly cookie only
       setCurrentUser(null);
       setAuthError("Your session has expired. Please log in again.");
       setAuthSuccess("");
@@ -60,7 +60,7 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
       const { code, error } = getGoogleCallbackParams(window.location.search);
 
       if (!code || error) {
-        clearStoredAuthToken();
+        // REMOVED: No longer clear sessionStorage - rely on HttpOnly cookie only
         setCurrentUser(null);
         setAuthError(getGoogleAuthErrorMessage());
         navigateTo("/login", true);
@@ -83,7 +83,7 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
         setAuthError("");
         navigateTo("/", true);
       } catch {
-        clearStoredAuthToken();
+        // REMOVED: No longer clear sessionStorage - rely on HttpOnly cookie only
         setCurrentUser(null);
         setAuthError(getGoogleAuthErrorMessage());
         navigateTo("/login", true);
@@ -110,7 +110,7 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
           navigateTo("/", true);
         }
       } catch {
-        clearStoredAuthToken();
+        // REMOVED: No longer clear sessionStorage - rely on HttpOnly cookie only
         setCurrentUser(null);
 
         if (!isPublicPath(currentPath)) {
@@ -174,7 +174,7 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
       navigateTo("/", true);
       return true;
     } catch (error) {
-      clearStoredAuthToken();
+      // REMOVED: No longer clear sessionStorage - rely on HttpOnly cookie only
       setCurrentUser(null);
       setAuthError(error.message);
       return false;
@@ -190,7 +190,7 @@ export const useAuthSession = ({ navigateTo, getCurrentPath }) => {
     try {
       await logoutApi();
     } catch {
-      clearStoredAuthToken();
+      // REMOVED: No longer clear sessionStorage - rely on HttpOnly cookie only
     } finally {
       setCurrentUser(null);
       navigateTo("/login", true);

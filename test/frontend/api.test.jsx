@@ -40,35 +40,18 @@ describe('frontend api helpers', () => {
         expect(options.credentials).toBe('include');
     });
 
-    it('stores the returned token after login and attaches it as a bearer token', async () => {
-        const fetchMock = vi.fn()
-            .mockResolvedValueOnce({
-                ok: true,
-                json: async () => ({
-                    token: 'jwt-token',
-                    author: {
-                        _id: '507f1f77bcf86cd799439011',
-                        email: 'AUTHOR@example.com '
-                    }
-                })
-            })
-            .mockResolvedValueOnce({
-                ok: true,
-                json: async () => ({ data: [] })
-            });
+    it('sends credentials with every request for cookie-based auth', async () => {
+        const fetchMock = vi.fn().mockResolvedValue({
+            ok: true,
+            json: async () => [{ id: 1 }]
+        });
         vi.stubGlobal('fetch', fetchMock);
 
-        const authPayload = await login({ email: 'author@example.com', password: 'secret123' });
         await fetchJson('/api/v1/posts');
 
-        expect(getStoredAuthToken()).toBe('jwt-token');
-        expect(authPayload.author).toEqual({
-            _id: '507f1f77bcf86cd799439011',
-            email: 'author@example.com'
-        });
-
-        const [, requestOptions] = fetchMock.mock.calls[1];
-        expect(requestOptions.headers.get('Authorization')).toBe('Bearer jwt-token');
+        const [, options] = fetchMock.mock.calls[0];
+        expect(options.credentials).toBe('include');
+        // REMOVED: No longer checks for Authorization header - relies on HttpOnly cookie
     });
 
     it('builds the Google login URL against the versioned backend base URL', () => {
@@ -94,7 +77,7 @@ describe('frontend api helpers', () => {
         expect(url).toBe('http://localhost:3000/api/v1/auth/google/exchange-code');
         expect(options.method).toBe('POST');
         expect(options.credentials).toBe('include');
-        expect(getStoredAuthToken()).toBe('new-token');
+        // REMOVED: No longer stores token in sessionStorage - relies on HttpOnly cookie
         expect(response.author).toEqual({
             _id: '507f1f77bcf86cd799439011',
             email: 'author@example.com'
@@ -102,7 +85,7 @@ describe('frontend api helpers', () => {
     });
 
     it('calls POST /logout when logging out', async () => {
-        window.sessionStorage.setItem('epiblogs.authToken', 'jwt-token');
+        // REMOVED: No longer sets sessionStorage token
         const fetchMock = vi.fn().mockResolvedValue({
             ok: true,
             json: async () => ({ message: 'Logged out successfully' })
@@ -114,11 +97,11 @@ describe('frontend api helpers', () => {
         const [url, options] = fetchMock.mock.calls[0];
         expect(url).toBe('http://localhost:3000/api/v1/auth/logout');
         expect(options.method).toBe('POST');
-        expect(getStoredAuthToken()).toBe('');
+        // REMOVED: No longer checks sessionStorage clearing - relies on HttpOnly cookie
     });
 
-    it('sends authorization headers for protected mutations', async () => {
-        window.sessionStorage.setItem('epiblogs.authToken', 'jwt-token');
+    it('sends credentials for protected mutations', async () => {
+        // REMOVED: No longer sets sessionStorage token
         const fetchMock = vi.fn().mockResolvedValue({
             ok: true,
             json: async () => ({ message: 'ok' })
@@ -131,7 +114,8 @@ describe('frontend api helpers', () => {
         await deleteComment({ postId: 'post-1', commentId: 'comment-1' });
 
         for (const [, options] of fetchMock.mock.calls) {
-            expect(options.headers.get('Authorization')).toBe('Bearer jwt-token');
+            expect(options.credentials).toBe('include');
+            // REMOVED: No longer checks Authorization header - relies on HttpOnly cookie
         }
     });
 
@@ -144,8 +128,7 @@ describe('frontend api helpers', () => {
             email: 'author@example.com'
         });
 
-        clearStoredAuthToken();
-        expect(getStoredAuthToken()).toBe('');
+        // REMOVED: No longer clears sessionStorage - relies on HttpOnly cookie
     });
 
     it('dispatches an unauthorized event on 401 responses', async () => {

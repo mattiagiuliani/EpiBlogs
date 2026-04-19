@@ -47,8 +47,6 @@ export const fetchJson = (path, options = {}, fallback = 'Request failed') =>
 
 export const login = async (credentials) => {
     const response = await client.post('/auth/login', credentials, 'Login failed');
-
-    storeAuthToken(response.token);
     return { ...response, author: normalizeAuthenticatedUser(response.author) };
 };
 
@@ -65,7 +63,7 @@ export const getMe = async () => {
 export const logoutApi = async () => {
     const response = await client.post('/auth/logout', undefined, 'Logout failed');
 
-    clearStoredAuthToken();
+    // REMOVED: No longer clear frontend storage - rely on HttpOnly cookie only
     return response;
 };
 
@@ -76,10 +74,9 @@ export const exchangeGoogleAuthCode = async (code) => {
     const response = await client.post(
         '/auth/google/exchange-code',
         { code },
-        'Unable to complete Google login',
+        'Google authentication failed'
     );
 
-    storeAuthToken(response.token);
     return { ...response, author: normalizeAuthenticatedUser(response.author) };
 };
 

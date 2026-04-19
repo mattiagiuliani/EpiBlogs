@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(VITE_API_URL=https://placeholder.ci.example.com npm run build)",
-      "Bash(npm run *)"
-    ]
-  }
-}

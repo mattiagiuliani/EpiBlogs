@@ -17,10 +17,9 @@ const extractBearerToken = (authorizationHeader) => {
     return token;
 };
 
-// Resolves the JWT from an HttpOnly cookie first, then falls back to the
-// Authorization: Bearer header so Postman / API clients keep working.
+// ONLY use HttpOnly cookie as single source of truth
 const resolveToken = (request) => {
-    return readAuthCookie(request) ?? extractBearerToken(request.headers?.authorization);
+    return readAuthCookie(request);
 };
 
 const applyAuthentication = async (request) => {
@@ -39,7 +38,7 @@ const applyAuthentication = async (request) => {
     }
 
     try {
-        const payload = verifyAccessToken(token);
+        const payload = await verifyAccessToken(token);
         const author = await Author.findById(payload.authorId).select('email');
         const authenticatedAuthor = toAuthenticatedAuthor(author);
 
@@ -51,7 +50,7 @@ const applyAuthentication = async (request) => {
         request.author = authenticatedAuthor;
         request.auth = { status: 'authenticated' };
         return request.auth;
-    } catch {
+    } catch (error) {
         request.auth = { status: 'invalid' };
         return request.auth;
     }
@@ -61,6 +60,12 @@ const authentication = async (request, _response, next) => {
     if (request.method === 'OPTIONS') {
         return next();
     }
+
+    // Skip authentication for auth routes to avoid conflicts with login/logout flows
+    if (request.path?.startsWith('/api/v1/auth/')) {
+        return next();
+    }
+
     await applyAuthentication(request);
     next();
 };

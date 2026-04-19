@@ -10,7 +10,7 @@ const trimEnv = (value) => (typeof value === 'string' ? value.trim() : '');
 // used by googleOAuth.js so that cookie path and secure-flag derivation are
 // always in sync with the URL that Passport actually uses.
 const getActiveCallbackUrl = () => {
-    const isProduction = process.env.NODE_ENV === 'production';
+    const isProduction = process.env.NODE_ENV?.toLowerCase() === 'production';
     return isProduction
         ? trimEnv(process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL)
         : trimEnv(process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL);
@@ -68,7 +68,7 @@ export const getOAuthCookieOptions = () => {
         ...(domain ? { domain } : {}),
         httpOnly: true,
         maxAge: OAUTH_STATE_TTL_MS,
-        path: getCookiePathFromCallbackUrl(),
+        path: '/',  // Use root path for reliable clearing
         sameSite: normalizedSameSite,
         secure: shouldUseSecureCookies()
     };

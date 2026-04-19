@@ -8,13 +8,16 @@ let isGoogleStrategyInitialized = false;
 const trimEnv = (value) =>
     typeof value === 'string' ? value.trim() : '';
 
-export const getCallbackUrl = () => {
-    const isProduction = process.env.NODE_ENV === 'production';
+const isProduction =
+  process.env.NODE_ENV?.toLowerCase() === 'production' ||
+  process.env.GOOGLE_ENV?.toLowerCase() === 'production';
 
+export const getCallbackUrl = () => {
     const url = isProduction
         ? process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL
         : process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL;
-
+// Uncomment for debugging only (do not use in production):
+// console.log('Callback URL:', url);
     return trimEnv(url);
 };
 
@@ -132,19 +135,10 @@ export const ensureGoogleOAuthStrategy = () => {
 
 export const getGoogleStrategyName = () => GOOGLE_STRATEGY_NAME;
 
-export const getFrontendAppUrl = () =>
-    trimEnv(process.env.FRONTEND_URL) || 'http://localhost:5173';
+export const getFrontendAppUrl = () => {
+    const url = isProduction
+        ? process.env.DEPLOYMENT_FRONTEND_URL
+        : process.env.DEVELOPMENT_FRONTEND_URL;
 
-
-// ⚠️ FIX IMPORTANTE QUI SOTTO
-export const buildFrontendAuthCallbackUrl = ({ code, error } = {}) => {
-    const baseUrl = getFrontendAppUrl();
-
-    // avoid double slash bugs
-    const callbackUrl = new URL('/auth/callback', baseUrl);
-
-    if (code) callbackUrl.searchParams.set('code', code);
-    if (error) callbackUrl.searchParams.set('error', error);
-
-    return callbackUrl.toString();
+    return trimEnv(url) || 'http://localhost:5173';
 };

@@ -21,18 +21,18 @@ afterEach(() => {
 describe('getCallbackUrl — dynamic environment selection', () => {
     it('returns DEVELOPMENT_GOOGLE_CALLBACK_URL when NODE_ENV is not production', () => {
         process.env.NODE_ENV = 'development';
-        process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL = 'http://localhost:3000/auth/google/callback';
-        process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL = 'https://epiblogs-mxl1.onrender.com/auth/google/callback';
+        process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL = 'http://localhost:3000/api/v1/auth/google/callback';
+        process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL = 'https://epiblogs-mxl1.onrender.com/api/v1/auth/google/callback';
 
-        expect(getCallbackUrl()).toBe('http://localhost:3000/auth/google/callback');
+        expect(getCallbackUrl()).toBe('http://localhost:3000/api/v1/auth/google/callback');
     });
 
     it('returns DEPLOYMENT_GOOGLE_CALLBACK_URL when NODE_ENV is production', () => {
         process.env.NODE_ENV = 'production';
-        process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL = 'http://localhost:3000/auth/google/callback';
-        process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL = 'https://epiblogs-mxl1.onrender.com/auth/google/callback';
+        process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL = 'http://localhost:3000/api/v1/auth/google/callback';
+        process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL = 'https://epiblogs-mxl1.onrender.com/api/v1/auth/google/callback';
 
-        expect(getCallbackUrl()).toBe('https://epiblogs-mxl1.onrender.com/auth/google/callback');
+        expect(getCallbackUrl()).toBe('https://epiblogs-mxl1.onrender.com/api/v1/auth/google/callback');
     });
 
     it('returns an empty string when no callback URL env var is set', () => {
@@ -44,9 +44,9 @@ describe('getCallbackUrl — dynamic environment selection', () => {
 
     it('trims whitespace from the selected URL', () => {
         process.env.NODE_ENV = 'development';
-        process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL = '  http://localhost:3000/auth/google/callback  ';
+        process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL = '  http://localhost:3000/api/v1/auth/google/callback  ';
 
-        expect(getCallbackUrl()).toBe('http://localhost:3000/auth/google/callback');
+        expect(getCallbackUrl()).toBe('http://localhost:3000/api/v1/auth/google/callback');
     });
 });
 

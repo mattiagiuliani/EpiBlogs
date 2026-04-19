@@ -3,8 +3,17 @@ const REQUIRED_VARS = [
     'JWT_SECRET_KEY'
 ];
 
+const trimEnv = (value) => (typeof value === 'string' ? value.trim() : '');
+
+const isProduction = process.env.NODE_ENV?.toLowerCase() === 'production' || process.env.GOOGLE_ENV?.toLowerCase() === 'production';
+
+const isGoogleCallbackConfigured = () => [
+    process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL,
+    process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL
+].some((value) => trimEnv(value));
+
 const OPTIONAL_WITH_WARNINGS = [
-    { key: 'FRONTEND_URL', context: 'frontend redirects and CORS will fall back to localhost defaults' },
+    { key: isProduction ? 'DEPLOYMENT_FRONTEND_URL' : 'DEVELOPMENT_FRONTEND_URL', context: 'frontend redirects and CORS will fall back to localhost defaults' },
     { key: 'CLOUDINARY_CLOUD_NAME', context: 'file uploads' },
     { key: 'CLOUDINARY_API_KEY', context: 'file uploads' },
     { key: 'CLOUDINARY_API_SECRET', context: 'file uploads' },
@@ -36,13 +45,6 @@ const DEPRECATED_VARS = [
         reason: 'AUTH_COOKIE_SECURE is the canonical cookie security flag'
     }
 ];
-
-const trimEnv = (value) => (typeof value === 'string' ? value.trim() : '');
-
-const isGoogleCallbackConfigured = () => [
-    process.env.DEVELOPMENT_GOOGLE_CALLBACK_URL,
-    process.env.DEPLOYMENT_GOOGLE_CALLBACK_URL
-].some((value) => trimEnv(value));
 
 export const validateEnv = (log) => {
     const missing = REQUIRED_VARS.filter((key) => !trimEnv(process.env[key]));
@@ -79,10 +81,12 @@ export const validateEnv = (log) => {
         log.warn('AUTH_COOKIE_SAME_SITE=none with AUTH_COOKIE_SECURE=false is unsafe and can break browser cookie delivery');
     }
 
-    if (process.env.NODE_ENV === 'production' && !trimEnv(process.env.FRONTEND_URL)) {
+    const frontendUrlKey = isProduction ? 'DEPLOYMENT_FRONTEND_URL' : 'DEVELOPMENT_FRONTEND_URL';
+
+    if (isProduction && !trimEnv(process.env[frontendUrlKey])) {
         log.error(
-            { missing: ['FRONTEND_URL'] },
-            'FRONTEND_URL is required in production for OAuth redirects and CORS. Exiting.'
+            { missing: [frontendUrlKey] },
+            `${frontendUrlKey} is required in production for OAuth redirects and CORS. Exiting.`
         );
         process.exit(1);
     }

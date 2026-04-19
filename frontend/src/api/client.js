@@ -1,29 +1,35 @@
-const API_URL = import.meta.env.VITE_API_URL;
+const DEV_API_URL = import.meta.env.VITE_API_URL_DEVELOPMENT;
+const PROD_API_URL = import.meta.env.VITE_API_URL_PRODUCTION;
+const LEGACY_API_URL = import.meta.env.VITE_API_URL;
+
+const API_URL = import.meta.env.PROD
+    ? (PROD_API_URL || LEGACY_API_URL)
+    : (DEV_API_URL || LEGACY_API_URL);
 
 // In production (Vercel build) the variable MUST be present — a missing value
 // means the env var was never set in the Vercel dashboard.
 // In local development we fall back to localhost so the app starts even when
 // the developer hasn't copied .env.example → .env yet.
 if (!API_URL && import.meta.env.PROD) {
-    throw new Error('[EpiBlogs] Missing VITE_API_URL');
+    throw new Error('[EpiBlogs] Missing VITE_API_URL_PRODUCTION');
 }
 
 if (!API_URL && !import.meta.env.PROD) {
     console.warn(
-        '[EpiBlogs] VITE_API_URL is not set. ' +
+        '[EpiBlogs] VITE_API_URL_DEVELOPMENT is not set. ' +
         'Falling back to http://localhost:3000. ' +
         'Copy frontend/.env.example → frontend/.env and restart Vite to silence this.'
     );
 }
 
 // TEMPORARY DEBUG LOG — remove once Vercel env var is confirmed working.
-console.log('[ENV DEBUG] VITE_API_URL =', import.meta.env.VITE_API_URL);
+console.log('[ENV DEBUG] API URL selected =', API_URL);
 
 const normalizeBase = (url) => {
     try {
         return new URL(url).origin;
     } catch {
-        throw new Error('[EpiBlogs] Invalid VITE_API_URL format');
+        throw new Error('[EpiBlogs] Invalid API URL env format');
     }
 };
 
@@ -62,16 +68,12 @@ export const clearStoredAuthToken = () =>
 
 const buildHeaders = (existingHeaders = {}, includeContentType = false) => {
     const headers = new Headers(existingHeaders);
-    const token = getStoredAuthToken();
 
     if (includeContentType && !headers.has('Content-Type')) {
         headers.set('Content-Type', 'application/json');
     }
 
-    if (token) {
-        headers.set('Authorization', `Bearer ${token}`);
-    }
-
+    // REMOVED: No longer send Authorization header - rely on HttpOnly cookie only
     return headers;
 };
 

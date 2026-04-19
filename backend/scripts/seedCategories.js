@@ -1,5 +1,8 @@
 /**
  * Idempotent category seed — safe to run multiple times.
+ * Reads categories from categories.json so the script and the dataset
+ * stay in sync automatically.
+ *
  * Uses $setOnInsert so existing documents are never overwritten.
  *
  * Usage:
@@ -8,26 +11,16 @@
  *   npm --prefix backend run seed:categories
  */
 import 'dotenv/config';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 import mongoose from 'mongoose';
 import Category from '../models/Category.js';
 
-const CATEGORIES = [
-    { name: 'Artificial Intelligence',  slug: 'artificial-intelligence',  color: '#6366f1' },
-    { name: 'Machine Learning',         slug: 'machine-learning',         color: '#8b5cf6' },
-    { name: 'Deep Learning',            slug: 'deep-learning',            color: '#a855f7' },
-    { name: 'Quantum Computing',        slug: 'quantum-computing',        color: '#06b6d4' },
-    { name: 'Web Development',          slug: 'web-development',          color: '#3b82f6' },
-    { name: 'Frontend Engineering',     slug: 'frontend-engineering',     color: '#22c55e' },
-    { name: 'Backend Engineering',      slug: 'backend-engineering',      color: '#f97316' },
-    { name: 'Full Stack Development',   slug: 'full-stack-development',   color: '#eab308' },
-    { name: 'DevOps & Cloud',           slug: 'devops-cloud',             color: '#14b8a6' },
-    { name: 'Cybersecurity',            slug: 'cybersecurity',            color: '#ef4444' },
-    { name: 'Game Development',         slug: 'game-development',         color: '#ec4899' },
-    { name: 'Blockchain & Web3',        slug: 'blockchain-web3',          color: '#f59e0b' },
-    { name: 'Mobile Development',       slug: 'mobile-development',       color: '#10b981' },
-    { name: 'Data Science',             slug: 'data-science',             color: '#64748b' },
-    { name: 'System Design',            slug: 'system-design',            color: '#6b7280' },
-];
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const CATEGORIES = JSON.parse(
+    readFileSync(join(__dirname, 'categories.json'), 'utf8')
+);
 
 const seed = async () => {
     const uri = process.env.MONGODB_CONNECTION_URI;
@@ -38,10 +31,12 @@ const seed = async () => {
 
     await mongoose.connect(uri);
 
-    const operations = CATEGORIES.map((cat) => ({
+    const operations = CATEGORIES.map(({ name, slug, description, color }) => ({
         updateOne: {
-            filter: { slug: cat.slug },
-            update: { $setOnInsert: cat },
+            filter: { slug },
+            update: {
+                $setOnInsert: { name, slug, description: description ?? '', color: color ?? '' }
+            },
             upsert: true
         }
     }));
