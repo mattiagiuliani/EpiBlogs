@@ -11,7 +11,7 @@ const isProductionEnv = () =>
     process.env.NODE_ENV?.toLowerCase() === 'production' ||
     process.env.GOOGLE_ENV?.toLowerCase() === 'production';
 
-const resolveFrontendUrl = () => {
+export const resolveFrontendUrl = () => {
     const explicitFrontendUrl = trimEnv(process.env.FRONTEND_URL);
     if (explicitFrontendUrl) return explicitFrontendUrl;
 
@@ -23,6 +23,13 @@ const resolveFrontendUrl = () => {
 
     return envFrontendUrl || DEFAULT_FRONTEND_URL;
 };
+
+export const hasConfiguredFrontendUrl = () =>
+    Boolean(
+        trimEnv(process.env.FRONTEND_URL) ||
+        trimEnv(process.env.DEVELOPMENT_FRONTEND_URL) ||
+        trimEnv(process.env.DEPLOYMENT_FRONTEND_URL)
+    );
 
 export const getAllowedCorsOrigins = () => {
     const configuredOrigins = trimEnv(process.env.CORS_ALLOWED_ORIGINS)

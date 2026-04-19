@@ -1,3 +1,5 @@
+import { hasConfiguredFrontendUrl } from './cors.js';
+
 const REQUIRED_VARS = [
     'MONGODB_CONNECTION_URI',
     'JWT_SECRET_KEY'
@@ -81,12 +83,10 @@ export const validateEnv = (log) => {
         log.warn('AUTH_COOKIE_SAME_SITE=none with AUTH_COOKIE_SECURE=false is unsafe and can break browser cookie delivery');
     }
 
-    const frontendUrlKey = isProduction ? 'DEPLOYMENT_FRONTEND_URL' : 'DEVELOPMENT_FRONTEND_URL';
-
-    if (isProduction && !trimEnv(process.env[frontendUrlKey])) {
+    if (isProduction && !hasConfiguredFrontendUrl()) {
         log.error(
-            { missing: [frontendUrlKey] },
-            `${frontendUrlKey} is required in production for OAuth redirects and CORS. Exiting.`
+            { missing: ['FRONTEND_URL | DEPLOYMENT_FRONTEND_URL'] },
+            'A frontend URL is required in production for OAuth redirects and CORS. Exiting.'
         );
         process.exit(1);
     }

@@ -1,6 +1,7 @@
 import passport from 'passport';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import Author from '../models/Author.js';
+import { resolveFrontendUrl } from './cors.js';
 
 const GOOGLE_STRATEGY_NAME = 'google';
 let isGoogleStrategyInitialized = false;
@@ -136,13 +137,5 @@ export const ensureGoogleOAuthStrategy = () => {
 export const getGoogleStrategyName = () => GOOGLE_STRATEGY_NAME;
 
 export const getFrontendAppUrl = () => {
-    const isProduction =
-        process.env.NODE_ENV?.toLowerCase() === 'production' ||
-        process.env.GOOGLE_ENV?.toLowerCase() === 'production';
-
-    const url = isProduction
-        ? process.env.DEPLOYMENT_FRONTEND_URL
-        : process.env.DEVELOPMENT_FRONTEND_URL;
-
-    return trimEnv(url) || 'http://localhost:5173';
+    return resolveFrontendUrl();
 };

@@ -4,13 +4,11 @@ import helmet from 'helmet';
 import passport from 'passport';
 import apiRouter from './routes/apiRouter.js';
 import authentication from './middlewares/authentication.js';
-import { buildCorsOptions } from './utils/cors.js';
+import { buildCorsOptions, getAllowedCorsOrigins, resolveFrontendUrl } from './utils/cors.js';
 
 const app = express();
 
 const isProduction = process.env.NODE_ENV?.toLowerCase() === 'production' || process.env.GOOGLE_ENV?.toLowerCase() === 'production';
-
-const frontendUrlKey = isProduction ? 'DEPLOYMENT_FRONTEND_URL' : 'DEVELOPMENT_FRONTEND_URL';
 
 const trustProxySetting = process.env.TRUST_PROXY?.trim();
 
@@ -34,14 +32,12 @@ app.options(/.*/, cors(corsOptions));
 // Single helmet() call — splitting into helmet.contentSecurityPolicy() +
 // helmet() causes the second call to overwrite the CSP with Helmet defaults.
 const isDevelopment = !isProduction;
-const frontendUrl = process.env[frontendUrlKey]?.trim();
-const allowedOriginsFromEnv = (process.env.CORS_ALLOWED_ORIGINS ?? '')
-    .split(',')
-    .map((value) => value.trim())
-    .filter(Boolean);
-const developmentConnectOrigins = Array.from(new Set([
-    process.env.DEVELOPMENT_FRONTEND_URL?.trim(),
-    ...allowedOriginsFromEnv,
+const frontendUrl = resolveFrontendUrl();
+const connectOrigins = Array.from(new Set([
+    ...getAllowedCorsOrigins().filter((origin) =>
+        isDevelopment || origin !== 'http://localhost:5173'
+    ),
+    frontendUrl,
 ].filter(Boolean)));
 
 // Gstatic hosts: www.gstatic.com serves Google OAuth UI assets (inline styles,
@@ -60,8 +56,7 @@ const connectSrc = [
     'https://accounts.google.com',
     'https://oauth2.googleapis.com',
     'https://www.googleapis.com',
-    ...(isDevelopment ? developmentConnectOrigins : []),
-    ...(frontendUrl && !isDevelopment ? [frontendUrl] : []),
+    ...connectOrigins,
 ];
 
 app.use(helmet({
